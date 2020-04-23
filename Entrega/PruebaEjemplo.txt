@@ -1,0 +1,11 @@
+
+
+program
+beginp 
+
+//letrita//
+//letra//
+
+if 3.5=a then endif
+
+endp
