@@ -8,4 +8,13 @@ beginp
 
 if 3.5=a then endif
 
+while a>8 endw
+
+A:=B
+
+defvar 
+float : a3;b4;g6 
+enddef
+
 endp
+
