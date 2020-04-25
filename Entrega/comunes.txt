@@ -12,8 +12,9 @@ while a>8 endw
 
 A:=B
 
-defvar 
-float : a3;b4;g6 
+defvar
+float : a3;f45;h7
+int: a3;f45;h7
 enddef
 
 endp

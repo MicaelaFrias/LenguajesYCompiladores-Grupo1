@@ -88,9 +88,7 @@ P_C                     [")"]
 {CONST_REAL}		{ return CONST_REAL;}
 {COMA}			{ return COMA;}
 {COMENTARIOS}		{ return COMEN;}
-{LETRA}		{ return LETRA;}
-"\n"      	
-"\t"		
+{LETRA}		{ return LETRA;}	
 
 
 

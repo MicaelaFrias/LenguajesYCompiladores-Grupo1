@@ -70,8 +70,8 @@ bloqueTemasEspeciales: temaEspecial
 temaComun: COMEN {printf("esto es un comentario\n\n\n");}
           |  iteracion {printf("esto es una iteracion\n\n\n")}
           | decision {printf("esto es una decision\n\n\n");}
-          | declaraciones {printf("esto es una declaracion\n\n\n");}
-          | listavariables {printf("esto es una lita de variables\n\n\n");}
+          | bloqueDeclaracion {printf("esto es una declaracion\n\n\n");}
+          | listavariables {printf("esto es una lista de variables\n\n\n");}
           | asignacion {printf("esto es una asignacion\n\n\n");}
           ;
 
@@ -135,25 +135,25 @@ termino:
 
 factor: 
 	ID {printf("ok var\n");}
-      |CONST_INT {printf("ok int\n");}
+      | CONST_INT {printf("ok int\n");}
       | CONST_STR {printf("ok str\n");}
       | CONST_REAL {printf("ok real\n");}
       ;
 
-
-
 let: LET 
   ;
 
-declaraciones: declaracion
-              |declaraciones declaracion
-              ;
+bloqueDeclaracion: DEFVAR  {printf("ok def var\n")}
+                   declaraciones
+                   ENDDEF {printf("ok end def\n")}
 
-declaracion: DEFVAR  {printf("ok def var\n")}
-              tipodato 
+declaraciones: declaracion
+              | declaraciones declaracion
+              ;           
+
+declaracion:  tipodato 
               OP_DOSP  {printf("ok op asignacion\n")}
-              listavariables
-              ENDDEF {printf("ok end def\n")}
+              listavariables          
               ;
 
 tipodato: FLOAT {printf("ok float\n")}
