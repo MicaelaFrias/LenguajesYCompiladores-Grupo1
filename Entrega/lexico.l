@@ -103,8 +103,8 @@ ID			            {LETRA}({LETRA}|{DIGITO}|_)*
 								double n = atof(yytext);
 					
 								if(n >= CONST_REAL*(-1) && n <= COTA_FLOAT){
-			 						insertarEnTS("float","CONST_FLOAT","--",0,yylval.float_val);
-									return CONST_FLOAT; 
+			 						insertarEnTS("float","CONST_REAL","--",0,yylval.float_val);
+									return CONST_REAL; 
 								}else{
 									printf("ERROR - Float fuera de rango.\n");
 									system ("Pause");

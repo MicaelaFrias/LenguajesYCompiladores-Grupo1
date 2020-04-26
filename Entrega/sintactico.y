@@ -4,7 +4,7 @@
 #include <string.h>
 #include <conio.h>
 #include "sintactico.tab.h"
-nt yystopparser=0;
+int yystopparser=0;
 FILE  *yyin;
 int insertarEnTS(char[],char[],char[],int,double);
 %}
