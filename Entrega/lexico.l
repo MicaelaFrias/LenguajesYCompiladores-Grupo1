@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <conio.h>
-#include "y.tab.h"
+#include "sintactico.tab.h"
 FILE  *yyin;
 int yylval;
 
@@ -13,7 +13,7 @@ int yylval;
 DIGITO		            [0-9]
 LETRA		        	[a-zA-Z]
 COMA                    [","]
-COM_INI                 ["***/"]
+COM_INI                 ["***/"]    
 COM_FIN                 ["/***"]
 COMENTARIOS             ["***/"]({LETRA}|{DIGITO}|.)*["/***"]
 CONST_STR               \"({LETRA}|{DIGITO}|.){0,30}\"

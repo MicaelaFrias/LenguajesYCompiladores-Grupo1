@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <conio.h>
-#include "y.tab.h"
+#include "sintactico.tab.h"
 int yystopparser=0;
 FILE  *yyin;
 
@@ -74,6 +74,7 @@ temaComun: COMEN {printf("--------------------------ESTO ES UN COMENTARIO\n\n\n"
           | asignacion {printf("--------------------------ESTO ES UNA ASIGNACION\n\n\n");}
           | entrada {printf("--------------------------ESTO ES UNA ENTREADA\n\n\n");}
           | salida {printf("--------------------------ESTO ES UNA SALIDA\n\n\n");}
+          | variablesNumericas {printf("--------------------------ESTO ES UNA VARIABLE NUMERICA\n\n\n");}
           ;
 
 temaEspecial: ifUnario {printf("--------------------------ESTO ES UN IF UNARIO\n\n\n");}
@@ -95,16 +96,16 @@ iteracion: WHILE  {printf("ok while\n");}
           ;
 
 ifUnario:
-          ID {printf("ok id\n");}
-          OP_ASIG {printf("ok comparacion\n");}
-          IF {printf("ok if\n");}
-          P_A {printf("ok parentesis abierto\n");}
-          condicion {printf("ok condicion\n");}
-          COMA {printf("ok coma\n");}
+          ID 
+          OP_ASIG 
+          IF 
+          P_A 
+          condicion 
+          COMA 
           accion 
-          COMA {printf("ok coma\n");}
+          COMA 
           accion
-          P_C {printf("ok parentesis cerrado\n");}
+          P_C 
     ;
 
 decision: 
@@ -175,6 +176,15 @@ listaVarLetDer: expresion
          expresion
          ;
 
+variablesNumericas: ID
+                    OP_ASIG
+                    valorNumerico
+                    ;
+
+valorNumerico: ID
+              | CONST_INT
+              | expresion
+              ;
 
 bloqueDeclaracion: DEFVAR  {printf("ok def var\n");}
                    declaraciones
