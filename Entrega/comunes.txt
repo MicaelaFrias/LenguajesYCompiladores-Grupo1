@@ -17,5 +17,10 @@ float : a3;f45;h7
 int: a3;f45;h7
 enddef
 
+defvar
+float : a3;f455;h7
+int: a3;f45;h7
+enddef
+
 endp
 

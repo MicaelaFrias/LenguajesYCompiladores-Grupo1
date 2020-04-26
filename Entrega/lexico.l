@@ -72,7 +72,7 @@ P_C                     [")"]
 "("			{ return P_A;}
 ")"			{ return P_C;}
 ">"                     { return OP_COMPARACION;}
-">="                    { return OP_COMPARACION;}
+">="                    { return OP_IGUAL;}
 "="                    { return OP_COMPARACION;}
 "<"                     { return OP_COMPARACION;}
 "<="                    { return OP_COMPARACION;}

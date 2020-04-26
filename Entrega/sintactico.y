@@ -29,7 +29,7 @@ FILE  *yyin;
 %token REPEAT UNTIL
 %token OP_LOG
 %token OP_DOSP
-%token OP_COMPARACION
+%token OP_COMPARACION OP_IGUAL
 %token OP_AS
 %token OP_SUM
 %token IGUAL
@@ -45,9 +45,6 @@ FILE  *yyin;
 %token LETRA
 %token DEFVAR
 %token ENDDEF
-
-
-
 
 %%
 programa:  PROGRAM {printf("Inicia COMPILADOR\n");}
@@ -112,12 +109,13 @@ condicion: comparacion {printf("ok comp\n");}
          ;
 
 comparacion: factor OP_COMPARACION factor 
+            | factor OP_IGUAL factor 
           ;
 
-operacion: OP_SUM {printf("ok suma\n");} 
-          | OP_RES {printf("ok resta\n");} 
+operacion: OP_SUM   {printf("ok suma\n");} 
+          | OP_RES  {printf("ok resta\n");} 
           | OP_MULT {printf("ok multiplicacion\n");} 
-          | OP_DIV {printf("ok division\n");} 
+          | OP_DIV  {printf("ok division\n");} 
           ;
 
 accion:    
