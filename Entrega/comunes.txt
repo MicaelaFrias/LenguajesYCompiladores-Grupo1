@@ -3,34 +3,51 @@
 program
 beginp 
 
-//letrita//
-//letra//
-
-if 3.5=a then endif
-
-while a>8 endw
-
-a:= a
-a:= 2
-a:= "aaa"
-a:= "aaa"
-
+if (3.5=a)
+then 
 defvar
 float : a3;f45;h7
 int: a3;f45;h7
 enddef
+endif
 
-<<<<<<< HEAD
-get a3
-display "hola"
-display 1
-display a3
-=======
+while (a>8 and f4=1)
+a3 :=4 
+endw
+
+A:=B
+
+
+***//***
+***/COMENTARIO/***
+
 defvar
 float : a3;f455;h7
 int: a3;f45;h7
 enddef
->>>>>>> 7aa2a26eb09b3bcc6c60794eaecfea0340ceed4f
+
+a := a
+a := 2
+a := 2.5
+a := ""
+a := "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+a := "aa"
+a := "aaa"
+a := "aaaa"
+a := "aaaaa"
+
+if(a>"ede" and d>"frfr" and 7>3 and 2>5)
+then
+b:="aaa"
+b:="aaa"
+else
+b:="aaa"
+endif 
+
+get a3
+display "hola"
+display 1
+display a3
 
 endp
 

@@ -5,7 +5,7 @@ beginp
 
 e = if(a>3,a+6,a+8)
 
-let
+let uno,dos,tres = (3;4;a+5)
 
 endp
 
