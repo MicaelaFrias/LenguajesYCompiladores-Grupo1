@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <conio.h>
-#include "sintactico.tab.h"
+#include "y.tab.h"
 FILE  *yyin;
 int yylval;
 
@@ -10,8 +10,8 @@ int yylval;
 %option noyywrap  
 %option yylineno 
 
-DIGITO			[0-9]
-LETRA			[a-zA-Z]
+DIGITO		            [0-9]
+LETRA		        	[a-zA-Z]
 COMA                    [","]
 COM_INI                 ["***/"]
 COM_FIN                 ["/***"]
@@ -19,15 +19,15 @@ COMENTARIOS             ["***/"]({LETRA}|{DIGITO}|.)*["/***"]
 CONST_STR               \"({LETRA}|{DIGITO}|.){0,30}\"
 CONST_REAL              {DIGITO}+"."{DIGITO}+
 CONST_INT               {DIGITO}+
-ID			{LETRA}({LETRA}|{DIGITO}|_)*
-IGUAL            ["="]
+ID			            {LETRA}({LETRA}|{DIGITO}|_)*
+IGUAL                   ["="]
 OP_COMPARACION          ["<"|IGUAL|">"|"<="|">="|"><"]
-OP_SUM                ["+"]
-OP_RES               ["-"]
-PYC               [";"]
-OP_MULT            ["*"]
-OP_DIV              ["/"]
-OP_AS   		[":="]
+OP_SUM                  ["+"]
+OP_RES                  ["-"]
+PYC                     [";"]
+OP_MULT                 ["*"]
+OP_DIV                  ["/"]
+OP_AS   	        	[":="]
 OP_LOG                  ["and"|"or"|"not"]
 C_A                     ["["]
 C_C                     ["]"]
@@ -36,7 +36,7 @@ P_C                     [")"]
 	
 
 
-%%
+%% 
 "program"		{ return PROGRAM;}
 "define"		{ return DEFINE;}
 "enddefine"		{ return ENDDEFINE;}
@@ -48,51 +48,51 @@ P_C                     [")"]
 "let"			{ return LET;}
 "then"   		{ return THEN;}
 "else"   		{ return ELSE;}
-"endif"	      		{ return ENDIF;}
+"endif"	      	{ return ENDIF;}
 "for"			{ return FOR;}
-"to"		      	{ return TO;}
-"do"	         	{ return DO;}
+"to"		   	{ return TO;}
+"do"	        { return DO;}
 "endfor"		{ return ENDFOR;}
-"while"	      		{ return WHILE;}
-"in"	         	{ return IN;}
+"while"	      	{ return WHILE;}
+"in"	        { return IN;}
 "endw"  		{ return ENDW;}
 "repeat"		{ return REPEAT;}
 "until"			{ return UNTIL;}
 "defvar"  		{ return DEFVAR;}
 "enddef"  		{ return ENDDEF;}
 "float"  		{ return FLOAT;}
-"int"  		{ return INT;}
+"int"  		    { return INT;}
 "display"       { return DISPLAY;}
 "get"           { return GET;}
-"and"                   { return OP_LOG;}
-"or"                    { return OP_LOG;}
-"not"                   { return OP_LOG;}
+"and"           { return OP_LOG;}
+"or"            { return OP_LOG;}
+"not"           { return OP_LOG;}
 ":="			{ return OP_AS;}
-":"			{ return OP_DOSP;}
-"+"			{ return OP_SUM;}
-"-"			{ return OP_RES;}
-"*"			{ return OP_MULT;}
-"/"			{ return OP_DIV;}
-"("			{ return P_A;}
-")"			{ return P_C;}
-">"                     { return OP_COMPARACION;}
-">="                    { return OP_COMPARACION;}
-"="                    { return OP_IGUAL;}
-"<"                     { return OP_COMPARACION;}
-"<="                    { return OP_COMPARACION;}
-"><"                    { return OP_COMPARACION;}
-";"                    { return PYC;}
-"and"                   { return OP_LOG;}
-"or"                    { return OP_LOG;}
-"not"                   { return OP_LOG;}
+":"		    	{ return OP_DOSP;}
+"+"		    	{ return OP_SUM;}
+"-"		    	{ return OP_RES;}
+"*"		    	{ return OP_MULT;}
+"/"		    	{ return OP_DIV;}
+"("		    	{ return P_A;}
+")"		    	{ return P_C;}
+">"             { return OP_COMPARACION;}
+">="            { return OP_COMPARACION;}
+"="             { return OP_IGUAL;}
+"<"             { return OP_COMPARACION;}
+"<="            { return OP_COMPARACION;}
+"><"            { return OP_COMPARACION;}
+";"             { return PYC;}
+"and"           { return OP_LOG;}
+"or"            { return OP_LOG;}
+"not"           { return OP_LOG;}
 {ID}			{ return ID;}
 {CONST_INT}		{ return CONST_INT;}
-{IGUAL}		{ return IGUAL;}
+{IGUAL}	       	{ return IGUAL;}
 {CONST_STR}		{ return CONST_STR;}
-{CONST_REAL}		{ return CONST_REAL;}
+{CONST_REAL}	{ return CONST_REAL;}
 {COMA}			{ return COMA;}
-{COMENTARIOS}		{ return COMEN;}
-{LETRA}		{ return LETRA;}	
+{COMENTARIOS}	{ return COMEN;}
+{LETRA}	    	{ return LETRA;}	
 
 
 

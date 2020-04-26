@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <conio.h>
-#include "sintactico.tab.h"
+#include "y.tab.h"
 int yystopparser=0;
 FILE  *yyin;
 
@@ -67,7 +67,7 @@ bloqueTemasEspeciales: temaEspecial
                   ;
 
 temaComun: COMEN {printf("--------------------------ESTO ES UN COMENTARIO\n\n\n");}
-          |  iteracion {printf("--------------------------ESTO ES UNA ITERACION\n\n\n")}
+          |  iteracion {printf("--------------------------ESTO ES UNA ITERACION\n\n\n");}
           | decision {printf("--------------------------ESTO ES UNA DECISION\n\n\n");}
           | bloqueDeclaracion {printf("--------------------------ESTO ES UNA DECLARACION\n\n\n");}
           | listavariables {printf("--------------------------ESTO ES UNA LISTA DE VARIABLES\n\n\n");}
@@ -76,9 +76,9 @@ temaComun: COMEN {printf("--------------------------ESTO ES UN COMENTARIO\n\n\n"
           | salida {printf("--------------------------ESTO ES UNA SALIDA\n\n\n");}
           ;
 
-temaEspecial: ifUnario {printf("--------------------------ESTO ES UN IF UNARIO\n\n\n")}
-          |  accion {printf("--------------------------ESTO ES UNA ACCION\n\n\n")}
-          |  let {printf("--------------------------ESTO ES UN LET\n\n\n")}
+temaEspecial: ifUnario {printf("--------------------------ESTO ES UN IF UNARIO\n\n\n");}
+          |  accion {printf("--------------------------ESTO ES UNA ACCION\n\n\n");}
+          |  let {printf("--------------------------ESTO ES UN LET\n\n\n");}
           ;
 
 asignacion: ID  {printf("ok id\n");}
@@ -98,47 +98,48 @@ ifUnario:
     ID {printf("ok id\n");}
     OP_IGUAL {printf("ok comparacion\n");}
     IF  {printf("ok if\n");}
-    P_A  {printf("ok parentesis abierto\n")}
+    P_A  {printf("ok parentesis abierto\n");}
     condicion {printf("ok condicion\n");}
     COMA {printf("ok coma\n");}
     accion 
     COMA {printf("ok coma\n");}
     accion
-    P_C {printf("ok parentesis cerrado\n")}
+    P_C {printf("ok parentesis cerrado\n");}
     ;
 
 decision: decision1 
-          |decision2 
+          | decision2 
           ;
 
-cuerpoIf : IF {printf("ok if\n")}
-          P_A {printf("ok parentesis abierto\n")}
+cuerpoIf: IF {printf("ok if\n");}
+          P_A {printf("ok parentesis abierto\n");}
           condicion 
-          P_C {printf("ok parentesis cerrado\n")}
-          THEN {printf("ok then\n")}
+          P_C {printf("ok parentesis cerrado\n");}
+          THEN {printf("ok then\n");}
           bloqueTemasComunes
+          ;
 
 decision1: cuerpoIf
-          ENDIF {printf("ok end if\n")}
+          ENDIF {printf("ok end if\n");}
           ;
 
 decision2: cuerpoIf 
-           ELSE {printf("ok else\n")}
+           ELSE {printf("ok else\n");}
            bloqueTemasComunes 
-           ENDIF {printf("ok end if\n")}
+           ENDIF {printf("ok end if\n");}
           ;
 
 condicion:  comparacion 
          | condicion 
-         OP_LOG  {printf("ok operador logico\n")}
+         OP_LOG  {printf("ok operador logico\n");}
          condicion 
          ;
 
 comparacion: factor 
-            OP_COMPARACION {printf("ok operador comparacion\n")}
+            OP_COMPARACION {printf("ok operador comparacion\n");}
             factor 
             | factor 
-            OP_IGUAL  {printf("ok igual\n")}
+            OP_IGUAL  {printf("ok igual\n");}
             factor 
             |
           ;
@@ -190,28 +191,30 @@ listaVarLetDer: expresion
          ;
 
 
-bloqueDeclaracion: DEFVAR  {printf("ok def var\n")}
+bloqueDeclaracion: DEFVAR  {printf("ok def var\n");}
                    declaraciones
-                   ENDDEF {printf("ok end def\n")}
+                   ENDDEF {printf("ok end def\n");}
+                   ;
 
 declaraciones: declaracion
               | declaraciones declaracion
               ;           
 
 declaracion:  tipodato 
-              OP_DOSP  {printf("ok op asignacion\n")}
+              OP_DOSP  {printf("ok op asignacion\n");}
               listavariables          
               ;
 
-tipodato: FLOAT {printf("ok float\n")}
-              | STRING {printf("ok float\n")}
-              |  INT {printf("ok int\n")}
+tipodato: FLOAT {printf("ok float\n");}
+              | STRING {printf("ok float\n");}
+              |  INT {printf("ok int\n");}
               ;
 
-listavariables: ID  {printf("ok id\n")}
-                | ID {printf("ok id\n")}
-                PYC {printf("ok punto y coma \n")}
+listavariables: ID  {printf("ok id\n");}
+                | ID {printf("ok id\n");}
+                PYC {printf("ok punto y coma \n");}
                 listavariables
+                ;
 
 
 entrada: GET {printf("ok get\n");}
