@@ -72,15 +72,16 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <conio.h>
 #include "sintactico.tab.h"
-int yystopparser=0;
+nt yystopparser=0;
 FILE  *yyin;
 int insertarEnTS(char[],char[],char[],int,double);
 
 
 /* Line 189 of yacc.c  */
-#line 84 "sintactico.tab.c"
+#line 85 "sintactico.tab.c"
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
@@ -162,7 +163,21 @@ int insertarEnTS(char[],char[],char[],int,double);
 
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
+typedef union YYSTYPE
+{
+
+/* Line 214 of yacc.c  */
+#line 12 "sintactico.y"
+
+int int_val;
+double float_val;
+char *str_val;
+
+
+
+/* Line 214 of yacc.c  */
+#line 180 "sintactico.tab.c"
+} YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
@@ -173,7 +188,7 @@ typedef int YYSTYPE;
 
 
 /* Line 264 of yacc.c  */
-#line 177 "sintactico.tab.c"
+#line 192 "sintactico.tab.c"
 
 #ifdef short
 # undef short
@@ -490,15 +505,15 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    52,    52,    52,    57,    58,    61,    62,    65,    66,
-      69,    70,    71,    72,    73,    74,    75,    76,    77,    80,
-      81,    82,    85,    86,    85,    90,    92,    90,    99,   112,
-     114,   118,   119,   123,   125,   129,   128,   133,   134,   135,
-     136,   140,   143,   144,   148,   149,   153,   154,   155,   156,
-     159,   161,   162,   159,   167,   169,   168,   173,   175,   174,
-     179,   184,   185,   186,   189,   189,   194,   195,   199,   198,
-     203,   204,   205,   208,   209,   210,   209,   215,   215,   219,
-     219,   223,   224,   225,   226
+       0,    59,    59,    59,    64,    65,    68,    69,    72,    73,
+      76,    77,    78,    79,    80,    81,    82,    83,    84,    87,
+      88,    89,    92,    93,    92,    97,    99,    97,   106,   119,
+     121,   125,   126,   130,   132,   136,   135,   140,   141,   142,
+     143,   147,   150,   151,   155,   156,   160,   161,   162,   163,
+     166,   168,   169,   166,   174,   176,   175,   180,   182,   181,
+     186,   191,   192,   193,   196,   196,   201,   202,   206,   205,
+     210,   211,   212,   215,   216,   217,   216,   222,   222,   226,
+     226,   230,   231,   232,   233
 };
 #endif
 
@@ -1510,406 +1525,406 @@ yyreduce:
         case 2:
 
 /* Line 1455 of yacc.c  */
-#line 52 "sintactico.y"
+#line 59 "sintactico.y"
     {printf("Inicia COMPILADOR\n");;}
     break;
 
   case 3:
 
 /* Line 1455 of yacc.c  */
-#line 54 "sintactico.y"
+#line 61 "sintactico.y"
     {printf("Fin COMPILADOR\n");;}
     break;
 
   case 10:
 
 /* Line 1455 of yacc.c  */
-#line 69 "sintactico.y"
+#line 76 "sintactico.y"
     {printf("--------------------------ESTO ES UN COMENTARIO\n\n\n");;}
     break;
 
   case 11:
 
 /* Line 1455 of yacc.c  */
-#line 70 "sintactico.y"
+#line 77 "sintactico.y"
     {printf("--------------------------ESTO ES UNA ITERACION\n\n\n");;}
     break;
 
   case 12:
 
 /* Line 1455 of yacc.c  */
-#line 71 "sintactico.y"
+#line 78 "sintactico.y"
     {printf("--------------------------ESTO ES UNA DECISION\n\n\n");;}
     break;
 
   case 13:
 
 /* Line 1455 of yacc.c  */
-#line 72 "sintactico.y"
+#line 79 "sintactico.y"
     {printf("--------------------------ESTO ES UNA DECLARACION\n\n\n");;}
     break;
 
   case 14:
 
 /* Line 1455 of yacc.c  */
-#line 73 "sintactico.y"
+#line 80 "sintactico.y"
     {printf("--------------------------ESTO ES UNA LISTA DE VARIABLES\n\n\n");;}
     break;
 
   case 15:
 
 /* Line 1455 of yacc.c  */
-#line 74 "sintactico.y"
+#line 81 "sintactico.y"
     {printf("--------------------------ESTO ES UNA ASIGNACION\n\n\n");;}
     break;
 
   case 16:
 
 /* Line 1455 of yacc.c  */
-#line 75 "sintactico.y"
+#line 82 "sintactico.y"
     {printf("--------------------------ESTO ES UNA ENTREADA\n\n\n");;}
     break;
 
   case 17:
 
 /* Line 1455 of yacc.c  */
-#line 76 "sintactico.y"
+#line 83 "sintactico.y"
     {printf("--------------------------ESTO ES UNA SALIDA\n\n\n");;}
     break;
 
   case 18:
 
 /* Line 1455 of yacc.c  */
-#line 77 "sintactico.y"
+#line 84 "sintactico.y"
     {printf("--------------------------ESTO ES UNA VARIABLE NUMERICA\n\n\n");;}
     break;
 
   case 19:
 
 /* Line 1455 of yacc.c  */
-#line 80 "sintactico.y"
+#line 87 "sintactico.y"
     {printf("--------------------------ESTO ES UN IF UNARIO\n\n\n");;}
     break;
 
   case 20:
 
 /* Line 1455 of yacc.c  */
-#line 81 "sintactico.y"
+#line 88 "sintactico.y"
     {printf("--------------------------ESTO ES UNA ACCION\n\n\n");;}
     break;
 
   case 21:
 
 /* Line 1455 of yacc.c  */
-#line 82 "sintactico.y"
+#line 89 "sintactico.y"
     {printf("--------------------------ESTO ES UN LET\n\n\n");;}
     break;
 
   case 22:
 
 /* Line 1455 of yacc.c  */
-#line 85 "sintactico.y"
+#line 92 "sintactico.y"
     {printf("ok id\n");;}
     break;
 
   case 23:
 
 /* Line 1455 of yacc.c  */
-#line 86 "sintactico.y"
+#line 93 "sintactico.y"
     {printf("ok op asig\n");;}
     break;
 
   case 25:
 
 /* Line 1455 of yacc.c  */
-#line 90 "sintactico.y"
+#line 97 "sintactico.y"
     {printf("ok while\n");;}
     break;
 
   case 26:
 
 /* Line 1455 of yacc.c  */
-#line 92 "sintactico.y"
+#line 99 "sintactico.y"
     {printf("ok condicion\n");;}
     break;
 
   case 27:
 
 /* Line 1455 of yacc.c  */
-#line 95 "sintactico.y"
+#line 102 "sintactico.y"
     {printf("ok endwhile \n");;}
     break;
 
   case 29:
 
 /* Line 1455 of yacc.c  */
-#line 112 "sintactico.y"
+#line 119 "sintactico.y"
     {printf("ok end if\n");;}
     break;
 
   case 30:
 
 /* Line 1455 of yacc.c  */
-#line 114 "sintactico.y"
+#line 121 "sintactico.y"
     {printf("ok end if\n");;}
     break;
 
   case 33:
 
 /* Line 1455 of yacc.c  */
-#line 123 "sintactico.y"
+#line 130 "sintactico.y"
     {("ok comparacion and/or\n");;}
     break;
 
   case 34:
 
 /* Line 1455 of yacc.c  */
-#line 125 "sintactico.y"
+#line 132 "sintactico.y"
     {("ok comparacion not\n");;}
     break;
 
   case 35:
 
 /* Line 1455 of yacc.c  */
-#line 129 "sintactico.y"
+#line 136 "sintactico.y"
     {printf("ok operador comparacion\n");;}
     break;
 
   case 37:
 
 /* Line 1455 of yacc.c  */
-#line 133 "sintactico.y"
+#line 140 "sintactico.y"
     {printf("ok suma\n");;}
     break;
 
   case 38:
 
 /* Line 1455 of yacc.c  */
-#line 134 "sintactico.y"
+#line 141 "sintactico.y"
     {printf("ok resta\n");;}
     break;
 
   case 39:
 
 /* Line 1455 of yacc.c  */
-#line 135 "sintactico.y"
+#line 142 "sintactico.y"
     {printf("ok multiplicacion\n");;}
     break;
 
   case 40:
 
 /* Line 1455 of yacc.c  */
-#line 136 "sintactico.y"
+#line 143 "sintactico.y"
     {printf("ok division\n");;}
     break;
 
   case 46:
 
 /* Line 1455 of yacc.c  */
-#line 153 "sintactico.y"
+#line 160 "sintactico.y"
     {printf("ok var\n");;}
     break;
 
   case 47:
 
 /* Line 1455 of yacc.c  */
-#line 154 "sintactico.y"
+#line 161 "sintactico.y"
     {printf("ok int\n");;}
     break;
 
   case 48:
 
 /* Line 1455 of yacc.c  */
-#line 155 "sintactico.y"
+#line 162 "sintactico.y"
     {printf("ok str\n");;}
     break;
 
   case 49:
 
 /* Line 1455 of yacc.c  */
-#line 156 "sintactico.y"
+#line 163 "sintactico.y"
     {printf("ok real\n");;}
     break;
 
   case 50:
 
 /* Line 1455 of yacc.c  */
-#line 159 "sintactico.y"
+#line 166 "sintactico.y"
     {printf("ok let\n");;}
     break;
 
   case 51:
 
 /* Line 1455 of yacc.c  */
-#line 161 "sintactico.y"
+#line 168 "sintactico.y"
     {printf("ok igual\n");;}
     break;
 
   case 52:
 
 /* Line 1455 of yacc.c  */
-#line 162 "sintactico.y"
+#line 169 "sintactico.y"
     {printf("ok parentesis abierto\n");;}
     break;
 
   case 53:
 
 /* Line 1455 of yacc.c  */
-#line 164 "sintactico.y"
+#line 171 "sintactico.y"
     {printf("ok parentesis cerrado\n");;}
     break;
 
   case 54:
 
 /* Line 1455 of yacc.c  */
-#line 167 "sintactico.y"
+#line 174 "sintactico.y"
     {printf("ok id\n");;}
     break;
 
   case 55:
 
 /* Line 1455 of yacc.c  */
-#line 169 "sintactico.y"
+#line 176 "sintactico.y"
     {printf("ok coma\n");;}
     break;
 
   case 56:
 
 /* Line 1455 of yacc.c  */
-#line 170 "sintactico.y"
+#line 177 "sintactico.y"
     {printf("ok id\n");;}
     break;
 
   case 58:
 
 /* Line 1455 of yacc.c  */
-#line 175 "sintactico.y"
+#line 182 "sintactico.y"
     {printf("ok punto y coma\n");;}
     break;
 
   case 64:
 
 /* Line 1455 of yacc.c  */
-#line 189 "sintactico.y"
+#line 196 "sintactico.y"
     {printf("ok def var\n");;}
     break;
 
   case 65:
 
 /* Line 1455 of yacc.c  */
-#line 191 "sintactico.y"
+#line 198 "sintactico.y"
     {printf("ok end def\n");;}
     break;
 
   case 68:
 
 /* Line 1455 of yacc.c  */
-#line 199 "sintactico.y"
+#line 206 "sintactico.y"
     {printf("ok op asignacion\n");;}
     break;
 
   case 70:
 
 /* Line 1455 of yacc.c  */
-#line 203 "sintactico.y"
+#line 210 "sintactico.y"
     {printf("ok float\n");;}
     break;
 
   case 71:
 
 /* Line 1455 of yacc.c  */
-#line 204 "sintactico.y"
+#line 211 "sintactico.y"
     {printf("ok float\n");;}
     break;
 
   case 72:
 
 /* Line 1455 of yacc.c  */
-#line 205 "sintactico.y"
+#line 212 "sintactico.y"
     {printf("ok int\n");;}
     break;
 
   case 73:
 
 /* Line 1455 of yacc.c  */
-#line 208 "sintactico.y"
+#line 215 "sintactico.y"
     {printf("ok id\n");;}
     break;
 
   case 74:
 
 /* Line 1455 of yacc.c  */
-#line 209 "sintactico.y"
+#line 216 "sintactico.y"
     {printf("ok id\n");;}
     break;
 
   case 75:
 
 /* Line 1455 of yacc.c  */
-#line 210 "sintactico.y"
+#line 217 "sintactico.y"
     {printf("ok punto y coma \n");;}
     break;
 
   case 77:
 
 /* Line 1455 of yacc.c  */
-#line 215 "sintactico.y"
+#line 222 "sintactico.y"
     {printf("ok get\n");;}
     break;
 
   case 78:
 
 /* Line 1455 of yacc.c  */
-#line 216 "sintactico.y"
+#line 223 "sintactico.y"
     {printf("ok id\n");;}
     break;
 
   case 79:
 
 /* Line 1455 of yacc.c  */
-#line 219 "sintactico.y"
+#line 226 "sintactico.y"
     {printf("ok display\n");;}
     break;
 
   case 80:
 
 /* Line 1455 of yacc.c  */
-#line 220 "sintactico.y"
+#line 227 "sintactico.y"
     {printf("ok terminoDisplay\n");;}
     break;
 
   case 81:
 
 /* Line 1455 of yacc.c  */
-#line 223 "sintactico.y"
+#line 230 "sintactico.y"
     {printf("ok const_string\n");;}
     break;
 
   case 82:
 
 /* Line 1455 of yacc.c  */
-#line 224 "sintactico.y"
+#line 231 "sintactico.y"
     {printf("ok const_real\n");;}
     break;
 
   case 83:
 
 /* Line 1455 of yacc.c  */
-#line 225 "sintactico.y"
+#line 232 "sintactico.y"
     {printf("ok const_int\n");;}
     break;
 
   case 84:
 
 /* Line 1455 of yacc.c  */
-#line 226 "sintactico.y"
+#line 233 "sintactico.y"
     {printf("ok id\n");;}
     break;
 
 
 
 /* Line 1455 of yacc.c  */
-#line 1913 "sintactico.tab.c"
+#line 1928 "sintactico.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2121,7 +2136,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 229 "sintactico.y"
+#line 236 "sintactico.y"
 
 
 int main(int argc,char *argv[])

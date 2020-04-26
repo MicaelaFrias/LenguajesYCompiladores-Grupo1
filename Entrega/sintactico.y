@@ -1,12 +1,19 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <conio.h>
 #include "sintactico.tab.h"
-int yystopparser=0;
+nt yystopparser=0;
 FILE  *yyin;
 int insertarEnTS(char[],char[],char[],int,double);
 %}
+
+%union {
+int int_val;
+double float_val;
+char *str_val;
+}
 
 %token PROGRAM
 %token DEFINE
