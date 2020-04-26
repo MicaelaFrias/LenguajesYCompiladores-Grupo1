@@ -1,0 +1,36 @@
+
+
+program
+beginp 
+
+//letrita//
+//letra//
+
+if 3.5=a then endif
+
+while a>8 endw
+
+a:= a
+a:= 2
+a:= "aaa"
+a:= "aaa"
+
+defvar
+float : a3;f45;h7
+int: a3;f45;h7
+enddef
+
+<<<<<<< HEAD
+get a3
+display "hola"
+display 1
+display a3
+=======
+defvar
+float : a3;f455;h7
+int: a3;f45;h7
+enddef
+>>>>>>> 7aa2a26eb09b3bcc6c60794eaecfea0340ceed4f
+
+endp
+
