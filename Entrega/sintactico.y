@@ -31,9 +31,8 @@ FILE  *yyin;
 %token OP_NOT
 %token OP_DOSP
 %token OP_COMPARACION
-%token OP_AS
+%token OP_ASIG
 %token OP_SUM
-%token IGUAL
 %token OP_RES
 %token OP_DIV
 %token OP_MULT
@@ -83,7 +82,7 @@ temaEspecial: ifUnario {printf("--------------------------ESTO ES UN IF UNARIO\n
           ;
 
 asignacion: ID  {printf("ok id\n");}
-          OP_AS {printf("ok op asig\n");}
+          OP_ASIG {printf("ok op asig\n");}
           factor 
           ;
 
@@ -96,16 +95,16 @@ iteracion: WHILE  {printf("ok while\n");}
           ;
 
 ifUnario:
-    ID {printf("ok id\n");}
-    OP_IGUAL {printf("ok comparacion\n");}
-    IF  {printf("ok if\n");}
-    P_A  {printf("ok parentesis abierto\n");}
-    condicion {printf("ok condicion\n");}
-    COMA {printf("ok coma\n");}
-    accion 
-    COMA {printf("ok coma\n");}
-    accion
-    P_C {printf("ok parentesis cerrado\n");}
+          ID {printf("ok id\n");}
+          OP_ASIG {printf("ok comparacion\n");}
+          IF {printf("ok if\n");}
+          P_A {printf("ok parentesis abierto\n");}
+          condicion {printf("ok condicion\n");}
+          COMA {printf("ok coma\n");}
+          accion 
+          COMA {printf("ok coma\n");}
+          accion
+          P_C {printf("ok parentesis cerrado\n");}
     ;
 
 decision: 
@@ -122,7 +121,7 @@ condicion: comparacion
 condicionMultiple:
           comparacion OP_LOG comparacion {("ok comparacion and/or\n");}
           |
-          NOT P_A comparacion P_C {("ok comparacion not\n");}
+          OP_NOT P_A comparacion P_C {("ok comparacion not\n");}
           ;
 
 comparacion: factor 
@@ -158,7 +157,7 @@ factor:
 
 let: LET {printf("ok let\n");}
     listaVarLetIzq 
-    OP_IGUAL {printf("ok igual\n");}
+    OP_ASIG {printf("ok igual\n");}
     P_A {printf("ok parentesis abierto\n");}
     listaVarLetDer 
     P_C {printf("ok parentesis cerrado\n");}
@@ -192,9 +191,9 @@ declaracion:  tipodato
               ;
 
 tipodato: FLOAT {printf("ok float\n");}
-              | STRING {printf("ok float\n");}
-              |  INT {printf("ok int\n");}
-              ;
+          | STRING {printf("ok float\n");}
+          |  INT {printf("ok int\n");}
+          ;
 
 listavariables: ID  {printf("ok id\n");}
                 | ID {printf("ok id\n");}

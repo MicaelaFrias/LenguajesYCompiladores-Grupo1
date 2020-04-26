@@ -3,9 +3,9 @@
 program
 beginp 
 
-e = if(a>3,a+6,a+8)
+e := if(a>3,a+6,a+8)
 
-let uno,dos,tres = (3;4;a+5)
+let uno,dos,tres := (3;4;a+5)
 
 endp
 

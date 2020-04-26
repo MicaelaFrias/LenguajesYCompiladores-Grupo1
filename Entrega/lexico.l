@@ -54,7 +54,7 @@ ID			            {LETRA}({LETRA}|{DIGITO}|_)*
 "and"           { return OP_LOG;}
 "or"            { return OP_LOG;}
 "not"           { return OP_NOT;}
-":="			{ return OP_AS;}
+":="			{ return OP_ASIG;}
 ":"		    	{ return OP_DOSP;}
 "+"		    	{ return OP_SUM;}
 "-"		    	{ return OP_RES;}
@@ -74,7 +74,6 @@ ID			            {LETRA}({LETRA}|{DIGITO}|_)*
 "not"           { return OP_LOG;}
 {ID}			{ return ID;}
 {CONST_INT}		{ return CONST_INT;}
-{IGUAL}	       	{ return IGUAL;}
 {CONST_STR}		{ return CONST_STR;}
 {CONST_REAL}	{ return CONST_REAL;}
 {COMA}			{ return COMA;}

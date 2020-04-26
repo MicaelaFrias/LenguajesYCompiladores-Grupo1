@@ -36,7 +36,7 @@ a := "aaa"
 a := "aaaa"
 a := "aaaaa"
 
-if(a>"ede" and d>"frfr" and 7>3 and 2>5)
+if(a>"ede" and 2>5)
 then
 b:="aaa"
 b:="aaa"
