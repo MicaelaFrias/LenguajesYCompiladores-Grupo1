@@ -22,6 +22,8 @@ enddef
 
 get a3
 display "hola"
+display 1
+display a3
 
 endp
 
