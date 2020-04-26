@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <conio.h>
-#include "sintactico.tab.h"
+#include "y.tab.h"
 FILE  *yyin;
 int yylval;
 
@@ -10,30 +10,30 @@ int yylval;
 %option noyywrap  
 %option yylineno 
 
-DIGITO			[0-9]
-LETRA			[a-zA-Z]
-COMA                    [","]
-COM_I			["/***"]
-COM_F			["***/"]
-COMENTARIO		{COM_I}({LETRA}+|(DIGITO)+){COM_F}
-CONST_STR               "({LETRA}|{DIGITO}|.)+"
-COMENTARIOS             "//"({LETRA}|{DIGITO}|.)+"//"
-CONST_REAL              {DIGITO}+"."{DIGITO}+
-CONST_INT               {DIGITO}+
-ID			{LETRA}({LETRA}|{DIGITO}|_)*
-IGUAL            ["="]
-OP_COMPARACION          ["<"|IGUAL|">"|"<="|">="|"><"]
-OP_SUM                ["+"]
-OP_RES               ["-"]
-PYC               [";"]
-OP_MULT            ["*"]
+DIGITO		    	[0-9]
+LETRA			    [a-zA-Z]
+COMA                [","]
+COM_I			    ["/***"]
+COM_F			    ["***/"]
+COMENTARIO		    {COM_I}({LETRA}+|(DIGITO)+){COM_F}
+CONST_STR           \"({LETRA}|{DIGITO}|.){2,5}\"
+COMENTARIOS         "//"({LETRA}|{DIGITO}|.)+"//"
+CONST_REAL          {DIGITO}+"."{DIGITO}+
+CONST_INT           {DIGITO}+
+ID			        {LETRA}({LETRA}|{DIGITO}|_)*
+IGUAL               ["="]
+OP_COMPARACION      ["<"|IGUAL|">"|"<="|">="|"><"]
+OP_SUM              ["+"]
+OP_RES              ["-"]
+PYC                 [";"]
+OP_MULT             ["*"]
 OP_DIV              ["/"]
-OP_AS   		[":="]
-OP_LOG                  ["and"|"or"|"not"]
-C_A                     ["["]
-C_C                     ["]"]
-P_A                     ["("]
-P_C                     [")"]
+OP_AS   		    [":="]
+OP_LOG              ["and"|"or"|"not"]
+C_A                 ["["]
+C_C                 ["]"]
+P_A                 ["("]
+P_C                 [")"]
 	
 
 
@@ -43,7 +43,6 @@ P_C                     [")"]
 "enddefine"		{ return ENDDEFINE;}
 "beginp"		{ return BEGINP;}
 "endp"			{ return ENDP;}
-"real"			{ return REAL;}
 "string"		{ return STRING;}
 "if"			{ return IF;}
 "let"			{ return LET;}
@@ -63,6 +62,8 @@ P_C                     [")"]
 "enddef"  		{ return ENDDEF;}
 "float"  		{ return FLOAT;}
 "int"  		{ return INT;}
+"display"       { return DISPLAY;}
+"get"           { return GET;}
 ":="			{ return OP_AS;}
 ":"			{ return OP_DOSP;}
 "+"			{ return OP_SUM;}

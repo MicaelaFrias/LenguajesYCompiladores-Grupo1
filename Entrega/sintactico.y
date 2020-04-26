@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <conio.h>
-#include "sintactico.tab.h"
+#include "y.tab.h"
 int yystopparser=0;
 FILE  *yyin;
 
@@ -15,7 +15,6 @@ FILE  *yyin;
 %token CONST_REAL
 %token CONST_STR
 %token ID
-%token REAL
 %token FLOAT
 %token INT
 %token PYC
@@ -45,6 +44,8 @@ FILE  *yyin;
 %token LETRA
 %token DEFVAR
 %token ENDDEF
+%token GET
+%token DISPLAY
 
 
 
@@ -68,16 +69,18 @@ bloqueTemasEspeciales: temaEspecial
                   ;
 
 temaComun: COMEN {printf("esto es un comentario\n\n\n");}
-          |  iteracion {printf("esto es una iteracion\n\n\n")}
+          |  iteracion {printf("esto es una iteracion\n\n\n");}
           | decision {printf("esto es una decision\n\n\n");}
           | bloqueDeclaracion {printf("esto es una declaracion\n\n\n");}
           | listavariables {printf("esto es una lista de variables\n\n\n");}
           | asignacion {printf("esto es una asignacion\n\n\n");}
+          | entrada {printf("esto es una entrada\n\n\n");}
+          | salida {printf("esto es una salida\n\n\n");}
           ;
 
-temaEspecial: ifUnario {printf("esto es un if unario\n\n\n")}
-          |  accion {printf("esto es una accion\n\n\n")}
-          |  let {printf("esto es un let\n\n\n")}
+temaEspecial: ifUnario {printf("esto es un if unario\n\n\n");}
+          |  accion {printf("esto es una accion\n\n\n");}
+          |  let {printf("esto es un let\n\n\n");}
           ;
 
 decision: IF  {printf("ok if\n");}
@@ -87,7 +90,7 @@ decision: IF  {printf("ok if\n");}
           ;
 asignacion: ID  {printf("ok id\n");}
           OP_AS {printf("ok op asig\n");}
-          ID {printf("ok id \n");}
+          factor {printf("ok id \n");}
           ;
 
 iteracion: WHILE  {printf("ok while\n");}
@@ -95,17 +98,32 @@ iteracion: WHILE  {printf("ok while\n");}
           ENDW {printf("ok endwhile \n");}
           ;
 
+entrada: GET {printf("ok get\n");}
+         ID {printf("ok id\n");}
+         ;
+
+salida: DISPLAY {printf("ok display\n");}
+        terminoSalida {printf("ok terminoDisplay\n");}
+        ;
+
+terminoSalida:  CONST_STR     {printf("ok const_string\n");}
+            |   CONST_REAL    {printf("ok const_real\n");}
+            |   CONST_INT     {printf("ok const_int\n");}
+            |   ID            {printf("ok id\n");}
+            ;
+
+
 ifUnario:
     ID {printf("ok id\n");}
     OP_COMPARACION {printf("ok igual\n");}
     IF  {printf("ok if\n");}
-    P_A  {printf("ok parentesis abierto\n")}
+    P_A  {printf("ok parentesis abierto\n");}
     condicion {printf("ok condicion\n");}
     COMA {printf("ok coma\n");}
     accion 
     COMA {printf("ok coma\n");}
     accion
-    P_C {printf("ok parentesis cerrado\n")}
+    P_C {printf("ok parentesis cerrado\n");}
     ;
 
 condicion: comparacion {printf("ok comp\n");}
@@ -134,7 +152,7 @@ termino:
       ;
 
 factor: 
-	ID {printf("ok var\n");}
+    	ID {printf("ok var\n");}
       | CONST_INT {printf("ok int\n");}
       | CONST_STR {printf("ok str\n");}
       | CONST_REAL {printf("ok real\n");}
@@ -143,27 +161,28 @@ factor:
 let: LET 
   ;
 
-bloqueDeclaracion: DEFVAR  {printf("ok def var\n")}
+bloqueDeclaracion: DEFVAR  {printf("ok def var\n");}
                    declaraciones
-                   ENDDEF {printf("ok end def\n")}
+                   ENDDEF {printf("ok end def\n");}
+                   ;
 
 declaraciones: declaracion
               | declaraciones declaracion
               ;           
 
 declaracion:  tipodato 
-              OP_DOSP  {printf("ok op asignacion\n")}
+              OP_DOSP  {printf("ok op asignacion\n");}
               listavariables          
               ;
 
-tipodato: FLOAT {printf("ok float\n")}
-              | STRING {printf("ok float\n")}
-              |  INT {printf("ok int\n")}
+tipodato: FLOAT {printf("ok float\n");}
+              | STRING {printf("ok float\n");}
+              |  INT {printf("ok int\n");}
               ;
 
-listavariables: ID  {printf("ok id\n")}
-                | ID {printf("ok id\n")}
-                PYC {printf("ok punto y coma \n")}
+listavariables: ID  {printf("ok id\n");}
+                | ID {printf("ok id\n");}
+                PYC {printf("ok punto y coma \n");}
                 listavariables
 
 %%

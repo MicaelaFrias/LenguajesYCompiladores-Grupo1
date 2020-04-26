@@ -10,12 +10,18 @@ if 3.5=a then endif
 
 while a>8 endw
 
-A:=B
+a:= a
+a:= 2
+a:= "aaa"
+a:= "aaa"
 
 defvar
 float : a3;f45;h7
 int: a3;f45;h7
 enddef
+
+get a3
+display "hola"
 
 endp
 
