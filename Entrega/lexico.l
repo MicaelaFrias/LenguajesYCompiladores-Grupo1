@@ -20,19 +20,6 @@ CONST_STR               \"({LETRA}|{DIGITO}|.){0,30}\"
 CONST_REAL              {DIGITO}+"."{DIGITO}+
 CONST_INT               {DIGITO}+
 ID			            {LETRA}({LETRA}|{DIGITO}|_)*
-IGUAL                   ["="]
-OP_COMPARACION          ["<"|IGUAL|">"|"<="|">="|"><"]
-OP_SUM                  ["+"]
-OP_RES                  ["-"]
-PYC                     [";"]
-OP_MULT                 ["*"]
-OP_DIV                  ["/"]
-OP_AS   	        	[":="]
-OP_LOG                  ["and"|"or"|"not"]
-C_A                     ["["]
-C_C                     ["]"]
-P_A                     ["("]
-P_C                     [")"]
 	
 
 
@@ -66,7 +53,7 @@ P_C                     [")"]
 "get"           { return GET;}
 "and"           { return OP_LOG;}
 "or"            { return OP_LOG;}
-"not"           { return OP_LOG;}
+"not"           { return OP_NOT;}
 ":="			{ return OP_AS;}
 ":"		    	{ return OP_DOSP;}
 "+"		    	{ return OP_SUM;}
@@ -77,10 +64,10 @@ P_C                     [")"]
 ")"		    	{ return P_C;}
 ">"             { return OP_COMPARACION;}
 ">="            { return OP_COMPARACION;}
-"="             { return OP_IGUAL;}
+"="             { return OP_COMPARACION;}
 "<"             { return OP_COMPARACION;}
 "<="            { return OP_COMPARACION;}
-"><"            { return OP_COMPARACION;}
+"<>"            { return OP_COMPARACION;}
 ";"             { return PYC;}
 "and"           { return OP_LOG;}
 "or"            { return OP_LOG;}

@@ -28,8 +28,9 @@ FILE  *yyin;
 %token WHILE ENDW
 %token REPEAT UNTIL
 %token OP_LOG
+%token OP_NOT
 %token OP_DOSP
-%token OP_COMPARACION OP_IGUAL
+%token OP_COMPARACION
 %token OP_AS
 %token OP_SUM
 %token IGUAL
@@ -107,41 +108,26 @@ ifUnario:
     P_C {printf("ok parentesis cerrado\n");}
     ;
 
-decision: decision1 
-          | decision2 
+decision: 
+          IF P_A condicion P_C THEN bloqueTemasComunes ENDIF {printf("ok end if\n");}
+          |
+          IF P_A condicion P_C THEN bloqueTemasComunes ELSE  bloqueTemasComunes ENDIF {printf("ok end if\n");}
+         
           ;
 
-cuerpoIf: IF {printf("ok if\n");}
-          P_A {printf("ok parentesis abierto\n");}
-          condicion 
-          P_C {printf("ok parentesis cerrado\n");}
-          THEN {printf("ok then\n");}
-          bloqueTemasComunes
-          ;
-
-decision1: cuerpoIf
-          ENDIF {printf("ok end if\n");}
-          ;
-
-decision2: cuerpoIf 
-           ELSE {printf("ok else\n");}
-           bloqueTemasComunes 
-           ENDIF {printf("ok end if\n");}
-          ;
-
-condicion:  comparacion 
-         | condicion 
-         OP_LOG  {printf("ok operador logico\n");}
-         condicion 
+condicion: comparacion
+         | condicionMultiple
          ;
+
+condicionMultiple:
+          comparacion OP_LOG comparacion {("ok comparacion and/or\n");}
+          |
+          NOT P_A comparacion P_C {("ok comparacion not\n");}
+          ;
 
 comparacion: factor 
             OP_COMPARACION {printf("ok operador comparacion\n");}
             factor 
-            | factor 
-            OP_IGUAL  {printf("ok igual\n");}
-            factor 
-            |
           ;
 
 operacion: OP_SUM   {printf("ok suma\n");} 
