@@ -1,5 +1,6 @@
 %{
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 #include <conio.h>
 #include "sintactico.tab.h"
@@ -72,10 +73,15 @@ ID			            {LETRA}({LETRA}|{DIGITO}|_)*
 "and"           { return OP_LOG;}
 "or"            { return OP_LOG;}
 "not"           { return OP_LOG;}
-{ID}			{ return ID;}
-{CONST_INT}		{ return CONST_INT;}
-{CONST_STR}		{ return CONST_STR;}
-{CONST_REAL}	{ return CONST_REAL;}
+{ID}			{  yylval.str_val = yytext; 
+                     insertarEnTS(yylval.str_val,"ID","--",0,0); }
+{CONST_INT}		{  int num = atoi(yytext); 
+                    insertarEnTS("entero","CONST_INT","--",yylval.int_val,0);
+                }
+{CONST_STR}		{ yylval.str_val = strdup(yytext);
+                    insertarEnTS(yylval.str_val,"CONST_STR",yylval.str_val,0,0);}
+{CONST_REAL}	{ yylval.float_val = atof(yytext);
+                    insertarEnTS("float","CONST_REAL","--",0,yylval.float_val);}
 {COMA}			{ return COMA;}
 {COMENTARIOS}	{ return COMEN;}
 {LETRA}	    	{ return LETRA;}	

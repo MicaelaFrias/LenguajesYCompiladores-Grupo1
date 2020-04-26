@@ -5,7 +5,7 @@
 #include "sintactico.tab.h"
 int yystopparser=0;
 FILE  *yyin;
-
+int insertarEnTS(char[],char[],char[],int,double);
 %}
 
 %token PROGRAM
@@ -247,4 +247,82 @@ int yyerror(void)
 	 system ("Pause");
 	 exit (1);
      }
+
+int insertarEnTS(char nombreSimbolo[],char tipoSimbolo[],char valorString[],int valorInteger, double valorFloat){
+  FILE *archTS2 = fopen("ts.txt","r");
+  char simboloTS[100];
+  char valor[20];
+  char valorCte[20];
+  char valorBuscado[20];
+  char linea[100];
+  char separador[] = "\t\t\t";
+  char *pos;
+  int longitud;
+  int band = 0;
+  int i = 0;
+  if(strcmp(tipoSimbolo,"ID") != 0){
+    if(strcmp(tipoSimbolo,"CONST_INT") == 0){
+      sprintf(valor,"%d",valorInteger);
+      strcpy(valorCte,"_");
+      strcat(valorCte,valor);
+
+      strcpy(simboloTS,"_");
+      strcat(simboloTS,valor);
+      strcat(simboloTS,"\t\t\t");
+      strcat(simboloTS,"CteInt");
+      strcat(simboloTS,"\t\t\t");
+      strcat(simboloTS,valor);
+    }
+    if(strcmp(tipoSimbolo,"CONST_FLOAT") == 0){
+      sprintf(valor,"%.3f",valorFloat);
+      strcpy(valorCte,"_");
+      strcat(valorCte,valor);
+
+      strcpy(simboloTS,"_");
+      strcat(simboloTS,valor);
+      strcat(simboloTS,"\t\t\t");
+      strcat(simboloTS,"CteReal");
+      strcat(simboloTS,"\t\t\t");
+      strcat(simboloTS,valor);
+    }
+    if(strcmp(tipoSimbolo,"CONST_STR") == 0){
+      sprintf(valor,"%s",nombreSimbolo);
+      strcpy(valorCte,"_");
+      strcat(valorCte,valor);
+
+      strcpy(simboloTS,"_");
+      strcat(simboloTS,nombreSimbolo);
+      strcat(simboloTS,"\t\t\t");
+      strcat(simboloTS,"CteStr");
+      strcat(simboloTS,"\t\t");
+      strcat(simboloTS,valorString);
+    }
+  }else{
+    strcpy(simboloTS,nombreSimbolo);
+    strcat(simboloTS,"\t\t\t");
+    strcat(simboloTS,tipoSimbolo);
+    strcat(simboloTS,"\t\t\t");
+    strcat(simboloTS,valorString);
+  }
+  strcat(simboloTS,"\t\t\t");
+  strcat(simboloTS,"--");
+
+  //Lee línea a línea y escribe en pantalla hasta el fin de fichero
+  rewind(archTS2);
+  do {
+	  pos = fgets(linea,100,archTS2);
+	  strcpy(valorBuscado,simboloTS);
+	  strcat(valorBuscado,"\n");
+	  if(strcmp(valorBuscado,linea) == 0){
+		  band = 1;
+	  }
+	  i++;
+  }while(pos != NULL && band == 0);
+  fclose(archTS2);
+  archTS2 = fopen("ts.txt","a");
+  if(band == 0){
+    fprintf(archTS2,"%s\n",simboloTS);
+  }
+  fclose(archTS2);
+}
 
