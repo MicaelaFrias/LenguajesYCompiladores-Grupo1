@@ -7,8 +7,6 @@
 #define COTA_INT 65536
 #define COTA_FLOAT 4294967296
 FILE  *yyin;
-int yylval;
-
 %}
 %option noyywrap  
 %option yylineno 
