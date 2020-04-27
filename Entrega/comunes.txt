@@ -4,8 +4,6 @@
 program
 beginp 
 
-"hola"  "chau"
-
 if (3.5=a)
 then 
 defvar
@@ -29,7 +27,7 @@ float : a3;f455;h7
 int: a3;f45;h7
 enddef
 
-k
+
 a := a
 a := 2
 a := 2.5

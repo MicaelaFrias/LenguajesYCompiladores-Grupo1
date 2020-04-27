@@ -48,8 +48,6 @@ char *str_val;
 %token C_A C_C
 %token LONG
 %token IN
-%token COMEN
-%token LETRA
 %token DEFVAR
 %token ENDDEF
 %token GET
@@ -77,7 +75,6 @@ bloqueTemasEspeciales: temaEspecial
                   ;
 
 temaComun: 
-          COMEN {printf("--------------------------COMENTARIO\n\n\n");}
           | iteracion {printf("--------------------------ITERACION\n\n\n");}
           | decision {printf("--------------------------DECISION\n\n\n");}
           | bloqueDeclaracion {printf("--------------------------BLOQUE_DECLARACION\n\n\n");}
@@ -85,53 +82,43 @@ temaComun:
           | asignacion {printf("--------------------------ASIGNACION\n\n\n");}
           | entrada {printf("--------------------------ENTRADA\n\n\n");}
           | salida {printf("--------------------------SALIDA\n\n\n");}
-          | variablesNumericas {printf("--------------------------VARIABLES_NUMERICA\n\n\n");}
           | condicion {printf("--------------------------CONDICION\n\n\n");}
-          | condicionMultiple {printf("--------------------------CONDICION_MULTIPLE\n\n\n");}
           | expresion {printf("--------------------------EXPRESION\n\n\n");}
           | termino {printf("--------------------------TERMINO\n\n\n");}
           | factor {printf("--------------------------FACTOR\n\n\n");}
           | listaVarLetDer {printf("--------------------------LISTA_VARIABLES_LET_DERECHA\n\n\n");}
           | listaVarLetIzq {printf("--------------------------LISTA_VARIABLES_LET_IZQUIERDA\n\n\n");}
-          | valorNumerico {printf("--------------------------VALOR_NUMERICO\n\n\n");}
           | declaracion {printf("--------------------------DECLARACION\n\n\n");}
           | declaraciones {printf("--------------------------DECLARACIONES\n\n\n");}
           | tipodato {printf("--------------------------TIPO_DE_DATO\n\n\n");}
-          | terminoSalida {printf("--------------------------TERMINO_DE_SALIDA\n\n\n");}
         ;
 
 temaEspecial: 
             ifUnario {printf("--------------------------IF_UNARIO\n\n\n");}
-            | accion {printf("--------------------------ACCION\n\n\n");}
             | let {printf("--------------------------LET\n\n\n");}
             ;
 
-asignacion: ID OP_ASIG factor ;
+asignacion: ID OP_ASIG expresion ;
 
 iteracion: WHILE P_A condicion P_C bloqueTemasComunes ENDW ;
 
-ifUnario: ID OP_ASIG IF P_A condicion COMA accion COMA accion P_C ;
+ifUnario: ID OP_ASIG IF P_A condicion COMA expresion COMA expresion P_C ;
 
 decision: IF P_A condicion P_C THEN bloqueTemasComunes ENDIF
           | IF P_A condicion P_C THEN bloqueTemasComunes ELSE  bloqueTemasComunes ENDIF
           ;
 
-condicion: comparacion
-           | condicionMultiple
+condicion: comparacion 
+           | condicion OP_LOG comparacion
+           |OP_NOT comparacion
            ;
-
-condicionMultiple: comparacion OP_LOG comparacion 
-                  | OP_NOT P_A comparacion P_C 
-                  ;
 
 comparacion: expresion OP_COMPARACION expresion 
             | P_A expresion OP_COMPARACION expresion P_C
             ;
 
-accion: expresion;
-
 expresion: expresion OP_SUM termino
-         | expresion OP_SUM termino
+         | expresion OP_RES termino
          | termino
           ;
 
@@ -157,14 +144,6 @@ listaVarLetDer: expresion
               | listaVarLetDer PYC expresion
               ;
 
-variablesNumericas: ID OP_ASIG valorNumerico
-                    ;
-
-valorNumerico: ID
-                | CONST_INT
-                | expresion
-                 ;
-
 bloqueDeclaracion: DEFVAR declaraciones ENDDEF 
                   ;
 
@@ -181,21 +160,15 @@ tipodato: FLOAT
         ;
 
 listavariables: ID  
-              | ID PYC listavariables
+              | listavariables PYC ID
               ;
 
 
 entrada: GET ID 
         ;
 
-salida: DISPLAY terminoSalida 
+salida: DISPLAY factor 
         ;
-
-terminoSalida: CONST_STR    
-            |   CONST_REAL
-            |   CONST_INT    
-            |   ID      
-            ;
 
 %%
 
@@ -218,7 +191,8 @@ int yyerror(void)
 	 system ("Pause");
 	 exit (1);
      }
-// CONST_STR       \"([a-zA-Z]|[0-9]|[\?\¿\!\¡])*\"
+
+
 int nuevoSimbolo(char tilineasiguienteimbolo[],char valorString[],int longitud){
   FILE *tablasimbolos = fopen("ts.txt","rw");
   char lineaescrita[100];
