@@ -30,14 +30,14 @@ enddef
 a := a
 a := 2
 a := 2.5
-a := "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+a := "aaaaaaaaaaa"
 a := "aa"
 a := ""
 a := "aaa"
 a := "aaaa"
 a := "aaaaa"
 
-if(not(2>t))
+if("dede">32 and 332>ded)
 then
 b:="aaa"
 b:="aaa"

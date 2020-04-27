@@ -17,7 +17,7 @@ COMA            [","]
 COM_INI         ["***/"]    
 COM_FIN         ["/***"]
 COMENTARIOS     ["***/"]({LETRA}|{DIGITO}|.)*["/***"]
-CONST_STR       \"({LETRA}|{DIGITO}|.){0,30}\"
+CONST_STR       \"([a-zA-Z]|[0-9]|[\?\¿\!\¡^["\""]])*\"
 CONST_REAL      {DIGITO}+"."{DIGITO}+
 CONST_INT       {DIGITO}+
 ID			    {LETRA}({LETRA}|{DIGITO}|_)*
@@ -77,8 +77,6 @@ ID			    {LETRA}({LETRA}|{DIGITO}|_)*
 {ID}		    {
                      yylval.str_val = strdup(yytext);
                      nuevoSimbolo("ID","--",0);
-                     printf("IDok\n");
-
                         return ID;
                 }
 
