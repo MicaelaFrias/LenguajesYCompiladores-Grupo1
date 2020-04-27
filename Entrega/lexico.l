@@ -11,16 +11,16 @@ FILE  *yyin;
 %option noyywrap  
 %option yylineno 
 
-DIGITO		            [0-9]
-LETRA		        	[a-zA-Z]
-COMA                    [","]
-COM_INI                 ["***/"]    
-COM_FIN                 ["/***"]
-COMENTARIOS             ["***/"]({LETRA}|{DIGITO}|.)*["/***"]
-CONST_STR               \"({LETRA}|{DIGITO}|.){0,30}\"
-CONST_REAL              {DIGITO}+"."{DIGITO}+
-CONST_INT               {DIGITO}+
-ID			            {LETRA}({LETRA}|{DIGITO}|_)*
+DIGITO		    [0-9]
+LETRA		    [a-zA-Z]
+COMA            [","]
+COM_INI         ["***/"]    
+COM_FIN         ["/***"]
+COMENTARIOS     ["***/"]({LETRA}|{DIGITO}|.)*["/***"]
+CONST_STR       \"({LETRA}|{DIGITO}|.){0,30}\"
+CONST_REAL      {DIGITO}+"."{DIGITO}+
+CONST_INT       {DIGITO}+
+ID			    {LETRA}({LETRA}|{DIGITO}|_)*
 	
 
 
@@ -75,26 +75,34 @@ ID			            {LETRA}({LETRA}|{DIGITO}|_)*
 "not"           { return OP_LOG;}
 
 {ID}		    {
-                    insertarEnTS(yytext,"ID","--",0);
-                    return ID;
+                     yylval.str_val = strdup(yytext);
+                     nuevoSimbolo("ID","--",0);
+                     printf("IDok\n");
+
+                        return ID;
                 }
 
-{CONST_INT}	    {    
-                    yylval.int_val = atoi(yytext);
-    			    insertarEnTS("entero","CONST_INT","--",yylval.int_val);		
-                    return CONST_INT;
-               
-                }
-
-{CONST_STR}		{   
+{CONST_INT}	    {   
                     yylval.str_val = strdup(yytext);
-                    insertarEnTS(yylval.str_val,"CONST_STR",yylval.str_val,0);
+                    sprintf(yylval.str_val,"_%s",yytext); 
+    			    nuevoSimbolo("--",yytext,0);		
+                    return CONST_INT;
+                }
+
+{CONST_STR}		{     
+                    //Quita las comillas. yytext se utiliza para asignar "valor" en la TS. yylval se utiliza para asignar "nombre" en la TS
+                    memcpy(yytext, &yytext[1], strlen(yytext)-2);
+                    yytext[strlen(yytext)-2] = '\0';
+
+                    sprintf(yylval.str_val,"_%s",yytext);
+                    nuevoSimbolo("--",yytext,strlen(yytext));
                     return CONST_STR;
                 }
 
-{CONST_REAL}    {                  
-                    yylval.float_val = atof(yytext);
-                    insertarEnTS("float","CONST_REAL","--",0);
+{CONST_REAL}    {       
+                    yylval.str_val = strdup(yytext);
+                    sprintf(yylval.str_val,"_%s",yytext);
+                    nuevoSimbolo("--",yytext,0);
                     return CONST_REAL; 
                 }
 

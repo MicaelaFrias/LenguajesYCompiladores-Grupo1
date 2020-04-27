@@ -30,9 +30,9 @@ enddef
 a := a
 a := 2
 a := 2.5
-a := ""
 a := "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 a := "aa"
+a := ""
 a := "aaa"
 a := "aaaa"
 a := "aaaaa"
