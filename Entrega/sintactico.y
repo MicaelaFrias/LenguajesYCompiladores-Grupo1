@@ -88,7 +88,6 @@ temaComun:
           | variablesNumericas {printf("--------------------------VARIABLES_NUMERICA\n\n\n");}
           | condicion {printf("--------------------------CONDICION\n\n\n");}
           | condicionMultiple {printf("--------------------------CONDICION_MULTIPLE\n\n\n");}
-          | operacion {printf("--------------------------OPERACION\n\n\n");}
           | expresion {printf("--------------------------EXPRESION\n\n\n");}
           | termino {printf("--------------------------TERMINO\n\n\n");}
           | factor {printf("--------------------------FACTOR\n\n\n");}
@@ -129,21 +128,16 @@ comparacion: expresion OP_COMPARACION expresion
             | P_A expresion OP_COMPARACION expresion P_C
             ;
 
-operacion: OP_SUM   
-          | OP_RES  
-          | OP_MULT
-          | OP_DIV 
-          ;
-
 accion: expresion;
 
-expresion: expresion operacion termino
-          | termino
+expresion: expresion OP_SUM termino
+         | expresion OP_SUM termino
+         | termino
           ;
 
-termino:
-        LETRA
-        | factor
+termino: factor
+        | termino OP_DIV factor
+        | termino OP_MULT factor
         ;
 
 factor: ID  

@@ -17,7 +17,7 @@ COMA            [","]
 COM_INI         ["***/"]    
 COM_FIN         ["/***"]
 COMENTARIOS     ["***/"]({LETRA}|{DIGITO}|.)*["/***"]
-CONST_STR       \"([a-zA-Z]|[0-9]|[\?\¿\!\¡^["\""]])*\"
+CONST_STR       \"([a-zA-Z]|[0-9]|[\?\¿\!\¡["\"]])*\"
 CONST_REAL      {DIGITO}+"."{DIGITO}+
 CONST_INT       {DIGITO}+
 ID			    {LETRA}({LETRA}|{DIGITO}|_)*
