@@ -1,0 +1,32 @@
+e			ID			--			--
+a			ID			--			--
+entero			CONST_INT			--			3
+entero			CONST_INT			--			6
+entero			CONST_INT			--			8
+uno			ID			--			--
+dos			ID			--			--
+tres			ID			--			--
+entero			CONST_INT			--			4
+entero			CONST_INT			--			5
+A			ID			--			--
+b			ID			--			--
+float			CONST_REAL			--			--
+a3			ID			--			--
+f45			ID			--			--
+h7			ID			--			--
+f4			ID			--			--
+entero			CONST_INT			--			1
+B			ID			--			--
+f455			ID			--			--
+entero			CONST_INT			--			2
+""			CONST_STR			""			--
+		--
+
+
+"aa"			CONST_STR			"aa"			--
+"aaa"			CONST_STR			"aaa"			--
+"aaaa"			CONST_STR			"aaaa"			--
+"aaaaa"			CONST_STR			"aaaaa"			--
+t			ID			--			--
+"hola"			CONST_STR			"hola"			--
+entero			ID			--			--

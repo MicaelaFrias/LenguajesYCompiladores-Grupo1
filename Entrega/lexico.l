@@ -76,7 +76,6 @@ ID			            {LETRA}({LETRA}|{DIGITO}|_)*
 
 {ID}		    {
                     insertarEnTS(yytext,"ID","--",0);
-                    printf("IDok\n");
                     return ID;
                 }
 
