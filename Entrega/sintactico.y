@@ -57,7 +57,7 @@ char *str_val;
 programa:  
         PROGRAM {printf("COMPILACION INICIADA\n");}
         codigo
-        {printf("FIN DE COMPILACION\n");}
+        {printf("COMPILACION EXITOSA\n");}
         ;
 
 codigo: 
@@ -75,7 +75,7 @@ bloqueTemasEspeciales: temaEspecial
                   ;
 
 temaComun: 
-          | iteracion {printf("--------------------------ITERACION\n\n\n");}
+            iteracion {printf("--------------------------ITERACION\n\n\n");}
           | decision {printf("--------------------------DECISION\n\n\n");}
           | bloqueDeclaracion {printf("--------------------------BLOQUE_DECLARACION\n\n\n");}
           | listavariables {printf("--------------------------LISTA_VARIABLES\n\n\n");}
