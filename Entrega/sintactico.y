@@ -61,20 +61,17 @@ programa:
         ;
 
 codigo: 
-        BEGINP bloqueTemasComunes ENDP
-        | BEGINP bloqueTemasEspeciales ENDP
+        BEGINP bloqueTemasComunesYEspeciales ENDP
+      
         ;
 
-bloqueTemasComunes: 
-                  temaComun
-                  | bloqueTemasComunes temaComun
+bloqueTemasComunesYEspeciales: 
+                  temaComunYEspecial
+                  | bloqueTemasComunesYEspeciales temaComunYEspecial
                   ;
 
-bloqueTemasEspeciales: temaEspecial
-                  | bloqueTemasEspeciales temaEspecial
-                  ;
 
-temaComun: 
+temaComunYEspecial: 
             iteracion {printf("--------------------------ITERACION\n\n\n");}
           | decision {printf("--------------------------DECISION\n\n\n");}
           | bloqueDeclaracion {printf("--------------------------BLOQUE_DECLARACION\n\n\n");}
@@ -91,21 +88,19 @@ temaComun:
           | declaracion {printf("--------------------------DECLARACION\n\n\n");}
           | declaraciones {printf("--------------------------DECLARACIONES\n\n\n");}
           | tipodato {printf("--------------------------TIPO_DE_DATO\n\n\n");}
+		  | ifUnario {printf("--------------------------IF_UNARIO\n\n\n");}
+          | let {printf("--------------------------LET\n\n\n");}
         ;
 
-temaEspecial: 
-            ifUnario {printf("--------------------------IF_UNARIO\n\n\n");}
-            | let {printf("--------------------------LET\n\n\n");}
-            ;
 
 asignacion: ID OP_ASIG expresion ;
 
-iteracion: WHILE P_A condicion P_C bloqueTemasComunes ENDW ;
+iteracion: WHILE P_A condicion P_C bloqueTemasComunesYEspeciales ENDW ;
 
 ifUnario: ID OP_ASIG IF P_A condicion COMA expresion COMA expresion P_C ;
 
-decision: IF P_A condicion P_C THEN bloqueTemasComunes ENDIF
-          | IF P_A condicion P_C THEN bloqueTemasComunes ELSE  bloqueTemasComunes ENDIF
+decision: IF P_A condicion P_C THEN bloqueTemasComunesYEspeciales ENDIF
+          | IF P_A condicion P_C THEN bloqueTemasComunesYEspeciales ELSE  bloqueTemasComunesYEspeciales ENDIF
           ;
 
 condicion: comparacion 
