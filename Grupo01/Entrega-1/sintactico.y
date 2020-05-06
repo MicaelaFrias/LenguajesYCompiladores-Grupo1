@@ -52,6 +52,7 @@ char *str_val;
 %token ENDDEF
 %token GET
 %token DISPLAY
+%token COMENTARIO
 
 %%
 programa:  
@@ -62,19 +63,18 @@ programa:
 
 codigo: 
         BEGINP bloqueTemasComunesYEspeciales ENDP
-      
+        | BEGINP bloqueDeclaracion bloqueTemasComunesYEspeciales ENDP
         ;
 
 bloqueTemasComunesYEspeciales: 
                   temaComunYEspecial
-                  | bloqueTemasComunesYEspeciales temaComunYEspecial
+                  | bloqueTemasComunesYEspeciales temaComunYEspecial 
                   ;
 
 
 temaComunYEspecial: 
             iteracion {printf("--------------------------ITERACION\n\n\n");}
           | decision {printf("--------------------------DECISION\n\n\n");}
-          | bloqueDeclaracion {printf("--------------------------BLOQUE_DECLARACION\n\n\n");}
           | listavariables {printf("--------------------------LISTA_VARIABLES\n\n\n");}
           | asignacion {printf("--------------------------ASIGNACION\n\n\n");}
           | entrada {printf("--------------------------ENTRADA\n\n\n");}
@@ -85,13 +85,14 @@ temaComunYEspecial:
           | factor {printf("--------------------------FACTOR\n\n\n");}
           | listaVarLetDer {printf("--------------------------LISTA_VARIABLES_LET_DERECHA\n\n\n");}
           | listaVarLetIzq {printf("--------------------------LISTA_VARIABLES_LET_IZQUIERDA\n\n\n");}
-          | declaracion {printf("--------------------------DECLARACION\n\n\n");}
-          | declaraciones {printf("--------------------------DECLARACIONES\n\n\n");}
           | tipodato {printf("--------------------------TIPO_DE_DATO\n\n\n");}
 		  | ifUnario {printf("--------------------------IF_UNARIO\n\n\n");}
           | let {printf("--------------------------LET\n\n\n");}
+          | comentario {printf("--------------------------COMENTARIO\n\n\n");}
         ;
 
+
+comentario: COMENTARIO ;
 
 asignacion: ID OP_ASIG expresion ;
 
@@ -124,7 +125,7 @@ termino: factor
 
 factor: ID  
         | CONST_INT
-        | CONST_STR 
+        | CONST_STR
         | CONST_REAL 
       ;
 
@@ -139,7 +140,7 @@ listaVarLetDer: expresion
               | listaVarLetDer PYC expresion
               ;
 
-bloqueDeclaracion: DEFVAR declaraciones ENDDEF 
+bloqueDeclaracion: DEFVAR declaraciones ENDDEF {printf("--------------------------Bloque declaración\n\n\n");}
                   ;
 
 declaraciones: declaracion
@@ -156,6 +157,7 @@ tipodato: FLOAT
 
 listavariables: ID  
               | listavariables PYC ID
+              | listavariables PYC "\n" ID
               ;
 
 
@@ -197,8 +199,8 @@ int nuevoSimbolo(char tilineasiguienteimbolo[],char valorString[],int longitud){
   int encontro = 0;
   int i = 0;
   sprintf(lineaescrita, (longitud != 0)? 
-          "%s|%s|%s|%d":
-          "%s|%s|%s|--",
+          "%s\t%s\t%s\t%d":
+          "%s\t%s\t%s\t--",
           yylval.str_val,tilineasiguienteimbolo,valorString,longitud);
 
   lineasiguiente = fgets(linealeida,100,tablasimbolos);
