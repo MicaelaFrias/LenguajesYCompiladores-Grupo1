@@ -16,7 +16,7 @@ LETRA		    [a-zA-Z]
 COMA            [","]
 COM_INI         ["***/"]    
 COM_FIN         ["/***"]
-COMENTARIOS     \*\*\*\/({LETRA}|{DIGITO}|.)*\/\*\*\*
+COMENTARIOS     ["***/"]({LETRA}|{DIGITO}|.)*["/***"]
 CONST_STR       \"(({LETRA}|{DIGITO}|[\?\¿\!\¡=#$%()\[\]{}_-]){0,30})\"
 CONST_REAL      {DIGITO}+"."{DIGITO}+
 CONST_INT       {DIGITO}+
@@ -74,10 +74,6 @@ ID			    {LETRA}({LETRA}|{DIGITO}|_)*
 "or"            { return OP_LOG;}
 "not"           { return OP_LOG;}
 
-
-{COMA}			{ return COMA;}
-{COMENTARIOS}	{ return COMENTARIO;}
-
 {ID}		    {
                      yylval.str_val = strdup(yytext);
                      nuevoSimbolo("ID","--",0);
@@ -108,7 +104,8 @@ ID			    {LETRA}({LETRA}|{DIGITO}|_)*
                     return CONST_REAL; 
                 }
 
-
-
+{COMA}			{ return COMA;}
+{COMENTARIOS}	
+%%
 
 

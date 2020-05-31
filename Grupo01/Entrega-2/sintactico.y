@@ -5,8 +5,46 @@
 #include <conio.h>
 #include "sintactico.tab.h"
 int yystopparser=0;
+int posicion = 0;
 FILE  *yyin;
+//////////////////////PILA
+	typedef struct
+	{
+		int posicion;
+	}t_info;
+
+	typedef struct s_nodoPila{
+    	t_info info;
+    	struct s_nodoPila* psig;
+	}t_nodoPila;
+
+	typedef t_nodoPila *t_pila;
+
+/////////////////////POLACA
+	typedef struct
+	{
+		char contenido[30];
+		int posicion;
+	}t_infoPolaca;
+  
+  typedef struct s_nodoPolaca{
+    	t_infoPolaca info;
+    	struct s_nodoPolaca* psig;
+	}t_nodoPolaca;
+
+	typedef t_nodoPolaca *t_polaca;
+
 int insertarEnTS(char[],char[],int);
+int apilar(t_pila* ,const t_info* );
+t_info* desapilar(t_pila *pila);
+void crearPila(t_pila* );
+int verTopePila(const t_pila* , t_info* );
+void crearPolaca(t_polaca* );
+int insertarPolaca(t_polaca* , char*);
+int escribirPosicionPolaca(t_polaca* ,int , char*);
+void guardarArchivoPolaca(t_polaca*);
+
+
 %}
 
 %union {
@@ -52,7 +90,6 @@ char *str_val;
 %token ENDDEF
 %token GET
 %token DISPLAY
-%token COMENTARIO
 
 %%
 programa:  
@@ -63,18 +100,19 @@ programa:
 
 codigo: 
         BEGINP bloqueTemasComunesYEspeciales ENDP
-        | BEGINP bloqueDeclaracion bloqueTemasComunesYEspeciales ENDP
+      
         ;
 
 bloqueTemasComunesYEspeciales: 
                   temaComunYEspecial
-                  | bloqueTemasComunesYEspeciales temaComunYEspecial 
+                  | bloqueTemasComunesYEspeciales temaComunYEspecial
                   ;
 
 
 temaComunYEspecial: 
             iteracion {printf("--------------------------ITERACION\n\n\n");}
           | decision {printf("--------------------------DECISION\n\n\n");}
+          | bloqueDeclaracion {printf("--------------------------BLOQUE_DECLARACION\n\n\n");}
           | listavariables {printf("--------------------------LISTA_VARIABLES\n\n\n");}
           | asignacion {printf("--------------------------ASIGNACION\n\n\n");}
           | entrada {printf("--------------------------ENTRADA\n\n\n");}
@@ -85,16 +123,15 @@ temaComunYEspecial:
           | factor {printf("--------------------------FACTOR\n\n\n");}
           | listaVarLetDer {printf("--------------------------LISTA_VARIABLES_LET_DERECHA\n\n\n");}
           | listaVarLetIzq {printf("--------------------------LISTA_VARIABLES_LET_IZQUIERDA\n\n\n");}
+          | declaracion {printf("--------------------------DECLARACION\n\n\n");}
+          | declaraciones {printf("--------------------------DECLARACIONES\n\n\n");}
           | tipodato {printf("--------------------------TIPO_DE_DATO\n\n\n");}
 		  | ifUnario {printf("--------------------------IF_UNARIO\n\n\n");}
           | let {printf("--------------------------LET\n\n\n");}
-          | comentario {printf("--------------------------COMENTARIO\n\n\n");}
         ;
 
 
-comentario: COMENTARIO ;
-
-asignacion: ID OP_ASIG expresion ;
+asignacion: ID OP_ASIG expresion  ;
 
 iteracion: WHILE P_A condicion P_C bloqueTemasComunesYEspeciales ENDW ;
 
@@ -125,7 +162,7 @@ termino: factor
 
 factor: ID  
         | CONST_INT
-        | CONST_STR
+        | CONST_STR 
         | CONST_REAL 
       ;
 
@@ -140,7 +177,7 @@ listaVarLetDer: expresion
               | listaVarLetDer PYC expresion
               ;
 
-bloqueDeclaracion: DEFVAR declaraciones ENDDEF {printf("--------------------------Bloque declaración\n\n\n");}
+bloqueDeclaracion: DEFVAR declaraciones ENDDEF 
                   ;
 
 declaraciones: declaracion
@@ -157,7 +194,6 @@ tipodato: FLOAT
 
 listavariables: ID  
               | listavariables PYC ID
-              | listavariables PYC "\n" ID
               ;
 
 
@@ -171,16 +207,20 @@ salida: DISPLAY factor
 
 int main(int argc,char *argv[])
 {
-  if ((yyin = fopen(argv[1], "rt")) == NULL)
-  {
-	printf("\nNo se puede abrir el archivo: %s\n", argv[1]);
-  }
-  else
-  {
-	yyparse();
-  }
-  fclose(yyin);
-  return 0;
+        t_pila* pila;
+        t_polaca* polaca;
+        crearPila(pila);
+        crearPolaca(polaca);
+        if ((yyin = fopen(argv[1], "rt")) == NULL)
+        {
+                printf("\nNo se puede abrir el archivo: %s\n", argv[1]);
+        }
+        else
+        {
+                yyparse();
+        }
+        fclose(yyin);
+        return 0;
 }
 int yyerror(void)
      {
@@ -190,6 +230,96 @@ int yyerror(void)
      }
 
 
+
+//////////////////////////////////////////////// FUNCIONES  /////////////////////////////////////////////////////////////////////////////////
+///////////////////////// PILA
+void crearPila(t_pila* pila){
+        pila = NULL;
+}
+
+int apilar(t_pila* pila,const t_info* infoPila)
+{   t_nodoPila *nuevoNodo=(t_nodoPila*) malloc(sizeof(t_nodoPila));
+    if(nuevoNodo==NULL)
+        return(0); //Sin_memoria
+    nuevoNodo->info=*infoPila;
+    nuevoNodo->psig=*pila;
+    *pila=nuevoNodo;
+    return(1);
+}
+
+t_info* desapilar(t_pila *pila)
+{   t_nodoPila *aux;
+    t_info * infoPila;
+    if(*pila==NULL)
+        return(0);
+    aux=*pila;
+    *infoPila=(*pila)->info;
+    *pila=(*pila)->psig; 
+    free(aux); 
+    return infoPila; 
+}
+
+int verTopePila(const t_pila* pila, t_info* infoPila)
+{   if(*pila==NULL)
+    return(0); //Pila vacia
+    *infoPila=(*pila)->info;
+    return(1);
+}
+///////////////////////// POLACA
+void crearPolaca(t_polaca* polaca){
+        polaca = NULL;
+}
+
+int insertarPolaca(t_polaca* polaca, char *contenido)
+{
+        t_nodoPolaca* nuevoNodo = (t_nodoPolaca*)malloc(sizeof(t_nodoPolaca));
+        if(!nuevoNodo)
+                return 0;
+        strcpy(nuevoNodo->info.contenido,contenido);
+        nuevoNodo->info.posicion=posicion++;
+        nuevoNodo->psig=NULL;
+        
+        while(*polaca)
+        {
+                polaca=&(*polaca)->psig;
+        }
+        *polaca=nuevoNodo;
+        return 1;
+}
+
+int escribirPosicionPolaca(t_polaca* polaca,int posicion, char *contenido) //insertar en polaca y poner pos actual 
+	{
+	        t_nodoPolaca* aux;
+		aux=*polaca;
+	    while(aux!=NULL && aux->info.posicion<=posicion){
+	    	aux=aux->psig;
+                    if(aux->info.posicion==posicion){
+                        strcpy(aux->info.contenido,contenido);
+                        return 1;
+                    }
+	    }	    
+	    return 0;
+	}
+
+
+void guardarArchivoPolaca(t_polaca *polaca){
+		FILE*pint=fopen("intermedia.txt","w+");
+		t_nodoPolaca* nuevoNodo;
+		if(!pint){
+			printf("Error al crear el archivo intermedia.txt\n");
+			return;
+		}
+		while(*polaca)
+	    {
+	        nuevoNodo=*polaca;
+	        fprintf(pint, "%s\n",nuevoNodo->info.contenido);
+	        *polaca=(*polaca)->psig;
+	        free(nuevoNodo);
+	    }
+		fclose(pint);
+	}
+
+///////////////////////// TABLA DE SIMBOLOS
 int nuevoSimbolo(char tilineasiguienteimbolo[],char valorString[],int longitud){
   FILE *tablasimbolos = fopen("ts.txt","rw");
   char lineaescrita[100];
@@ -199,8 +329,8 @@ int nuevoSimbolo(char tilineasiguienteimbolo[],char valorString[],int longitud){
   int encontro = 0;
   int i = 0;
   sprintf(lineaescrita, (longitud != 0)? 
-          "%s\t%s\t%s\t%d":
-          "%s\t%s\t%s\t--",
+          "%s|%s|%s|%d":
+          "%s|%s|%s|--",
           yylval.str_val,tilineasiguienteimbolo,valorString,longitud);
 
   lineasiguiente = fgets(linealeida,100,tablasimbolos);
