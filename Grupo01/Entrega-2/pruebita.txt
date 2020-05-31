@@ -1,0 +1,12 @@
+
+
+
+program
+beginp 
+
+a3 :=4 
+
+endp
+
+
+

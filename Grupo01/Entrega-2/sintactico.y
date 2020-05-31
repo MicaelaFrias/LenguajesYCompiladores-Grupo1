@@ -7,18 +7,30 @@
 int yystopparser=0;
 int posicion = 0;
 FILE  *yyin;
+char* tipoDato;
 //////////////////////PILA
 	typedef struct
 	{
 		int posicion;
 	}t_info;
+        typedef struct
+	{
+		char* tipoDato;
+                char* nombre;
+	}t_infoIds;
 
 	typedef struct s_nodoPila{
     	t_info info;
     	struct s_nodoPila* psig;
 	}t_nodoPila;
 
+        typedef struct s_nodoPilaIds{
+    	t_infoIds info;
+    	struct s_nodoPilaIds* psig;
+	}t_nodoPilaIds;
+
 	typedef t_nodoPila *t_pila;
+	typedef t_nodoPilaIds *t_pilaIds;
 
 /////////////////////POLACA
 	typedef struct
@@ -44,6 +56,8 @@ int insertarPolaca(t_polaca* , char*);
 int escribirPosicionPolaca(t_polaca* ,int , char*);
 void guardarArchivoPolaca(t_polaca*);
 
+t_pila* pila;
+t_polaca* polaca;
 
 %}
 
@@ -100,7 +114,8 @@ programa:
 
 codigo: 
         BEGINP bloqueTemasComunesYEspeciales ENDP
-      
+      |BEGINP bloqueDeclaracion {printf("--------------------------BLOQUE_DECLARACION\n\n\n");}
+      bloqueTemasComunesYEspeciales ENDP
         ;
 
 bloqueTemasComunesYEspeciales: 
@@ -112,7 +127,6 @@ bloqueTemasComunesYEspeciales:
 temaComunYEspecial: 
             iteracion {printf("--------------------------ITERACION\n\n\n");}
           | decision {printf("--------------------------DECISION\n\n\n");}
-          | bloqueDeclaracion {printf("--------------------------BLOQUE_DECLARACION\n\n\n");}
           | listavariables {printf("--------------------------LISTA_VARIABLES\n\n\n");}
           | asignacion {printf("--------------------------ASIGNACION\n\n\n");}
           | entrada {printf("--------------------------ENTRADA\n\n\n");}
@@ -123,15 +137,13 @@ temaComunYEspecial:
           | factor {printf("--------------------------FACTOR\n\n\n");}
           | listaVarLetDer {printf("--------------------------LISTA_VARIABLES_LET_DERECHA\n\n\n");}
           | listaVarLetIzq {printf("--------------------------LISTA_VARIABLES_LET_IZQUIERDA\n\n\n");}
-          | declaracion {printf("--------------------------DECLARACION\n\n\n");}
-          | declaraciones {printf("--------------------------DECLARACIONES\n\n\n");}
           | tipodato {printf("--------------------------TIPO_DE_DATO\n\n\n");}
 		  | ifUnario {printf("--------------------------IF_UNARIO\n\n\n");}
           | let {printf("--------------------------LET\n\n\n");}
         ;
 
 
-asignacion: ID OP_ASIG expresion  ;
+asignacion: ID OP_ASIG expresion  
 
 iteracion: WHILE P_A condicion P_C bloqueTemasComunesYEspeciales ENDW ;
 
@@ -150,7 +162,7 @@ comparacion: expresion OP_COMPARACION expresion
             | P_A expresion OP_COMPARACION expresion P_C
             ;
 
-expresion: expresion OP_SUM termino
+expresion: expresion OP_SUM termino 
          | expresion OP_RES termino
          | termino
           ;
@@ -160,8 +172,8 @@ termino: factor
         | termino OP_MULT factor
         ;
 
-factor: ID  
-        | CONST_INT
+factor: ID   
+        | CONST_INT 
         | CONST_STR 
         | CONST_REAL 
       ;
@@ -169,7 +181,7 @@ factor: ID
 let: LET listaVarLetIzq OP_ASIG P_A listaVarLetDer P_C
     ;
  
-listaVarLetIzq: ID
+listaVarLetIzq: ID 
               | listaVarLetIzq COMA ID
               ;
  
@@ -187,13 +199,16 @@ declaraciones: declaracion
 declaracion: tipodato OP_DOSP listavariables          
             ;
 
-tipodato: FLOAT 
-        | STRING 
-        |  INT 
+tipodato: FLOAT {tipoDato = "Float"}
+        | STRING {tipoDato = "String"}
+        |  INT {tipoDato = "Integer"}
         ;
 
-listavariables: ID  
-              | listavariables PYC ID
+listavariables: ID                  
+                {
+                     nuevoSimbolo(tipoDato,"--",(tipoDato=="String")?strlen(yylval.str_val):0);
+                }
+              | listavariables PYC ID {nuevoSimbolo(tipoDato,"--",(tipoDato=="String")?strlen(yylval.str_val):0);}
               ;
 
 
@@ -207,8 +222,7 @@ salida: DISPLAY factor
 
 int main(int argc,char *argv[])
 {
-        t_pila* pila;
-        t_polaca* polaca;
+        
         crearPila(pila);
         crearPolaca(polaca);
         if ((yyin = fopen(argv[1], "rt")) == NULL)
@@ -220,6 +234,7 @@ int main(int argc,char *argv[])
                 yyparse();
         }
         fclose(yyin);
+        guardarArchivoPolaca(polaca);
         return 0;
 }
 int yyerror(void)
@@ -259,12 +274,35 @@ t_info* desapilar(t_pila *pila)
     return infoPila; 
 }
 
-int verTopePila(const t_pila* pila, t_info* infoPila)
-{   if(*pila==NULL)
-    return(0); //Pila vacia
-    *infoPila=(*pila)->info;
+
+///////////////////////// PILA IDs
+void crearPilaIds(t_pilaIds* pilaIds){
+        pilaIds = NULL;
+}
+
+int apilarId(t_pilaIds* pilaIds,const t_infoIds* infoPilaIds)
+{   t_nodoPilaIds *nuevoNodo=(t_nodoPilaIds*) malloc(sizeof(t_nodoPilaIds));
+    if(nuevoNodo==NULL)
+        return(0); //Sin_memoria
+    nuevoNodo->info=*infoPilaIds;
+    nuevoNodo->psig=*pilaIds;
+    *pilaIds=nuevoNodo;
     return(1);
 }
+
+t_infoIds* desapilarId(t_pilaIds *pilaIds)
+{   t_nodoPilaIds *aux;
+    t_infoIds * infoPilaIds;
+    if(*pilaIds==NULL)
+        return(0);
+    aux=*pilaIds;
+    *infoPilaIds=(*pilaIds)->info;
+    *pilaIds=(*pilaIds)->psig; 
+    free(aux); 
+    return infoPilaIds; 
+}
+
+
 ///////////////////////// POLACA
 void crearPolaca(t_polaca* polaca){
         polaca = NULL;
@@ -320,7 +358,7 @@ void guardarArchivoPolaca(t_polaca *polaca){
 	}
 
 ///////////////////////// TABLA DE SIMBOLOS
-int nuevoSimbolo(char tilineasiguienteimbolo[],char valorString[],int longitud){
+int nuevoSimbolo(char* tipoDato,char valorString[],int longitud){
   FILE *tablasimbolos = fopen("ts.txt","rw");
   char lineaescrita[100];
   char valorBuscado[100];
@@ -331,13 +369,13 @@ int nuevoSimbolo(char tilineasiguienteimbolo[],char valorString[],int longitud){
   sprintf(lineaescrita, (longitud != 0)? 
           "%s|%s|%s|%d":
           "%s|%s|%s|--",
-          yylval.str_val,tilineasiguienteimbolo,valorString,longitud);
+          yylval.str_val,tipoDato,valorString,longitud); //nombre-tipo de dato-valor-longitud
 
   lineasiguiente = fgets(linealeida,100,tablasimbolos);
   while(lineasiguiente  && !encontro){
 	  strcpy(valorBuscado,lineaescrita);
 	  strcat(valorBuscado,"\n");
-    encontro = !strcmp(valorBuscado,linealeida);
+          encontro = !strcmp(valorBuscado,linealeida);
 	  lineasiguiente = fgets(linealeida,100,tablasimbolos);
   }
   fclose(tablasimbolos);
@@ -345,6 +383,12 @@ int nuevoSimbolo(char tilineasiguienteimbolo[],char valorString[],int longitud){
   if(!encontro){
     fprintf(tablasimbolos,"%s\n",lineaescrita);
   }
+  fclose(tablasimbolos);
+}
+int buscarEnTS(){
+  FILE *tablasimbolos = fopen("ts.txt","rw");
+  
+
   fclose(tablasimbolos);
 }
 

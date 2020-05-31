@@ -76,8 +76,7 @@ ID			    {LETRA}({LETRA}|{DIGITO}|_)*
 
 {ID}		    {
                      yylval.str_val = strdup(yytext);
-                     nuevoSimbolo("ID","--",0);
-                        return ID;
+                    return ID;
                 }
 
 {CONST_INT}	    {   
