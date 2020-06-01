@@ -57,6 +57,7 @@ int escribirPosicionPolaca(t_polaca* ,int , char*);
 void guardarArchivoPolaca(t_polaca*);
 
 t_pila* pila;
+t_pila* pilaIds;
 t_polaca* polaca;
 
 %}
@@ -207,6 +208,11 @@ tipodato: FLOAT {tipoDato = "Float"}
 listavariables: ID                  
                 {
                      nuevoSimbolo(tipoDato,"--",(tipoDato=="String")?strlen(yylval.str_val):0);
+                     t_infoIds* infoId;
+                     //ACA TENEMOS QUE APILAR LOS IDS PARA TENER SU TIPO AL INSERTAR EN POLACA
+                //      (*infoId).tipoDato = "dedetipoDato";
+                //      (*infoId).nombre = yylval.str_val;
+                // apilarId(pilaIds,infoId);
                 }
               | listavariables PYC ID {nuevoSimbolo(tipoDato,"--",(tipoDato=="String")?strlen(yylval.str_val):0);}
               ;
@@ -367,8 +373,8 @@ int nuevoSimbolo(char* tipoDato,char valorString[],int longitud){
   int encontro = 0;
   int i = 0;
   sprintf(lineaescrita, (longitud != 0)? 
-          "%s|%s|%s|%d":
-          "%s|%s|%s|--",
+          "%s\t\t%s\t\t%s\t\t%d":
+          "%s\t\t%s\t\t%s\t\t--",
           yylval.str_val,tipoDato,valorString,longitud); //nombre-tipo de dato-valor-longitud
 
   lineasiguiente = fgets(linealeida,100,tablasimbolos);
