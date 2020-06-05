@@ -89,7 +89,7 @@ ID			    {LETRA}({LETRA}|{DIGITO}|_)*
                     } 
 
                     sprintf(yylval.str_val,"_%s",yytext); 
-    			    nuevoSimbolo("--",yytext,0);		
+    			          nuevoSimbolo("--",yytext,0);		
                     return CONST_INT;
                 }
 

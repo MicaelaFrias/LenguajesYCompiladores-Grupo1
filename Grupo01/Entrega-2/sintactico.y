@@ -8,6 +8,7 @@ int yystopparser=0;
 int posicion = 0;
 FILE  *yyin;
 char* tipoDato;
+
 //////////////////////PILA
 	typedef struct
 	{
@@ -44,7 +45,8 @@ char* tipoDato;
     	struct s_nodoPolaca* psig;
 	}t_nodoPolaca;
 
-	typedef t_nodoPolaca *t_polaca;
+	typedef t_nodoPolaca* t_polaca;
+
 
 int insertarEnTS(char[],char[],int);
 int apilar(t_pila* ,const t_info* );
@@ -52,13 +54,14 @@ t_info* desapilar(t_pila *pila);
 void crearPila(t_pila* );
 int verTopePila(const t_pila* , t_info* );
 void crearPolaca(t_polaca* );
-int insertarPolaca(t_polaca* , char*);
+int insertarPolaca(t_polaca*,char*);
 int escribirPosicionPolaca(t_polaca* ,int , char*);
 void guardarArchivoPolaca(t_polaca*);
 
 t_pila* pila;
 t_pila* pilaIds;
-t_polaca* polaca;
+ t_polaca polaca;
+
 
 %}
 
@@ -115,7 +118,7 @@ programa:
         ;
 
 codigo: 
-        BEGINP bloqueTemasComunesYEspeciales ENDP
+       BEGINP bloqueTemasComunesYEspeciales ENDP
       |BEGINP bloqueDeclaracion {printf("--------------------------BLOQUE_DECLARACION\n\n\n");}
       bloqueTemasComunesYEspeciales ENDP
         ;
@@ -146,7 +149,8 @@ temaComunYEspecial:
         ;
 
 
-asignacion: ID OP_ASIG expresion  
+                        
+asignacion:  ID OP_ASIG expresion {insertarPolaca(&polaca,"OP_ASIG");}
                 ;
 
 iteracion: WHILE P_A condicion P_C bloqueTemasComunesYEspeciales ENDW ;
@@ -166,20 +170,20 @@ comparacion: expresion OP_COMPARACION expresion
             | P_A expresion OP_COMPARACION expresion P_C
             ;
 
-expresion: expresion OP_SUM termino 
-         | expresion OP_RES termino
-         | termino
+expresion: expresion OP_SUM termino   {printf("3\n");}  { insertarPolaca(&polaca,"OP_SUM");  }
+         | expresion OP_RES termino   {printf("3\n");} { insertarPolaca(&polaca,"OP_RES"); }
+         | termino                              
           ;
 
 termino: factor
-        | termino OP_DIV factor
-        | termino OP_MULT factor
+        | termino OP_DIV factor   { insertarPolaca(&polaca,"OP_DIV");  }
+        | termino OP_MULT factor  {printf("4\n");}  { insertarPolaca(&polaca,"OP_MULT"); }
         ;
 
-factor: ID   
-        | CONST_INT 
-        | CONST_STR 
-        | CONST_REAL 
+factor: ID                 {printf("56\n");}     { insertarPolaca(&polaca,yylval.str_val); }
+        | CONST_INT        {printf("6\n");}     { insertarPolaca(&polaca,yylval.str_val); }
+        | CONST_STR            { insertarPolaca(&polaca,yylval.str_val); }
+        | CONST_REAL           { insertarPolaca(&polaca,yylval.str_val); }
       ;
 
 let: LET listaVarLetIzq OP_ASIG P_A listaVarLetDer P_C
@@ -231,9 +235,9 @@ salida: DISPLAY factor
 
 int main(int argc,char *argv[])
 {
-        
+   
         crearPila(pila);
-        crearPolaca(polaca);
+        crearPolaca(&polaca);
         if ((yyin = fopen(argv[1], "rt")) == NULL)
         {
                 printf("\nNo se puede abrir el archivo: %s\n", argv[1]);
@@ -243,7 +247,7 @@ int main(int argc,char *argv[])
                 yyparse();
         }
         fclose(yyin);
-        guardarArchivoPolaca(polaca);
+        guardarArchivoPolaca(&polaca);
         return 0;
 }
 int yyerror(void)
@@ -313,31 +317,48 @@ t_infoIds* desapilarId(t_pilaIds *pilaIds)
 
 
 ///////////////////////// POLACA
-void crearPolaca(t_polaca* polaca){
-        polaca = NULL;
+
+// esto no deberia ser una lista?
+
+void crearPolaca(t_polaca* ppolaca){
+               printf("creando \n");
+
+        *ppolaca = NULL;
+
+         printf("creando párte 2 \n");
 }
 
-int insertarPolaca(t_polaca* polaca, char *contenido)
+int insertarPolaca(t_polaca* ppolaca,char *contenido)
 {
+
+             printf("llegue 22 \n");
         t_nodoPolaca* nuevoNodo = (t_nodoPolaca*)malloc(sizeof(t_nodoPolaca));
-        if(!nuevoNodo)
+        if(!nuevoNodo){
                 return 0;
+        }
+ 
         strcpy(nuevoNodo->info.contenido,contenido);
         nuevoNodo->info.posicion=posicion++;
         nuevoNodo->psig=NULL;
-        
-        while(*polaca)
+              printf("llegue mama \n");
+
+        while( *ppolaca)
         {
-                polaca=&(*polaca)->psig;
+                        
+                ppolaca=&(*ppolaca)->psig;
+                
         }
-        *polaca=nuevoNodo;
+        
+        *ppolaca=nuevoNodo;
+                       printf("llegue papap \n");
+        
         return 1;
 }
 
-int escribirPosicionPolaca(t_polaca* polaca,int posicion, char *contenido) //insertar en polaca y poner pos actual 
+int escribirPosicionPolaca(t_polaca* ppolaca,int posicion, char *contenido) //insertar en polaca y poner pos actual 
 	{
 	        t_nodoPolaca* aux;
-		aux=*polaca;
+		aux=*ppolaca;
 	    while(aux!=NULL && aux->info.posicion<=posicion){
 	    	aux=aux->psig;
                     if(aux->info.posicion==posicion){
@@ -349,18 +370,18 @@ int escribirPosicionPolaca(t_polaca* polaca,int posicion, char *contenido) //ins
 	}
 
 
-void guardarArchivoPolaca(t_polaca *polaca){
+void guardarArchivoPolaca(t_polaca *ppolaca){
 		FILE*pint=fopen("intermedia.txt","w+");
 		t_nodoPolaca* nuevoNodo;
 		if(!pint){
 			printf("Error al crear el archivo intermedia.txt\n");
 			return;
 		}
-		while(*polaca)
+		while(*ppolaca)
 	    {
-	        nuevoNodo=*polaca;
+	        nuevoNodo=*ppolaca;
 	        fprintf(pint, "%s\n",nuevoNodo->info.contenido);
-	        *polaca=(*polaca)->psig;
+	        *ppolaca=(*ppolaca)->psig;
 	        free(nuevoNodo);
 	    }
 		fclose(pint);

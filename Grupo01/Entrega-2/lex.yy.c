@@ -1277,7 +1277,7 @@ YY_RULE_SETUP
                     } 
 
                     sprintf(yylval.str_val,"_%s",yytext); 
-    			    nuevoSimbolo("--",yytext,0);		
+    			          nuevoSimbolo("--",yytext,0);		
                     return CONST_INT;
                 }
 	YY_BREAK
