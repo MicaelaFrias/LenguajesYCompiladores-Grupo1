@@ -81,6 +81,13 @@ ID			    {LETRA}({LETRA}|{DIGITO}|_)*
 
 {CONST_INT}	    {   
                     yylval.str_val = strdup(yytext);
+
+                 
+                    if( atoi(yytext) > COTA_INT){
+                      printf("Cota int superada");
+                     
+                    } 
+
                     sprintf(yylval.str_val,"_%s",yytext); 
     			    nuevoSimbolo("--",yytext,0);		
                     return CONST_INT;
@@ -98,13 +105,19 @@ ID			    {LETRA}({LETRA}|{DIGITO}|_)*
 
 {CONST_REAL}    {       
                     yylval.str_val = strdup(yytext);
+
+                      if( atoi(yytext) > COTA_FLOAT){
+                      printf("Cota FLOAT superada");
+                     
+                    } 
+
                     sprintf(yylval.str_val,"_%s",yytext);
                     nuevoSimbolo("--",yytext,0);
                     return CONST_REAL; 
                 }
 
 {COMA}			{ return COMA;}
-{COMENTARIOS}	
+{COMENTARIOS}	{ return COMENTARIOS;}
 %%
 
 

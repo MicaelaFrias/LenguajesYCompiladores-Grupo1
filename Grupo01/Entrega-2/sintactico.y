@@ -105,6 +105,7 @@ char *str_val;
 %token ENDDEF
 %token GET
 %token DISPLAY
+%token COMENTARIOS
 
 %%
 programa:  
@@ -139,12 +140,14 @@ temaComunYEspecial:
           | listaVarLetDer {printf("--------------------------LISTA_VARIABLES_LET_DERECHA\n\n\n");}
           | listaVarLetIzq {printf("--------------------------LISTA_VARIABLES_LET_IZQUIERDA\n\n\n");}
           | tipodato {printf("--------------------------TIPO_DE_DATO\n\n\n");}
-		  | ifUnario {printf("--------------------------IF_UNARIO\n\n\n");}
+	  | ifUnario {printf("--------------------------IF_UNARIO\n\n\n");}
           | let {printf("--------------------------LET\n\n\n");}
+          | COMENTARIOS {printf("--------------------------COMENTARIO\n\n\n");}
         ;
 
 
 asignacion: ID OP_ASIG expresion  
+                ;
 
 iteracion: WHILE P_A condicion P_C bloqueTemasComunesYEspeciales ENDW ;
 

@@ -1,10 +1,60 @@
 
-
-
 program
-beginp 
+beginp
+ 
+defvar
+float : a3;f455;h7
+string:a3;f45;h7
+float : e;f
+int: j;k
+enddef
 
+if (3.5=a)
+then 
+a:=3
+endif
+
+while (a>8 and f4=1)
 a3 :=4 
+endw
+
+A:=B
+
+
+***//***
+***/COMENTARIO/***
+
+
+
+
+a := a
+a := 2
+a := 2.5
+a := "aaaaaaaaaaa"
+a := "aa"
+a := ""
+a := "aaa"
+a := "aaaa"
+a := "aaaaa"
+
+if("dede">32 and 332>ded)
+then
+b:="aaa"
+b:="aaa"
+else
+b:="aaa"
+endif 
+
+get a3
+display "hola"
+display 1
+display a3
+
+entero := 3+t
+
+e := if(a>3,a+6,a+8)
+
+let uno,dos,tres := ("3";4;a+5)
 
 endp
 
