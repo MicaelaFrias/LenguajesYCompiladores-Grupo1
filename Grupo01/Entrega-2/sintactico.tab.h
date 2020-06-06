@@ -86,7 +86,8 @@
      ENDDEF = 302,
      GET = 303,
      DISPLAY = 304,
-     COMENTARIOS = 305
+     COMENTARIOS = 305,
+     ASIG = 306
    };
 #endif
 

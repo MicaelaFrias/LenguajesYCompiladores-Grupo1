@@ -2,7 +2,16 @@
 program
 beginp
  
-a:= 5 * 3
+ 
+
+defvar
+float : a3;
+	f455;
+	h7;
+
+enddef
+
+a:= 3 * 3
 
 
 endp

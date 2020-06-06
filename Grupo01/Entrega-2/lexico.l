@@ -118,6 +118,9 @@ ID			    {LETRA}({LETRA}|{DIGITO}|_)*
 
 {COMA}			{ return COMA;}
 {COMENTARIOS}	{ return COMENTARIOS;}
+\n   
+" "
+"\t"
 %%
 
 

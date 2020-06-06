@@ -109,6 +109,7 @@ char *str_val;
 %token GET
 %token DISPLAY
 %token COMENTARIOS
+%token ASIG
 
 %%
 programa:  
@@ -121,6 +122,7 @@ codigo:
        BEGINP bloqueTemasComunesYEspeciales ENDP
       |BEGINP bloqueDeclaracion {printf("--------------------------BLOQUE_DECLARACION\n\n\n");}
       bloqueTemasComunesYEspeciales ENDP
+      |BEGINP bloqueDeclaracion  {printf("--------------------------BLOQUE_DECLARACION\n\n\n");}  ENDP
         ;
 
 bloqueTemasComunesYEspeciales: 
@@ -150,12 +152,12 @@ temaComunYEspecial:
 
 
                         
-asignacion:  ID OP_ASIG expresion {insertarPolaca(&polaca,"OP_ASIG");}
+asignacion: ID { insertarPolaca(&polaca,yylval.str_val); } OP_ASIG expresion {insertarPolaca(&polaca,"OP_ASIG");}
                 ;
 
 iteracion: WHILE P_A condicion P_C bloqueTemasComunesYEspeciales ENDW ;
 
-ifUnario: ID OP_ASIG IF P_A condicion COMA expresion COMA expresion P_C ;
+ifUnario: ID "=" IF P_A condicion COMA expresion COMA expresion P_C ;
 
 decision: IF P_A condicion P_C THEN bloqueTemasComunesYEspeciales ENDIF
           | IF P_A condicion P_C THEN bloqueTemasComunesYEspeciales ELSE  bloqueTemasComunesYEspeciales ENDIF
@@ -212,7 +214,7 @@ tipodato: FLOAT {tipoDato = "Float"}
         |  INT {tipoDato = "Integer"}
         ;
 
-listavariables: ID                  
+listavariables: ID PYC                 
                 {
                      nuevoSimbolo(tipoDato,"--",(tipoDato=="String")?strlen(yylval.str_val):0);
                      t_infoIds* infoId;
@@ -221,7 +223,7 @@ listavariables: ID
                 //      (*infoId).nombre = yylval.str_val;
                 // apilarId(pilaIds,infoId);
                 }
-              | listavariables PYC ID {nuevoSimbolo(tipoDato,"--",(tipoDato=="String")?strlen(yylval.str_val):0);}
+              | listavariables ID PYC {nuevoSimbolo(tipoDato,"--",(tipoDato=="String")?strlen(yylval.str_val):0);}
               ;
 
 
