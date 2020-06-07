@@ -2,9 +2,13 @@
 program
 beginp
 
-while (a>8 and f4==1)
-a3 :=4 
-endw
+if (3.5==a)
+then 
+a:=3
+endif
+
+let uno,dos,tres := ("3";4;a+5)
+
 
 
 endp
