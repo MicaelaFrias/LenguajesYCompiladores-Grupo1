@@ -245,9 +245,16 @@ listavariables: ID PYC
               ;
 
 entrada: GET ID 
+        {
+                insertarPolaca(&polaca,yylval.str_val);
+                insertarPolaca(&polaca,"GET");
+        }
         ;
 
 salida: DISPLAY factor 
+        {
+                insertarPolaca(&polaca,"DISPLAY");
+        }
         ;
 
 %%
@@ -343,8 +350,14 @@ char * desapilarId(t_pilaIds *pilaIds)
     *pilaIds=(*pilaIds)->psig; 
     infoPilaIds=(*pilaIds)->infoIds.nombre;
 
+<<<<<<< HEAD
     free(aux); 
               
+=======
+    *pilaIds=(*pilaIds)->psig; 
+    free(aux);    
+        
+>>>>>>> cfb9cc5561e64aa799b6ee12f89b29ffbc767e6d
     return infoPilaIds; 
 }
 

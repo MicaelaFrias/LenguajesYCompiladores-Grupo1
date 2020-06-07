@@ -3,9 +3,15 @@
 program
 beginp
  
+<<<<<<< HEAD
 while (a>8 and f4=1)
 a3 :=4 
 endw
+=======
+ 
+let uno,dos,tres := ("3";4;a+5)
+display hola
+>>>>>>> cfb9cc5561e64aa799b6ee12f89b29ffbc767e6d
 
 
 endp

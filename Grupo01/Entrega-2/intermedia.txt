@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ET
 a
 _8
@@ -13,3 +14,12 @@ _4
 OP_ASIG
 BI
 0
+=======
+_3
+_4
+a
+_5
+OP_SUM
+hola
+DISPLAY
+>>>>>>> cfb9cc5561e64aa799b6ee12f89b29ffbc767e6d
