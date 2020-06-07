@@ -282,7 +282,7 @@ listaVarLetDer: expresion
                 char* id = SacarDeCola(&cola, &infoIds); 
                 if(id==""){
                         printf("Numero de ids erróneo");
-                        exit(-1);
+                        yyerror();
                 }
                 insertarPolaca(&polaca,id); 
                 insertarPolaca(&polaca,"OP_ASIG");   
@@ -295,7 +295,7 @@ listaVarLetDer: expresion
                t_infoIds infoIds; 
                 char* id = SacarDeCola(&cola, &infoIds); 
                  if(id==""){
-                        printf("Numero de ids ingresados en el LET erroneos.");
+                        printf("Numero de ids ingresados en el LET erroneos.\n");
                          printf("Syntax Error\n");
                         exit(-1);
                 }
