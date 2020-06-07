@@ -67,7 +67,11 @@ int insertarEnTS(char[],char[],int);
 int apilar(t_pila* pila,const int iPosicion);
 int desapilar(t_pila *pila);
 void crearPila(t_pila* pila);
+int pilaVacia(t_pila* pila);
 
+void crearPilaIds(t_pilaIds* pilaIds);
+char *  desapilarId(t_pilaIds *pilaIds);
+void crearPila(t_pila* );
 void crearPilaIds(t_pilaIds* pilaIds);
 char *  desapilarId(t_pilaIds *pilaIds);
 int apilarId(t_pilaIds* pilaIds,const t_infoIds* infoPilaIds);
@@ -92,7 +96,8 @@ t_polaca polaca;
 char comp[3];
 char op[3];
 
-t_pila pila;
+t_pila pilaVerdadero;
+t_pila pilaFalso;
 t_cola cola;
 t_pilaIds pilaIds;
 int posicionPolaca = 0;
@@ -216,26 +221,41 @@ iteracion: WHILE {
 
          insertarPolaca(&polaca,sPosicion);
 
-
         } ENDW ;
         
 ifUnario: ID IF P_A condicion COMA expresion COMA expresion P_C ;
 
-seleccion: IF P_A condicion P_C THEN bloqueTemasComunesYEspeciales ENDIF{
-        int iPosicion;
-        char* pos;
-        iPosicion = desapilar(&pila); printf("Desapile %u", iPosicion); 
-        escribirPosicionPolaca(&polaca,iPosicion,itoa(insertarPolaca(&polaca,"ENDIF"), pos, 10));
+seleccion: IF P_A condicion {
+                if(!strcmp(comp,"OR")){
+                        insertarPolaca(&polaca,"BI");
+                        apilar(&pilaFalso,insertarPolaca(&polaca,""));
+                }
         }
-          | IF P_A condicion P_C THEN bloqueTemasComunesYEspeciales ELSE  bloqueTemasComunesYEspeciales ENDIF
+        P_C THEN {
+                  int iPosicion;
+                  char* pos;
+                  while(!pilaVacia(&pilaVerdadero)){
+                        iPosicion = desapilar(&pilaVerdadero); printf("Desapile %u", iPosicion);
+                        escribirPosicionPolaca(&polaca,iPosicion,itoa(posicion, pos, 10));
+                  }
+                 }
+        bloqueTemasComunesYEspeciales ENDIF{
+                  int iPosicion;
+                  char* pos;
+                  while(!pilaVacia(&pilaFalso)){
+                        iPosicion = desapilar(&pilaFalso); printf("Desapile %u", iPosicion); 
+                        escribirPosicionPolaca(&polaca,iPosicion,itoa(insertarPolaca(&polaca,"ENDIF"), pos, 10));
+                  }
+        }
+          | IF condicion THEN bloqueTemasComunesYEspeciales ELSE  bloqueTemasComunesYEspeciales ENDIF
           ;
 
-condicion: comparacion   { insertarPolaca(&polaca,"CMP"); insertarPolaca(&polaca,comp); apilar(&pila,insertarPolaca(&polaca,""));}                       
+condicion: comparacion   { insertarPolaca(&polaca,"CMP"); insertarPolaca(&polaca,comp); apilar(&pilaFalso,insertarPolaca(&polaca,""));}
            | condicion operador comparacion      
                 {
                         if(!strcmp(operador,"OR"))
                                 invertir_salto(comp);
-                     insertarPolaca(&polaca,"CMP"); insertarPolaca(&polaca,comp); apilar(&pila,insertarPolaca(&polaca,""));
+                        insertarPolaca(&polaca,"CMP"); insertarPolaca(&polaca,comp); apilar(&pilaFalso,insertarPolaca(&polaca,""));
                 }
            |OP_NOT{ invertir_salto(comp);} comparacion                 
            ;
@@ -445,6 +465,10 @@ char * desapilarId(t_pilaIds *pilaIds)
         
         
     return infoPilaIds; 
+}
+
+int pilaVacia(t_pila* ppila){
+        return !(*ppila);
 }
 
 void mostrarPilaIDs(t_pilaIds* pilaIds)
