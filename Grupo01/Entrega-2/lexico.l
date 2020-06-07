@@ -66,7 +66,6 @@ ID			    {LETRA}({LETRA}|{DIGITO}|_)*
 ">"             { return OP_COMPARACION;}
 ">="            { return OP_COMPARACION;}
 "="             { return OP_COMPARACION;}
-"="             { return ASIG;}
 "<"             { return OP_COMPARACION;}
 "<="            { return OP_COMPARACION;}
 "<>"            { return OP_COMPARACION;}
@@ -75,7 +74,8 @@ ID			    {LETRA}({LETRA}|{DIGITO}|_)*
 "or"            { return OP_LOG;}
 "not"           { return OP_LOG;}
 
-{ID}		    {
+
+{ID}		        {
                      yylval.str_val = strdup(yytext);
                     return ID;
                 }

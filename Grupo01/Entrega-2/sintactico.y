@@ -50,8 +50,8 @@ char* tipoDato;
 
 
 int insertarEnTS(char[],char[],int);
-int apilar(t_pila* ,const t_info* );
-t_info desapilar(t_pila *pila);
+int apilar(t_pila* ,const int );
+int desapilar(t_pila *pila);
 char *  desapilarId(t_pilaIds *pilaIds);
 void crearPila(t_pila* );
 void crearPilaIds(t_pilaIds* pilaIds);
@@ -160,21 +160,38 @@ temaComunYEspecial:
 asignacion: ID { insertarPolaca(&polaca,yylval.str_val); } OP_ASIG expresion {insertarPolaca(&polaca,"OP_ASIG");}
                 ;
 
-iteracion: WHILE P_A condicion P_C bloqueTemasComunesYEspeciales ENDW ;
+iteracion: WHILE {apilar(&pila,posicion);} {insertarPolaca(&polaca,"ET");}  P_A condicion P_C   {insertarPolaca(&polaca,"BRANCH");}  {apilar(&pila,posicion); {insertarPolaca(&polaca,"Z");} } bloqueTemasComunesYEspeciales
+         {
+        
+        insertarPolaca(&polaca,"BI");
+         int iPosicion;
+         char sPosicion[10];
 
-ifUnario: ID ASIG IF P_A condicion COMA expresion COMA expresion P_C ;
+         iPosicion = desapilar(&pila); // esta es la posicion donde debo ir si falla la condicion del while
+         sprintf(sPosicion,"%d",posicion+1);
+
+         escribirPosicionPolaca(&polaca,iPosicion,sPosicion);  
+         iPosicion = desapilar(&pila); // esta es la posicion donde debo ir si la condicion de while se cumple 
+         sprintf(sPosicion,"%d",iPosicion); 
+
+         insertarPolaca(&polaca,sPosicion);
+
+
+        } ENDW ;
+
+ifUnario: ID OP_COMPARACION IF P_A condicion COMA expresion COMA expresion P_C ;
 
 decision: IF P_A condicion P_C THEN bloqueTemasComunesYEspeciales ENDIF
           | IF P_A condicion P_C THEN bloqueTemasComunesYEspeciales ELSE  bloqueTemasComunesYEspeciales ENDIF
           ;
 
-condicion: comparacion 
-           | condicion OP_LOG comparacion
-           |OP_NOT comparacion
+condicion: comparacion                          
+           | condicion OP_LOG comparacion        {insertarPolaca(&polaca,"OP_LOG");}  
+           |OP_NOT comparacion                   {insertarPolaca(&polaca,"OP_NOT");}  
            ;
 
-comparacion: expresion OP_COMPARACION expresion 
-            | P_A expresion OP_COMPARACION expresion P_C
+comparacion: expresion OP_COMPARACION expresion                {insertarPolaca(&polaca,"OP_COMPARACION");}
+            | P_A expresion OP_COMPARACION expresion P_C       {insertarPolaca(&polaca,"OP_COMPARACION");}
             ;
 
 expresion: expresion OP_SUM termino   { insertarPolaca(&polaca,"OP_SUM");  }
@@ -187,8 +204,8 @@ termino: factor
         | termino OP_MULT factor   { insertarPolaca(&polaca,"OP_MULT"); }
         ;
 
-factor: ID                { insertarPolaca(&polaca,yylval.str_val); }
-        | CONST_INT        { insertarPolaca(&polaca,yylval.str_val); }
+factor: ID                     { insertarPolaca(&polaca,yylval.str_val); }
+        | CONST_INT            { insertarPolaca(&polaca,yylval.str_val); }
         | CONST_STR            { insertarPolaca(&polaca,yylval.str_val); }
         | CONST_REAL           { insertarPolaca(&polaca,yylval.str_val); }
       ;
@@ -196,45 +213,12 @@ factor: ID                { insertarPolaca(&polaca,yylval.str_val); }
 let: LET listaVarLetIzq OP_ASIG P_A listaVarLetDer P_C
     ;
  
-listaVarLetIzq: ID {
-                        t_infoIds infoId;
-                        infoId.nombre = yylval.str_val;
-                        apilarId(&pilaIds,&infoId);
-                        printf("apile %s\n", infoId.nombre);
-                        mostrarPilaIDs(&pilaIds)
-                }
-              | listaVarLetIzq COMA ID {
-                        t_infoIds infoId;
-                        infoId.nombre = yylval.str_val;
-                        apilarId(&pilaIds,&infoId);
-                         printf("apile %s\n", infoId.nombre);
-                         mostrarPilaIDs(&pilaIds)
-                }
+listaVarLetIzq: ID 
+              | listaVarLetIzq COMA ID 
               ;
 
 listaVarLetDer: expresion
-         {
-        char* infoId;
-        infoId = desapilarId(&pilaIds);
-        printf("desapile %s\n", infoId);
-  
-        if(infoId!=NULL){
-                        // insertarPolaca(&polaca, info.nombre);
-         }
-        // else {printf("La cantidad de ids es insuficiente"); exit(-1);}
-        }
-            
-        | listaVarLetDer PYC expresion 
-        
-        {
-        char* infoId;
-        infoId = desapilarId(&pilaIds);
-        printf("desapile %s\n", infoId);
-         if(infoId!=NULL){
-            // insertarPolaca(&polaca, info.nombre);
-       }
-        // else {printf("La cantidad de ids es insuficiente"); exit(-1);}
-         }
+              | listaVarLetDer PYC expresion 
               ;
 
 bloqueDeclaracion: DEFVAR declaraciones ENDDEF 
@@ -301,26 +285,31 @@ void crearPila(t_pila* pila){
         pila = NULL;
 }
 
-int apilar(t_pila* pila,const t_info* infoPila)
-{   t_nodoPila *nuevoNodo=(t_nodoPila*) malloc(sizeof(t_nodoPila));
-    if(nuevoNodo==NULL)
+int apilar(t_pila* pila,const int iPosicion)
+{       
+    printf("Apile: %d\n",iPosicion);
+    t_nodoPila *nuevoNodo=(t_nodoPila*) malloc(sizeof(t_nodoPila));
+    if(nuevoNodo==NULL){
         return(0); //Sin_memoria
-    nuevoNodo->info=*infoPila;
+    }
+    nuevoNodo->info.posicion=iPosicion;
     nuevoNodo->psig=*pila;
     *pila=nuevoNodo;
     return(1);
 }
 
-t_info desapilar(t_pila *pila)
-{   t_nodoPila *aux;
-    t_info infoPila;
+int desapilar(t_pila *pila)
+{   
+    t_nodoPila *aux;
+    int iPosicion ;
     if(*pila==NULL)
-        return (*pila)->info;
+        return NULL;
     aux=*pila;
-    infoPila=(*pila)->info;
+    iPosicion=(*pila)->info.posicion ;
     *pila=(*pila)->psig; 
     free(aux); 
-    return infoPila; 
+   printf("Desapile: %d\n",iPosicion);
+    return iPosicion; 
 }
 
 
@@ -333,8 +322,9 @@ int apilarId(t_pilaIds* pilaIds,const t_infoIds* infoPilaIds)
 {   t_nodoPilaIds *nuevoNodo=(t_nodoPilaIds*) malloc(sizeof(t_nodoPilaIds));
     if(nuevoNodo==NULL)
         return(0); //Sin_memoria
-    nuevoNodo->infoIds=*infoPilaIds;
-    nuevoNodo->psig=*pilaIds;
+
+    strcpy(nuevoNodo->infoIds.nombre,infoPilaIds->nombre);
+          nuevoNodo->psig=*pilaIds;
     *pilaIds=nuevoNodo;
     return(1);
 }
@@ -346,16 +336,15 @@ char * desapilarId(t_pilaIds *pilaIds)
     char * infoPilaIds;
     
     if(*pilaIds==NULL){
-         return (*pilaIds)->infoIds.nombre;
+         return NULL;
     }
 
     aux=*pilaIds;
+    *pilaIds=(*pilaIds)->psig; 
     infoPilaIds=(*pilaIds)->infoIds.nombre;
 
-    *pilaIds=(*pilaIds)->psig; 
     free(aux); 
-        
-        
+              
     return infoPilaIds; 
 }
 

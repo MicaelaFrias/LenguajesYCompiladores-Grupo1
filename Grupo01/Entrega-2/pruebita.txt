@@ -1,9 +1,11 @@
 
+
 program
 beginp
  
- 
-let uno,dos,tres := ("3";4;a+5)
+while (a>8 and f4=1)
+a3 :=4 
+endw
 
 
 endp
