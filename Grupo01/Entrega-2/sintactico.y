@@ -219,13 +219,11 @@ listaVarLetIzq: ID {
                         t_infoIds infoIds;
                         infoIds.nombre= yyval.str_val;   
                         PonerEnCola(&cola, &infoIds);                   
-                        printf("guarde %s\n", infoIds.nombre );
                 }
               | listaVarLetIzq COMA ID {
                          t_infoIds infoIds;
                         infoIds.nombre= yyval.str_val;   
                         PonerEnCola(&cola, &infoIds);                                       
-                        printf("guarde %s\n", infoIds.nombre );
                 }
               ;
 
@@ -237,7 +235,6 @@ listaVarLetDer: expresion
                         printf("Numero de ids erróneo");
                         exit(-1);
                 }
-                 printf("desencole %s\n", id);
                 insertarPolaca(&polaca,id); 
                 insertarPolaca(&polaca,"OP_ASIG");   
                
@@ -249,10 +246,10 @@ listaVarLetDer: expresion
                t_infoIds infoIds; 
                 char* id = SacarDeCola(&cola, &infoIds); 
                  if(id==""){
-                        printf("Numero de ids erróneo");
+                        printf("Numero de ids ingresados en el LET erroneos.");
+                         printf("Syntax Error\n");
                         exit(-1);
                 }
-                 printf("desencole %s\n", id);
                 insertarPolaca(&polaca,id); 
                 insertarPolaca(&polaca,"OP_ASIG");   
 
@@ -363,7 +360,6 @@ int apilarId(t_pilaIds* pilaIds,const t_infoIds* infoPilaIds)
 
 char * desapilarId(t_pilaIds *pilaIds)
 { 
-    printf("desapile");
     t_nodoPilaIds *aux;
     char * infoPilaIds;
     
@@ -385,7 +381,6 @@ void mostrarPilaIDs(t_pilaIds* pilaIds)
 {
 
         while(*pilaIds){
-          printf("Pila: %s\n",(*pilaIds)->infoIds.nombre);    
           *pilaIds=(*pilaIds)->psig; 
         }
          
@@ -409,7 +404,6 @@ int PonerEnCola(t_cola *pcola,const t_infoIds *infoIds)
         return(0);
     nue->infoIds=*infoIds;
     nue->sig=NULL;
-    printf("%s ha sido encolado",nue->infoIds.nombre);
     if(pcola->pri==NULL)
         pcola->pri=nue;
     else pcola->ult->sig=nue;
