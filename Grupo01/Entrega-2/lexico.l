@@ -63,13 +63,13 @@ ID			    {LETRA}({LETRA}|{DIGITO}|_)*
 "/"		    	{ return OP_DIV;}
 "("		    	{ return P_A;}
 ")"		    	{ return P_C;}
-">"             { return OP_COMPARACION;}
-">="            { return OP_COMPARACION;}
-"="             { return OP_COMPARACION;}
-"="             { return ASIG;}
-"<"             { return OP_COMPARACION;}
-"<="            { return OP_COMPARACION;}
-"<>"            { return OP_COMPARACION;}
+"="         { return ASIG;}
+">"             { return OP_MAYOR;}
+">="            { return OP_MAYORIGUAL;}
+"=="             { return OP_IGUAL;}
+"<"             { return OP_MENOR;}
+"<="            { return OP_MENORIGUAL;}
+"<>"            { return OP_DISTINTO;}
 ";"             { return PYC;}
 "and"           { return OP_LOG;}
 "or"            { return OP_LOG;}
@@ -116,6 +116,7 @@ ID			    {LETRA}({LETRA}|{DIGITO}|_)*
                     nuevoSimbolo("--",yytext,0);
                     return CONST_REAL; 
                 }
+                
 
 {COMA}			{ return COMA;}
 {COMENTARIOS}	{ return COMENTARIOS;}

@@ -61,12 +61,13 @@ int insertarPolaca(t_polaca*,char*);
 int escribirPosicionPolaca(t_polaca* ,int , char*);
 void guardarArchivoPolaca(t_polaca*);
 void  mostrarPilaIDs(t_pilaIds* );
+int nuevoSimbolo(char* tipoDato,char valorString[],int longitud);
 
 t_pila pila;
 t_pilaIds pilaIds;
 int posicion = 0;
 t_polaca polaca;
-
+char comparadoraux[3];
 
 %}
 
@@ -98,7 +99,12 @@ char *str_val;
 %token OP_LOG
 %token OP_NOT
 %token OP_DOSP
-%token OP_COMPARACION
+%token OP_IGUAL
+%token OP_MAYOR
+%token OP_MAYORIGUAL
+%token OP_MENOR
+%token OP_MENORIGUAL
+%token OP_DISTINTO
 %token OP_ASIG
 %token OP_SUM
 %token OP_RES
@@ -138,7 +144,7 @@ bloqueTemasComunesYEspeciales:
 
 temaComunYEspecial: 
             iteracion {printf("--------------------------ITERACION\n\n\n");}
-          | decision {printf("--------------------------DECISION\n\n\n");}
+          | seleccion {printf("--------------------------DECISION\n\n\n");}
           | listavariables {printf("--------------------------LISTA_VARIABLES\n\n\n");}
           | asignacion {printf("--------------------------ASIGNACION\n\n\n");}
           | entrada {printf("--------------------------ENTRADA\n\n\n");}
@@ -162,9 +168,9 @@ asignacion: ID { insertarPolaca(&polaca,yylval.str_val); } OP_ASIG expresion {in
 
 iteracion: WHILE P_A condicion P_C bloqueTemasComunesYEspeciales ENDW ;
 
-ifUnario: ID ASIG IF P_A condicion COMA expresion COMA expresion P_C ;
+ifUnario: ID {printf("asig1");} ASIG {printf("asig"); }IF P_A condicion COMA expresion COMA expresion P_C ;
 
-decision: IF P_A condicion P_C THEN bloqueTemasComunesYEspeciales ENDIF
+seleccion: IF P_A condicion P_C THEN bloqueTemasComunesYEspeciales ENDIF
           | IF P_A condicion P_C THEN bloqueTemasComunesYEspeciales ELSE  bloqueTemasComunesYEspeciales ENDIF
           ;
 
@@ -173,9 +179,18 @@ condicion: comparacion
            |OP_NOT comparacion
            ;
 
-comparacion: expresion OP_COMPARACION expresion 
-            | P_A expresion OP_COMPARACION expresion P_C
+comparacion: expresion comparador expresion 
+            | P_A expresion comparador expresion P_C
             ;
+
+comparador: OP_MAYOR {strcpy(comparadoraux, "BLE");}
+        | OP_MENOR {strcpy(comparadoraux, "BGE");}
+        | OP_MAYORIGUAL {strcpy(comparadoraux,"BLT");}
+        | OP_MENORIGUAL {strcpy(comparadoraux, "BGT");}
+        | OP_DISTINTO {strcpy(comparadoraux, "BEQ");}
+        | OP_IGUAL {strcpy(comparadoraux, "BNE");}
+        ;
+        
 
 expresion: expresion OP_SUM termino   { insertarPolaca(&polaca,"OP_SUM");  }
          | expresion OP_RES termino  { insertarPolaca(&polaca,"OP_RES"); }
@@ -474,4 +489,3 @@ int buscarEnTS(){
 
   fclose(tablasimbolos);
 }
-
