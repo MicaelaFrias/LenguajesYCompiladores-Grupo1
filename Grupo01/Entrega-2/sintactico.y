@@ -199,17 +199,20 @@ listaVarLetIzq: ID {
                         t_infoIds infoId;
                         infoId.nombre = yylval.str_val;
                         apilarId(&pilaIds,&infoId);
+                        printf("apile %s", infoId.nombre);
                 }
               | listaVarLetIzq COMA ID {
                         t_infoIds infoId;
                         infoId.nombre = yylval.str_val;
                         apilarId(&pilaIds,&infoId);
+                         printf("apile %s", infoId.nombre);
                 }
               ;
 
 listaVarLetDer: expresion {
         t_infoIds* infoId;
         *infoId = desapilarId(&pilaIds);
+        printf("desapile %s", infoId->nombre);
                 if(infoId!=NULL){
                         printf("%s", infoId->nombre);
                         // insertarPolaca(&polaca, info.nombre);
@@ -219,6 +222,7 @@ listaVarLetDer: expresion {
               | listaVarLetDer PYC expresion {
          t_infoIds* infoId;
         *infoId = desapilarId(&pilaIds);
+        printf("desapile %s", infoId->nombre);
                 if(infoId!=NULL){
                         printf("%s", infoId->nombre);
                         // insertarPolaca(&polaca, info.nombre);
@@ -340,7 +344,6 @@ t_infoIds desapilarId(t_pilaIds *pilaIds)
     free(aux); 
     return infoPilaIds; 
 }
-
 
 ///////////////////////// POLACA
 
