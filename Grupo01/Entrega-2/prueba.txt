@@ -1,15 +1,17 @@
 
-
-
 program
-beginp 
+beginp
+ 
+defvar
+float : a3;f455;h7
+string:a3;f45;h7
+float : e;f
+int: j;k
+enddef
 
 if (3.5=a)
 then 
-defvar
-float : a3;f45;h7
-int: a3;f45;h7
-enddef
+a:=3
 endif
 
 while (a>8 and f4=1)
@@ -22,10 +24,7 @@ A:=B
 ***//***
 ***/COMENTARIO/***
 
-defvar
-float : a3;f455;h7
-int: a3;f45;h7
-enddef
+
 
 
 a := a
