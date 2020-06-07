@@ -71,9 +71,9 @@ ID			    {LETRA}({LETRA}|{DIGITO}|_)*
 "<="            { return OP_MENORIGUAL;}
 "<>"            { return OP_DISTINTO;}
 ";"             { return PYC;}
-"and"           { return OP_LOG;}
-"or"            { return OP_LOG;}
-"not"           { return OP_LOG;}
+"and"           { return OP_AND;}
+"or"            { return OP_OR;}
+"not"           { return OP_NOT;}
 
 
 {ID}		        {

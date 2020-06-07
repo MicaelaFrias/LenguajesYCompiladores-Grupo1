@@ -66,33 +66,34 @@
      ENDW = 282,
      REPEAT = 283,
      UNTIL = 284,
-     OP_LOG = 285,
-     OP_NOT = 286,
-     OP_DOSP = 287,
-     OP_IGUAL = 288,
-     OP_MAYOR = 289,
-     OP_MAYORIGUAL = 290,
-     OP_MENOR = 291,
-     OP_MENORIGUAL = 292,
-     OP_DISTINTO = 293,
-     OP_ASIG = 294,
-     OP_SUM = 295,
-     OP_RES = 296,
-     OP_DIV = 297,
-     OP_MULT = 298,
-     COMA = 299,
-     P_A = 300,
-     P_C = 301,
-     C_A = 302,
-     C_C = 303,
-     LONG = 304,
-     IN = 305,
-     DEFVAR = 306,
-     ENDDEF = 307,
-     GET = 308,
-     DISPLAY = 309,
-     COMENTARIOS = 310,
-     ASIG = 311
+     OP_OR = 285,
+     OP_AND = 286,
+     OP_NOT = 287,
+     OP_DOSP = 288,
+     OP_IGUAL = 289,
+     OP_MAYOR = 290,
+     OP_MAYORIGUAL = 291,
+     OP_MENOR = 292,
+     OP_MENORIGUAL = 293,
+     OP_DISTINTO = 294,
+     OP_ASIG = 295,
+     OP_SUM = 296,
+     OP_RES = 297,
+     OP_DIV = 298,
+     OP_MULT = 299,
+     COMA = 300,
+     P_A = 301,
+     P_C = 302,
+     C_A = 303,
+     C_C = 304,
+     LONG = 305,
+     IN = 306,
+     DEFVAR = 307,
+     ENDDEF = 308,
+     GET = 309,
+     DISPLAY = 310,
+     COMENTARIOS = 311,
+     ASIG = 312
    };
 #endif
 
@@ -102,6 +103,8 @@
 typedef union YYSTYPE
 {
 
+/* Line 1676 of yacc.c  */
+#line 103 "sintactico.y"
 
 int int_val;
 double float_val;
@@ -109,6 +112,8 @@ char *str_val;
 
 
 
+/* Line 1676 of yacc.c  */
+#line 117 "sintactico.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
