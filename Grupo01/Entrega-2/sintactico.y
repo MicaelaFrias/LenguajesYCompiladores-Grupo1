@@ -67,15 +67,11 @@ int insertarEnTS(char[],char[],int);
 int apilar(t_pila* pila,const int iPosicion);
 int desapilar(t_pila *pila);
 void crearPila(t_pila* pila);
-<<<<<<< HEAD
 int pilaVacia(t_pila* pila);
 
 void crearPilaIds(t_pilaIds* pilaIds);
 char *  desapilarId(t_pilaIds *pilaIds);
 void crearPila(t_pila* );
-=======
-
->>>>>>> b280b556093d8139a3fc2dd3bc9b750a9657eb30
 void crearPilaIds(t_pilaIds* pilaIds);
 char *  desapilarId(t_pilaIds *pilaIds);
 int apilarId(t_pilaIds* pilaIds,const t_infoIds* infoPilaIds);
@@ -100,12 +96,8 @@ t_polaca polaca;
 char comp[3];
 char op[3];
 
-<<<<<<< HEAD
 t_pila pilaVerdadero;
 t_pila pilaFalso;
-=======
-t_pila pila;
->>>>>>> b280b556093d8139a3fc2dd3bc9b750a9657eb30
 t_cola cola;
 t_pilaIds pilaIds;
 int posicionPolaca = 0;
@@ -233,7 +225,6 @@ iteracion: WHILE {
         
 ifUnario: ID IF P_A condicion COMA expresion COMA expresion P_C ;
 
-<<<<<<< HEAD
 seleccion: IF P_A condicion {
                 if(!strcmp(comp,"OR")){
                         insertarPolaca(&polaca,"BI");
@@ -260,27 +251,11 @@ seleccion: IF P_A condicion {
           ;
 
 condicion: comparacion   { insertarPolaca(&polaca,"CMP"); insertarPolaca(&polaca,comp); apilar(&pilaFalso,insertarPolaca(&polaca,""));}
-=======
-seleccion: IF P_A condicion P_C THEN bloqueTemasComunesYEspeciales ENDIF{
-        int iPosicion;
-        char* pos;
-        iPosicion = desapilar(&pila); printf("Desapile %u", iPosicion); 
-        escribirPosicionPolaca(&polaca,iPosicion,itoa(insertarPolaca(&polaca,"ENDIF"), pos, 10));
-        }
-          | IF P_A condicion P_C THEN bloqueTemasComunesYEspeciales ELSE  bloqueTemasComunesYEspeciales ENDIF
-          ;
-
-condicion: comparacion   { insertarPolaca(&polaca,"CMP"); insertarPolaca(&polaca,comp); apilar(&pila,insertarPolaca(&polaca,""));}                       
->>>>>>> b280b556093d8139a3fc2dd3bc9b750a9657eb30
            | condicion operador comparacion      
                 {
                         if(!strcmp(operador,"OR"))
                                 invertir_salto(comp);
-<<<<<<< HEAD
                         insertarPolaca(&polaca,"CMP"); insertarPolaca(&polaca,comp); apilar(&pilaFalso,insertarPolaca(&polaca,""));
-=======
-                     insertarPolaca(&polaca,"CMP"); insertarPolaca(&polaca,comp); apilar(&pila,insertarPolaca(&polaca,""));
->>>>>>> b280b556093d8139a3fc2dd3bc9b750a9657eb30
                 }
            |OP_NOT{ invertir_salto(comp);} comparacion                 
            ;
