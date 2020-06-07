@@ -7,7 +7,6 @@ then
 a:=3
 endif
 
-let uno,dos,tres := ("3";4;a+5)
 
 
 
