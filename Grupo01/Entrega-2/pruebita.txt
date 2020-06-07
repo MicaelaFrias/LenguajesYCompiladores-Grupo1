@@ -1,21 +1,10 @@
 
-
 program
 beginp
-<<<<<<< HEAD
- 
-<<<<<<< HEAD
-while (a>8 and f4=1)
-a3 :=4 
-endw
-=======
- 
-=======
 
->>>>>>> 7810b9f3d1cbd97f481410b3f01685f7560b0ea0
-let uno,dos,tres := ("3";4;a+5)
-display hola
->>>>>>> cfb9cc5561e64aa799b6ee12f89b29ffbc767e6d
-
+if (3.5=a)
+then 
+a:=3
+endif
 
 endp
