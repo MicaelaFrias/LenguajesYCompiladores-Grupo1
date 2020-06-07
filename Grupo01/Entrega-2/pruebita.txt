@@ -2,7 +2,7 @@
 program
 beginp
 
-if (3.5==a)
+if (3.5==a or a>5)
 then 
 a:=3
 endif

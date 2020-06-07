@@ -1,0 +1,17 @@
+_3.5
+a
+CMP
+BNE
+BEQ
+13
+a
+_5
+CMP
+BGT
+13
+BI
+16
+a
+_3
+OP_ASIG
+ENDIF

@@ -6,7 +6,7 @@
 #include "sintactico.tab.h"
 int yystopparser=0;
 FILE  *yyin;
-char*operador;
+char operador[30];
 char* tipoDato;
 
 //////////////////////PILA
@@ -225,25 +225,30 @@ iteracion: WHILE {
 ifUnario: ID IF P_A condicion COMA expresion COMA expresion P_C ;
 
 seleccion: IF P_A condicion{
-          if(!strcmp(comp,"OR")){
+                printf("LLEGUE A ULTIMA COMP %s",operador);
+          if(!strcmp(operador,"OR")){
                         insertarPolaca(&polaca,"BI");
                         apilar(&pila,insertarPolaca(&polaca,""));
                 }
 }
  P_C THEN{
            int iPosicion;
-                  char* pos;
-                  while(!pilaVacia(&pilaVerdadero)){
-                        iPosicion = desapilar(&pilaVerdadero); printf("Desapile %u", iPosicion);
-                        escribirPosicionPolaca(&polaca,iPosicion,itoa(posicion, pos, 10));
+        char posThen[25];
+        sprintf(posThen,"%d",posicion);
+        printf("La posicion del THEN es %u",posicion);
+                while(!pilaVacia(&pilaVerdadero)){
+                iPosicion = desapilar(&pilaVerdadero); printf("Desapile %u", iPosicion);
+                printf("estoy escribiendo en posicion %u",iPosicion);
+                escribirPosicionPolaca(&polaca,iPosicion,posThen);
  }
  }
   bloqueTemasComunesYEspeciales ENDIF{
         int iPosicion;
-        char* pos;
+        char posEnd[25];
+        sprintf(posEnd,"%d",insertarPolaca(&polaca,"ENDIF"));
         while(!pilaVacia(&pila)){
         iPosicion = desapilar(&pila); printf("Desapile %u", iPosicion); 
-        escribirPosicionPolaca(&polaca,iPosicion,itoa(insertarPolaca(&polaca,"ENDIF"), pos, 10));
+        escribirPosicionPolaca(&polaca,iPosicion,posEnd);
         }
         }
         ;
@@ -251,16 +256,30 @@ seleccion: IF P_A condicion{
         //   ;
 
 condicion: comparacion   { insertarPolaca(&polaca,"CMP"); insertarPolaca(&polaca,comp); apilar(&pila,insertarPolaca(&polaca,""));}                       
-           | condicion operador comparacion      
+           | condicion operador{
+                   char* pos;
+                   int iPosicion;
+                   printf("Lei un %s",operador);
+                   //Tratamiento especial por ser OR
+                   if(!strcmp(operador,"OR")){
+                            invertir_salto(comp);
+                            iPosicion = desapilar(&pila); 
+                            apilar(&pilaVerdadero,insertarPolaca(&polaca,""));
+                   }
+                   escribirPosicionPolaca(&polaca,posicion-2,comp);
+                   
+           } comparacion     
                 {
                         if(!strcmp(operador,"OR"))
                                 invertir_salto(comp);
-                     insertarPolaca(&polaca,"CMP"); insertarPolaca(&polaca,comp); apilar(&pila,insertarPolaca(&polaca,""));
+                                printf("inverti el branch a %s",comp);
+                     insertarPolaca(&polaca,"CMP"); insertarPolaca(&polaca,comp); 
+                     (!strcmp(operador,"OR"))?apilar(&pilaVerdadero,insertarPolaca(&polaca,"")):apilar(&pila,insertarPolaca(&polaca,""));
                 }
            |OP_NOT{ invertir_salto(comp);} comparacion                 
            ;
 
-operador: OP_OR {strcpy(operador, "OR");}
+operador: OP_OR  {printf("Lei un OR");strcpy(operador, "OR");}
         | OP_AND {strcpy(operador,"AND");}
 
 comparacion: expresion comparador expresion             
