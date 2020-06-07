@@ -1,9 +1,16 @@
 
 program
 beginp
+
+defvar
+float : a3;f455;h7;
+string : a;b;c;
+enddef
  
  
 let uno,dos,tres := ("3";4;a+5)
+display hola
+display hola
 display hola
 
 
