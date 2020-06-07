@@ -89,7 +89,6 @@ char* invertir_salto(char* comp);
 
 t_pila pila;
 t_pilaIds pilaIds;
-int posicion = 0;
 t_polaca polaca;
 char comp[3];
 char op[3];
@@ -201,10 +200,10 @@ asignacion: ID { insertarPolaca(&polaca,yylval.str_val); } OP_ASIG expresion {in
                 ;
 
 iteracion: WHILE {
-        apilar(&pila,posicion);insertarPolaca(&polaca,"ET");
+        apilar(&pila,posicionPolaca);insertarPolaca(&polaca,"ET");
         }  
         P_A condicion P_C   {
-        insertarPolaca(&polaca,"BRANCH");apilar(&pila,posicion); insertarPolaca(&polaca,"Z");} 
+        insertarPolaca(&polaca,"BRANCH");apilar(&pila,posicionPolaca); insertarPolaca(&polaca,"Z");} 
          bloqueTemasComunesYEspeciales
         {
         insertarPolaca(&polaca,"BI");
@@ -212,7 +211,7 @@ iteracion: WHILE {
          char sPosicion[10];
 
          iPosicion = desapilar(&pila); // esta es la posicion donde debo ir si falla la condicion del while
-         sprintf(sPosicion,"%d",posicion+1);
+         sprintf(sPosicion,"%d",posicionPolaca+1);
 
          escribirPosicionPolaca(&polaca,iPosicion,sPosicion);  
          iPosicion = desapilar(&pila); // esta es la posicion donde debo ir si la condicion de while se cumple 
@@ -225,56 +224,65 @@ iteracion: WHILE {
         
 ifUnario: ID IF P_A condicion COMA expresion COMA expresion P_C ;
 
-seleccion: IF P_A condicion{
-          if(!strcmp(operador,"OR")){
-                        insertarPolaca(&polaca,"BI");
-                        apilar(&pila,insertarPolaca(&polaca,""));
-                }
-}
- P_C THEN{
-           int iPosicion;
-        char posThen[25];
-        sprintf(posThen,"%d",posicion);
+seleccion: seleccionSinElse { printf("\nLEI TODA LA SLEECCION SIN ELSE\n");} finSeleccion;
+
+seleccionSinElse: IF P_A condicion
+        P_C THEN{
+                int iPosicion;
+                char posThen[25];
+                sprintf(posThen,"%d",posicionPolaca);
                 while(!pilaVacia(&pilaVerdadero)){
                 iPosicion = desapilar(&pilaVerdadero); 
                 escribirPosicionPolaca(&polaca,iPosicion,posThen);
- }
- }
-  bloqueTemasComunesYEspeciales ENDIF{
-        int iPosicion;
-        char posEnd[25];
-        sprintf(posEnd,"%d",insertarPolaca(&polaca,"ENDIF"));
-        while(!pilaVacia(&pila)){
-        iPosicion = desapilar(&pila);
-        escribirPosicionPolaca(&polaca,iPosicion,posEnd);
+                }
         }
-        }
+        bloqueTemasComunesYEspeciales
         ;
-        //   | IF condicion THEN bloqueTemasComunesYEspeciales ELSE  bloqueTemasComunesYEspeciales ENDIF
-        //   ;
+
+finSeleccion: ELSE{
+                        int posicionBranch;
+                        char sPosicionPolaca[25];
+                        sprintf(sPosicionPolaca,"%d",posicionPolaca);
+                        while(!pilaVacia(&pila)){
+                        posicionBranch = desapilar(&pila);
+                        escribirPosicionPolaca(&polaca,posicionBranch,sPosicionPolaca);
+                        }
+                }
+                bloqueTemasComunesYEspeciales ENDIF
+        | ENDIF {
+                printf("\nLLEGUE AL ENDIF %u\n");
+                int posicionBranch;
+                char posEndIf[25];
+                sprintf(posEndIf,"%d",insertarPolaca(&polaca,"ENDIF"));
+                while(!pilaVacia(&pila)){
+                posicionBranch = desapilar(&pila);
+                printf("\nDESAPILE %u\n",posicionBranch);
+                escribirPosicionPolaca(&polaca,posicionBranch,posEndIf);
+                }
+        }
+;
+
+
+
+
+
 
 condicion: comparacion   { insertarPolaca(&polaca,"CMP"); insertarPolaca(&polaca,comp) ; apilar(&pila,insertarPolaca(&polaca,"")); cantComparaciones++}                       
            | condicion operador{
                    char* pos;
                    int iPosicion;
-
                    //Tratamiento especial por ser OR
                    if(!strcmp(operador,"OR") && cantComparaciones==1){
                             invertir_salto(comp);
                             iPosicion = desapilar(&pila); 
                             apilar(&pilaVerdadero,iPosicion);
-                        escribirPosicionPolaca(&polaca,posicion-2,comp);
-
+                        escribirPosicionPolaca(&polaca,posicionPolaca-2,comp);
                    }
 
            } comparacion     
                 {
-                        if(!strcmp(operador,"OR")&& cantComparaciones!=1){
-                            invertir_salto(comp);
-                        escribirPosicionPolaca(&polaca,posicion-2,comp);
-                   }
                      insertarPolaca(&polaca,"CMP"); insertarPolaca(&polaca,comp);
-                     (!strcmp(operador,"OR"))?apilar(&pilaVerdadero,insertarPolaca(&polaca,"")):apilar(&pila,insertarPolaca(&polaca,""));
+                     apilar(&pila,insertarPolaca(&polaca,""));
                 cantComparaciones = 0;
                 }
            |OP_NOT{ invertir_salto(comp);} comparacion                 
@@ -553,7 +561,7 @@ int insertarPolaca(t_polaca* ppolaca,char *contenido)
         }
  
         strcpy(nuevoNodo->info.contenido,contenido);
-        nuevoNodo->info.posicion=posicion++;
+        nuevoNodo->info.posicion=posicionPolaca++;
         nuevoNodo->psig=NULL;
 
         while( *ppolaca)

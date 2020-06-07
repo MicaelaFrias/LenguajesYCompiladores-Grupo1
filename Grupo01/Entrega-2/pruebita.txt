@@ -2,9 +2,11 @@
 program
 beginp
 
-if (3.5==a and a>5 and a<4)
+if (3.5==a or a>5)
 then 
 a:=3
+else
+a:=4
 endif
 
 
