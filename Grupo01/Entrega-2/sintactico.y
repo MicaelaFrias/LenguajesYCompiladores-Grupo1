@@ -253,7 +253,7 @@ seleccion: IF P_A condicion{
         //   | IF condicion THEN bloqueTemasComunesYEspeciales ELSE  bloqueTemasComunesYEspeciales ENDIF
         //   ;
 
-condicion: comparacion   { insertarPolaca(&polaca,"CMP"); insertarPolaca(&polaca,comp) ;printf("\nINSERTE BRANCH %s\n",comp); apilar(&pila,insertarPolaca(&polaca,"")); cantComparaciones++}                       
+condicion: comparacion   { insertarPolaca(&polaca,"CMP"); insertarPolaca(&polaca,comp) ; apilar(&pila,insertarPolaca(&polaca,"")); cantComparaciones++}                       
            | condicion operador{
                    char* pos;
                    int iPosicion;
