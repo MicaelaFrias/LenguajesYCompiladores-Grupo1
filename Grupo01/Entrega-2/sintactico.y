@@ -52,7 +52,7 @@ char* tipoDato;
 int insertarEnTS(char[],char[],int);
 int apilar(t_pila* ,const t_info* );
 t_info desapilar(t_pila *pila);
-t_infoIds desapilarId(t_pilaIds *pilaIds);
+char *  desapilarId(t_pilaIds *pilaIds);
 void crearPila(t_pila* );
 void crearPilaIds(t_pilaIds* pilaIds);
 int apilarId(t_pilaIds* pilaIds,const t_infoIds* infoPilaIds);
@@ -60,6 +60,7 @@ void crearPolaca(t_polaca* );
 int insertarPolaca(t_polaca*,char*);
 int escribirPosicionPolaca(t_polaca* ,int , char*);
 void guardarArchivoPolaca(t_polaca*);
+void  mostrarPilaIDs(t_pilaIds* );
 
 t_pila pila;
 t_pilaIds pilaIds;
@@ -199,36 +200,41 @@ listaVarLetIzq: ID {
                         t_infoIds infoId;
                         infoId.nombre = yylval.str_val;
                         apilarId(&pilaIds,&infoId);
-                        printf("apile %s", infoId.nombre);
+                        printf("apile %s\n", infoId.nombre);
+                        mostrarPilaIDs(&pilaIds)
                 }
               | listaVarLetIzq COMA ID {
                         t_infoIds infoId;
                         infoId.nombre = yylval.str_val;
                         apilarId(&pilaIds,&infoId);
-                         printf("apile %s", infoId.nombre);
+                         printf("apile %s\n", infoId.nombre);
+                         mostrarPilaIDs(&pilaIds)
                 }
               ;
 
-listaVarLetDer: expresion {
-        t_infoIds* infoId;
-        *infoId = desapilarId(&pilaIds);
-        printf("desapile %s", infoId->nombre);
-                if(infoId!=NULL){
-                        printf("%s", infoId->nombre);
+listaVarLetDer: expresion
+         {
+        char* infoId;
+        infoId = desapilarId(&pilaIds);
+        printf("desapile %s\n", infoId);
+  
+        if(infoId!=NULL){
                         // insertarPolaca(&polaca, info.nombre);
-                }
+         }
         // else {printf("La cantidad de ids es insuficiente"); exit(-1);}
         }
-              | listaVarLetDer PYC expresion {
-         t_infoIds* infoId;
-        *infoId = desapilarId(&pilaIds);
-        printf("desapile %s", infoId->nombre);
-                if(infoId!=NULL){
-                        printf("%s", infoId->nombre);
-                        // insertarPolaca(&polaca, info.nombre);
-                }
+            
+        | listaVarLetDer PYC expresion 
+        
+        {
+        char* infoId;
+        infoId = desapilarId(&pilaIds);
+        printf("desapile %s\n", infoId);
+         if(infoId!=NULL){
+            // insertarPolaca(&polaca, info.nombre);
+       }
         // else {printf("La cantidad de ids es insuficiente"); exit(-1);}
-              }
+         }
               ;
 
 bloqueDeclaracion: DEFVAR declaraciones ENDDEF 
@@ -333,16 +339,38 @@ int apilarId(t_pilaIds* pilaIds,const t_infoIds* infoPilaIds)
     return(1);
 }
 
-t_infoIds desapilarId(t_pilaIds *pilaIds)
-{   t_nodoPilaIds *aux;
-    t_infoIds infoPilaIds;
-    if(*pilaIds==NULL)
-         return (*pilaIds)->infoIds;
+char * desapilarId(t_pilaIds *pilaIds)
+{ 
+    printf("desapile");
+    t_nodoPilaIds *aux;
+    char * infoPilaIds;
+    
+    if(*pilaIds==NULL){
+         return (*pilaIds)->infoIds.nombre;
+    }
+
     aux=*pilaIds;
-    infoPilaIds=(*pilaIds)->infoIds;
+    infoPilaIds=(*pilaIds)->infoIds.nombre;
+
     *pilaIds=(*pilaIds)->psig; 
     free(aux); 
+        
+        
     return infoPilaIds; 
+}
+
+void mostrarPilaIDs(t_pilaIds* pilaIds)
+{
+
+        while(*pilaIds){
+          printf("Pila: %s\n",(*pilaIds)->infoIds.nombre);    
+          *pilaIds=(*pilaIds)->psig; 
+        }
+         
+}
+
+void VaciarPila(t_pilaIds* pilaIds){
+         pilaIds = NULL;
 }
 
 ///////////////////////// POLACA

@@ -67,8 +67,6 @@
 
 /* Copy the first part of user declarations.  */
 
-/* Line 189 of yacc.c  */
-#line 1 "sintactico.y"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -123,7 +121,7 @@ char* tipoDato;
 int insertarEnTS(char[],char[],int);
 int apilar(t_pila* ,const t_info* );
 t_info desapilar(t_pila *pila);
-t_infoIds desapilarId(t_pilaIds *pilaIds);
+char *  desapilarId(t_pilaIds *pilaIds);
 void crearPila(t_pila* );
 void crearPilaIds(t_pilaIds* pilaIds);
 int apilarId(t_pilaIds* pilaIds,const t_infoIds* infoPilaIds);
@@ -131,6 +129,7 @@ void crearPolaca(t_polaca* );
 int insertarPolaca(t_polaca*,char*);
 int escribirPosicionPolaca(t_polaca* ,int , char*);
 void guardarArchivoPolaca(t_polaca*);
+void  mostrarPilaIDs(t_pilaIds* );
 
 t_pila pila;
 t_pilaIds pilaIds;
@@ -140,8 +139,6 @@ t_polaca polaca;
 
 
 
-/* Line 189 of yacc.c  */
-#line 145 "sintactico.tab.c"
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
@@ -226,8 +223,6 @@ t_polaca polaca;
 typedef union YYSTYPE
 {
 
-/* Line 214 of yacc.c  */
-#line 72 "sintactico.y"
 
 int int_val;
 double float_val;
@@ -235,8 +230,6 @@ char *str_val;
 
 
 
-/* Line 214 of yacc.c  */
-#line 240 "sintactico.tab.c"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -247,8 +240,6 @@ char *str_val;
 /* Copy the second part of user declarations.  */
 
 
-/* Line 264 of yacc.c  */
-#line 252 "sintactico.tab.c"
 
 #ifdef short
 # undef short
@@ -560,13 +551,13 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,   120,   120,   120,   126,   127,   127,   129,   129,   133,
-     134,   139,   140,   141,   142,   143,   144,   145,   146,   147,
-     148,   149,   150,   151,   152,   153,   154,   159,   159,   162,
-     164,   166,   167,   170,   171,   172,   175,   176,   179,   180,
-     181,   184,   185,   186,   189,   190,   191,   192,   195,   198,
-     204,   212,   222,   234,   237,   238,   241,   244,   245,   246,
-     249,   254,   257,   260
+       0,   121,   121,   121,   127,   128,   128,   130,   130,   134,
+     135,   140,   141,   142,   143,   144,   145,   146,   147,   148,
+     149,   150,   151,   152,   153,   154,   155,   160,   160,   163,
+     165,   167,   168,   171,   172,   173,   176,   177,   180,   181,
+     182,   185,   186,   187,   190,   191,   192,   193,   196,   199,
+     206,   215,   227,   240,   243,   244,   247,   250,   251,   252,
+     255,   260,   263,   266
 };
 #endif
 
@@ -1592,295 +1583,220 @@ yyreduce:
     {
         case 2:
 
-/* Line 1455 of yacc.c  */
-#line 120 "sintactico.y"
     {printf("COMPILACION INICIADA\n");;}
     break;
 
   case 3:
 
-/* Line 1455 of yacc.c  */
-#line 122 "sintactico.y"
     {printf("COMPILACION EXITOSA\n");;}
     break;
 
   case 5:
 
-/* Line 1455 of yacc.c  */
-#line 127 "sintactico.y"
     {printf("--------------------------BLOQUE_DECLARACION\n\n\n");;}
     break;
 
   case 7:
 
-/* Line 1455 of yacc.c  */
-#line 129 "sintactico.y"
     {printf("--------------------------BLOQUE_DECLARACION\n\n\n");;}
     break;
 
   case 11:
 
-/* Line 1455 of yacc.c  */
-#line 139 "sintactico.y"
     {printf("--------------------------ITERACION\n\n\n");;}
     break;
 
   case 12:
 
-/* Line 1455 of yacc.c  */
-#line 140 "sintactico.y"
     {printf("--------------------------DECISION\n\n\n");;}
     break;
 
   case 13:
 
-/* Line 1455 of yacc.c  */
-#line 141 "sintactico.y"
     {printf("--------------------------LISTA_VARIABLES\n\n\n");;}
     break;
 
   case 14:
 
-/* Line 1455 of yacc.c  */
-#line 142 "sintactico.y"
     {printf("--------------------------ASIGNACION\n\n\n");;}
     break;
 
   case 15:
 
-/* Line 1455 of yacc.c  */
-#line 143 "sintactico.y"
     {printf("--------------------------ENTRADA\n\n\n");;}
     break;
 
   case 16:
 
-/* Line 1455 of yacc.c  */
-#line 144 "sintactico.y"
     {printf("--------------------------SALIDA\n\n\n");;}
     break;
 
   case 17:
 
-/* Line 1455 of yacc.c  */
-#line 145 "sintactico.y"
     {printf("--------------------------CONDICION\n\n\n");;}
     break;
 
   case 18:
 
-/* Line 1455 of yacc.c  */
-#line 146 "sintactico.y"
     {printf("--------------------------EXPRESION\n\n\n");;}
     break;
 
   case 19:
 
-/* Line 1455 of yacc.c  */
-#line 147 "sintactico.y"
     {printf("--------------------------TERMINO\n\n\n");;}
     break;
 
   case 20:
 
-/* Line 1455 of yacc.c  */
-#line 148 "sintactico.y"
     {printf("--------------------------FACTOR\n\n\n");;}
     break;
 
   case 21:
 
-/* Line 1455 of yacc.c  */
-#line 149 "sintactico.y"
     {printf("--------------------------LISTA_VARIABLES_LET_DERECHA\n\n\n");;}
     break;
 
   case 22:
 
-/* Line 1455 of yacc.c  */
-#line 150 "sintactico.y"
     {printf("--------------------------LISTA_VARIABLES_LET_IZQUIERDA\n\n\n");;}
     break;
 
   case 23:
 
-/* Line 1455 of yacc.c  */
-#line 151 "sintactico.y"
     {printf("--------------------------TIPO_DE_DATO\n\n\n");;}
     break;
 
   case 24:
 
-/* Line 1455 of yacc.c  */
-#line 152 "sintactico.y"
     {printf("--------------------------IF_UNARIO\n\n\n");;}
     break;
 
   case 25:
 
-/* Line 1455 of yacc.c  */
-#line 153 "sintactico.y"
     {printf("--------------------------LET\n\n\n");;}
     break;
 
   case 26:
 
-/* Line 1455 of yacc.c  */
-#line 154 "sintactico.y"
     {printf("--------------------------COMENTARIO\n\n\n");;}
     break;
 
   case 27:
 
-/* Line 1455 of yacc.c  */
-#line 159 "sintactico.y"
     { insertarPolaca(&polaca,yylval.str_val); ;}
     break;
 
   case 28:
 
-/* Line 1455 of yacc.c  */
-#line 159 "sintactico.y"
     {insertarPolaca(&polaca,"OP_ASIG");;}
     break;
 
   case 38:
 
-/* Line 1455 of yacc.c  */
-#line 179 "sintactico.y"
     { insertarPolaca(&polaca,"OP_SUM");  ;}
     break;
 
   case 39:
 
-/* Line 1455 of yacc.c  */
-#line 180 "sintactico.y"
     { insertarPolaca(&polaca,"OP_RES"); ;}
     break;
 
   case 42:
 
-/* Line 1455 of yacc.c  */
-#line 185 "sintactico.y"
     { insertarPolaca(&polaca,"OP_DIV");  ;}
     break;
 
   case 43:
 
-/* Line 1455 of yacc.c  */
-#line 186 "sintactico.y"
     { insertarPolaca(&polaca,"OP_MULT"); ;}
     break;
 
   case 44:
 
-/* Line 1455 of yacc.c  */
-#line 189 "sintactico.y"
     { insertarPolaca(&polaca,yylval.str_val); ;}
     break;
 
   case 45:
 
-/* Line 1455 of yacc.c  */
-#line 190 "sintactico.y"
     { insertarPolaca(&polaca,yylval.str_val); ;}
     break;
 
   case 46:
 
-/* Line 1455 of yacc.c  */
-#line 191 "sintactico.y"
     { insertarPolaca(&polaca,yylval.str_val); ;}
     break;
 
   case 47:
 
-/* Line 1455 of yacc.c  */
-#line 192 "sintactico.y"
     { insertarPolaca(&polaca,yylval.str_val); ;}
     break;
 
   case 49:
 
-/* Line 1455 of yacc.c  */
-#line 198 "sintactico.y"
     {
                         t_infoIds infoId;
                         infoId.nombre = yylval.str_val;
                         apilarId(&pilaIds,&infoId);
-                        printf("apile %s", infoId.nombre);
+                        printf("apile %s\n", infoId.nombre);
+                        mostrarPilaIDs(&pilaIds)
                 ;}
     break;
 
   case 50:
 
-/* Line 1455 of yacc.c  */
-#line 204 "sintactico.y"
     {
                         t_infoIds infoId;
                         infoId.nombre = yylval.str_val;
                         apilarId(&pilaIds,&infoId);
-                         printf("apile %s", infoId.nombre);
+                         printf("apile %s\n", infoId.nombre);
+                         mostrarPilaIDs(&pilaIds)
                 ;}
     break;
 
   case 51:
 
-/* Line 1455 of yacc.c  */
-#line 212 "sintactico.y"
     {
-        t_infoIds* infoId;
-        *infoId = desapilarId(&pilaIds);
-        printf("desapile %s", infoId->nombre);
-                if(infoId!=NULL){
-                        printf("%s", infoId->nombre);
+        char* infoId;
+        infoId = desapilarId(&pilaIds);
+        printf("desapile %s\n", infoId);
+  
+        if(infoId!=NULL){
                         // insertarPolaca(&polaca, info.nombre);
-                }
+         }
         // else {printf("La cantidad de ids es insuficiente"); exit(-1);}
         ;}
     break;
 
   case 52:
 
-/* Line 1455 of yacc.c  */
-#line 222 "sintactico.y"
     {
-         t_infoIds* infoId;
-        *infoId = desapilarId(&pilaIds);
-        printf("desapile %s", infoId->nombre);
-                if(infoId!=NULL){
-                        printf("%s", infoId->nombre);
-                        // insertarPolaca(&polaca, info.nombre);
-                }
+        char* infoId;
+        infoId = desapilarId(&pilaIds);
+        printf("desapile %s\n", infoId);
+         if(infoId!=NULL){
+            // insertarPolaca(&polaca, info.nombre);
+       }
         // else {printf("La cantidad de ids es insuficiente"); exit(-1);}
-              ;}
+         ;}
     break;
 
   case 57:
 
-/* Line 1455 of yacc.c  */
-#line 244 "sintactico.y"
     {tipoDato = "Float";}
     break;
 
   case 58:
 
-/* Line 1455 of yacc.c  */
-#line 245 "sintactico.y"
     {tipoDato = "String";}
     break;
 
   case 59:
 
-/* Line 1455 of yacc.c  */
-#line 246 "sintactico.y"
     {tipoDato = "Integer";}
     break;
 
   case 60:
 
-/* Line 1455 of yacc.c  */
-#line 250 "sintactico.y"
     {
                      nuevoSimbolo(tipoDato,"--",(tipoDato=="String")?strlen(yylval.str_val):0);
                      t_infoIds* infoId;
@@ -1889,15 +1805,11 @@ yyreduce:
 
   case 61:
 
-/* Line 1455 of yacc.c  */
-#line 254 "sintactico.y"
     {nuevoSimbolo(tipoDato,"--",(tipoDato=="String")?strlen(yylval.str_val):0);;}
     break;
 
 
 
-/* Line 1455 of yacc.c  */
-#line 1901 "sintactico.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2108,8 +2020,6 @@ yyreturn:
 
 
 
-/* Line 1675 of yacc.c  */
-#line 263 "sintactico.y"
 
 
 int main(int argc,char *argv[])
@@ -2183,18 +2093,39 @@ int apilarId(t_pilaIds* pilaIds,const t_infoIds* infoPilaIds)
     return(1);
 }
 
-t_infoIds desapilarId(t_pilaIds *pilaIds)
-{   t_nodoPilaIds *aux;
-    t_infoIds infoPilaIds;
-    if(*pilaIds==NULL)
-         return (*pilaIds)->infoIds;
+char * desapilarId(t_pilaIds *pilaIds)
+{ 
+       printf("desapile");
+  t_nodoPilaIds *aux;
+    char * infoPilaIds;
+    
+    if(*pilaIds==NULL){
+         return (*pilaIds)->infoIds.nombre;
+    }
+
     aux=*pilaIds;
-    infoPilaIds=(*pilaIds)->infoIds;
+    infoPilaIds=(*pilaIds)->infoIds.nombre;
+
     *pilaIds=(*pilaIds)->psig; 
     free(aux); 
+        
+        
     return infoPilaIds; 
 }
 
+void mostrarPilaIDs(t_pilaIds* pilaIds)
+{
+
+        while(*pilaIds){
+          printf("Pila: %s\n",(*pilaIds)->infoIds.nombre);    
+          *pilaIds=(*pilaIds)->psig; 
+        }
+         
+}
+
+void VaciarPila(t_pilaIds* pilaIds){
+         pilaIds = NULL;
+}
 
 ///////////////////////// POLACA
 

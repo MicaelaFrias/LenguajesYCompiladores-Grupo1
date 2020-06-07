@@ -97,8 +97,6 @@
 typedef union YYSTYPE
 {
 
-/* Line 1676 of yacc.c  */
-#line 72 "sintactico.y"
 
 int int_val;
 double float_val;
@@ -106,8 +104,6 @@ char *str_val;
 
 
 
-/* Line 1676 of yacc.c  */
-#line 111 "sintactico.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
