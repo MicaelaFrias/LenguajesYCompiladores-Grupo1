@@ -61,12 +61,15 @@ int insertarPolaca(t_polaca*,char*);
 int escribirPosicionPolaca(t_polaca* ,int , char*);
 void guardarArchivoPolaca(t_polaca*);
 void  mostrarPilaIDs(t_pilaIds* );
+int nuevoSimbolo(char* tipoDato,char valorString[],int longitud);
+char[] invertir_salto(char @comp[]);
 
 t_pila pila;
 t_pilaIds pilaIds;
 int posicion = 0;
 t_polaca polaca;
-
+char @comp[3];
+char @op[3];
 
 %}
 
@@ -95,10 +98,16 @@ char *str_val;
 %token FOR TO DO ENDFOR
 %token WHILE ENDW
 %token REPEAT UNTIL
-%token OP_LOG
+%token OP_OR
+%token OP_AND
 %token OP_NOT
 %token OP_DOSP
-%token OP_COMPARACION
+%token OP_IGUAL
+%token OP_MAYOR
+%token OP_MAYORIGUAL
+%token OP_MENOR
+%token OP_MENORIGUAL
+%token OP_DISTINTO
 %token OP_ASIG
 %token OP_SUM
 %token OP_RES
@@ -138,7 +147,7 @@ bloqueTemasComunesYEspeciales:
 
 temaComunYEspecial: 
             iteracion {printf("--------------------------ITERACION\n\n\n");}
-          | decision {printf("--------------------------DECISION\n\n\n");}
+          | seleccion {printf("--------------------------DECISION\n\n\n");}
           | listavariables {printf("--------------------------LISTA_VARIABLES\n\n\n");}
           | asignacion {printf("--------------------------ASIGNACION\n\n\n");}
           | entrada {printf("--------------------------ENTRADA\n\n\n");}
@@ -178,21 +187,36 @@ iteracion: WHILE {apilar(&pila,posicion);} {insertarPolaca(&polaca,"ET");}  P_A 
 
 
         } ENDW ;
+        
+ifUnario: ID IF P_A condicion COMA expresion COMA expresion P_C ;
 
-ifUnario: ID OP_COMPARACION IF P_A condicion COMA expresion COMA expresion P_C ;
-
-decision: IF P_A condicion P_C THEN bloqueTemasComunesYEspeciales ENDIF
+seleccion: IF P_A condicion P_C THEN bloqueTemasComunesYEspeciales ENDIF
           | IF P_A condicion P_C THEN bloqueTemasComunesYEspeciales ELSE  bloqueTemasComunesYEspeciales ENDIF
           ;
 
 condicion: comparacion                          
-           | condicion OP_LOG comparacion        {insertarPolaca(&polaca,"OP_LOG");}  
-           |OP_NOT comparacion                   {insertarPolaca(&polaca,"OP_NOT");}  
+           | condicion operador comparacion      
+                {
+                        if(!strcmp(@operador,"OR"))
+                                invertir_salto(@comp);
+                }
+           |OP_NOT comparacion                   {insertarPolaca(&polaca);}  
            ;
 
-comparacion: expresion OP_COMPARACION expresion                {insertarPolaca(&polaca,"OP_COMPARACION");}
-            | P_A expresion OP_COMPARACION expresion P_C       {insertarPolaca(&polaca,"OP_COMPARACION");}
+operador: OP_OR {strcpy(@operador, "OR");}
+        | OP_AND {strcpy(@operador,"AND");}
+
+comparacion: expresion comparador expresion              {insertarPolaca(&polaca, @comp);}
+            | P_A expresion comparador expresion P_C     {insertarPolaca(&polaca, @comp);}
             ;
+
+comparador: OP_MAYOR {strcpy(@comp, "BLE");}
+        | OP_MENOR {strcpy(@comp, "BGE");}
+        | OP_MAYORIGUAL {strcpy(@comp,"BLT");}
+        | OP_MENORIGUAL {strcpy(@comp, "BGT");}
+        | OP_DISTINTO {strcpy(@comp, "BEQ");}
+        | OP_IGUAL {strcpy(@comp, "BNE");}
+        ;
 
 expresion: expresion OP_SUM termino   { insertarPolaca(&polaca,"OP_SUM");  }
          | expresion OP_RES termino  { insertarPolaca(&polaca,"OP_RES"); }
@@ -350,14 +374,8 @@ char * desapilarId(t_pilaIds *pilaIds)
     *pilaIds=(*pilaIds)->psig; 
     infoPilaIds=(*pilaIds)->infoIds.nombre;
 
-<<<<<<< HEAD
     free(aux); 
               
-=======
-    *pilaIds=(*pilaIds)->psig; 
-    free(aux);    
-        
->>>>>>> cfb9cc5561e64aa799b6ee12f89b29ffbc767e6d
     return infoPilaIds; 
 }
 
@@ -435,7 +453,32 @@ void guardarArchivoPolaca(t_polaca *ppolaca){
 	    }
 		fclose(pint);
 	}
+   
+///////////////////////// UTILES
 
+char[] invertir_salto(char[] @comp){
+        switch (@comp){
+                case "BLE":
+                strcpy(@comp,"BGT");
+                break;
+                case "BGE":
+                strcpy(@comp,"BLT");
+                break;
+                case "BLT":
+                strcpy(@comp,"BGE");
+                break;
+                case "BGT":
+                strcpy(@comp,"BLE");
+                break;
+                case "BEQ":
+                strcpy(@comp,"BNE");
+                break;
+                case "BNE":
+                strcpy(@comp,"BEQ");
+                break;
+        }
+        return @comp;
+}
 ///////////////////////// TABLA DE SIMBOLOS
 int nuevoSimbolo(char* tipoDato,char valorString[],int longitud){
   FILE *tablasimbolos = fopen("ts.txt","rw");
