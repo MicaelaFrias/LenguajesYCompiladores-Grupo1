@@ -2,12 +2,10 @@
 program
 beginp
 
-if (3.5==a)
-then 
-a:=3
-endif
 
-
+while (a>8 and f4==1)
+a3 :=4 
+endw
 
 
 endp

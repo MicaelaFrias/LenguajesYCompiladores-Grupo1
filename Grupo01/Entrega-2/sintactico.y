@@ -291,7 +291,7 @@ listaVarLetDer: expresion
                  t_infoIds infoIds; 
                 char* id = SacarDeCola(&cola, &infoIds); 
                 if(id==""){
-                        printf("Numero de ids erróneo");
+                     printf("Numero de ids ingresados en el LET erroneos.\n");
                         yyerror();
                 }
                 insertarPolaca(&polaca,id); 
@@ -388,7 +388,6 @@ void crearPila(t_pila* pila){
 
 int apilar(t_pila* pila,const int iPosicion)
 {       
-    printf("Apile: %d\n",iPosicion);
     t_nodoPila *nuevoNodo=(t_nodoPila*) malloc(sizeof(t_nodoPila));
     if(nuevoNodo==NULL){
         return(0); //Sin_memoria
@@ -409,7 +408,6 @@ int desapilar(t_pila *pila)
     iPosicion=(*pila)->info.posicion ;
     *pila=(*pila)->psig; 
     free(aux); 
-   printf("Desapile: %d\n",iPosicion);
     return iPosicion; 
 }
 
