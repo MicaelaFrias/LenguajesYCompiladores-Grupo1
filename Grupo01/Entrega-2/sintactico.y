@@ -202,7 +202,7 @@ iteracion: WHILE {
         P_A condicion P_C   {
         insertarPolaca(&polaca,"BRANCH");apilar(&pila,posicion); insertarPolaca(&polaca,"Z");} 
          bloqueTemasComunesYEspeciales
-        
+        {
         insertarPolaca(&polaca,"BI");
          int iPosicion;
          char sPosicion[10];
@@ -221,17 +221,23 @@ iteracion: WHILE {
         
 ifUnario: ID IF P_A condicion COMA expresion COMA expresion P_C ;
 
-seleccion: IF P_A condicion P_C THEN bloqueTemasComunesYEspeciales ENDIF
+seleccion: IF P_A condicion P_C THEN bloqueTemasComunesYEspeciales ENDIF{
+        int iPosicion;
+        char* pos;
+        iPosicion = desapilar(&pila); printf("Desapile %u", iPosicion); 
+        escribirPosicionPolaca(&polaca,iPosicion,itoa(insertarPolaca(&polaca,"ENDIF"), pos, 10));
+        }
           | IF P_A condicion P_C THEN bloqueTemasComunesYEspeciales ELSE  bloqueTemasComunesYEspeciales ENDIF
           ;
 
-condicion: comparacion                          
+condicion: comparacion   { insertarPolaca(&polaca,"CMP"); insertarPolaca(&polaca,comp); apilar(&pila,insertarPolaca(&polaca,""));}                       
            | condicion operador comparacion      
                 {
                         if(!strcmp(operador,"OR"))
                                 invertir_salto(comp);
+                     insertarPolaca(&polaca,"CMP"); insertarPolaca(&polaca,comp); apilar(&pila,insertarPolaca(&polaca,""));
                 }
-           |OP_NOT comparacion                 
+           |OP_NOT{ invertir_salto(comp);} comparacion                 
            ;
 
 operador: OP_OR {strcpy(operador, "OR");}
@@ -503,7 +509,7 @@ int insertarPolaca(t_polaca* ppolaca,char *contenido)
 {
         t_nodoPolaca* nuevoNodo = (t_nodoPolaca*)malloc(sizeof(t_nodoPolaca));
         if(!nuevoNodo){
-                return 0;
+                return 1;
         }
  
         strcpy(nuevoNodo->info.contenido,contenido);
@@ -516,11 +522,12 @@ int insertarPolaca(t_polaca* ppolaca,char *contenido)
         }
         
         *ppolaca=nuevoNodo;        
-        return 1;
+        return nuevoNodo->info.posicion;
 }
 
 int escribirPosicionPolaca(t_polaca* ppolaca,int posicion, char *contenido) //insertar en polaca y poner pos actual 
 	{
+                printf("El contenido es %s", contenido);
 	        t_nodoPolaca* aux;
 		aux=*ppolaca;
 	    while(aux!=NULL && aux->info.posicion<=posicion){
@@ -554,26 +561,19 @@ void guardarArchivoPolaca(t_polaca *ppolaca){
 ///////////////////////// UTILES
 
 char* invertir_salto(char* comp){
-        // switch (comp){
-        //         case "BLE":
-        //         strcpy(comp,"BGT");
-        //         break;
-        //         case "BGE":
-        //         strcpy(comp,"BLT");
-        //         break;
-        //         case "BLT":
-        //         strcpy(comp,"BGE");
-        //         break;
-        //         case "BGT":
-        //         strcpy(comp,"BLE");
-        //         break;
-        //         case "BEQ":
-        //         strcpy(comp,"BNE");
-        //         break;
-        //         case "BNE":
-        //         strcpy(comp,"BEQ");
-        //         break;
-        // }
+                if(!strcmp("BLE",comp))
+                strcpy(comp,"BGT");
+                else if(!strcmp("BGE",comp))
+                strcpy(comp,"BLT");
+                else if(!strcmp("BLT",comp))
+                strcpy(comp,"BGE");
+                else if(!strcmp("BGT",comp))
+                strcpy(comp,"BLE");
+                else if(!strcmp("BEQ",comp))
+                strcpy(comp,"BNE");
+                else if(!strcmp("BNE",comp))
+                strcpy(comp,"BEQ");
+
         return comp;
 }
 ///////////////////////// TABLA DE SIMBOLOS
