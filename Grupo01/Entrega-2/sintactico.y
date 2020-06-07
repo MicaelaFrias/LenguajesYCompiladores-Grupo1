@@ -5,7 +5,6 @@
 #include <conio.h>
 #include "sintactico.tab.h"
 int yystopparser=0;
-int posicion = 0;
 FILE  *yyin;
 char* tipoDato;
 
@@ -14,23 +13,25 @@ char* tipoDato;
 	{
 		int posicion;
 	}t_info;
-        typedef struct
-	{
-		char* tipoDato;
-                char* nombre;
-	}t_infoIds;
 
 	typedef struct s_nodoPila{
     	t_info info;
     	struct s_nodoPila* psig;
 	}t_nodoPila;
 
+	typedef t_nodoPila *t_pila;
+
+        typedef struct
+	{
+		char* tipoDato;
+                char* nombre;
+	}t_infoIds;
+
         typedef struct s_nodoPilaIds{
-    	t_infoIds info;
+    	t_infoIds infoIds;
     	struct s_nodoPilaIds* psig;
 	}t_nodoPilaIds;
 
-	typedef t_nodoPila *t_pila;
 	typedef t_nodoPilaIds *t_pilaIds;
 
 /////////////////////POLACA
@@ -50,17 +51,20 @@ char* tipoDato;
 
 int insertarEnTS(char[],char[],int);
 int apilar(t_pila* ,const t_info* );
-t_info* desapilar(t_pila *pila);
+t_info desapilar(t_pila *pila);
+t_infoIds desapilarId(t_pilaIds *pilaIds);
 void crearPila(t_pila* );
-int verTopePila(const t_pila* , t_info* );
+void crearPilaIds(t_pilaIds* pilaIds);
+int apilarId(t_pilaIds* pilaIds,const t_infoIds* infoPilaIds);
 void crearPolaca(t_polaca* );
 int insertarPolaca(t_polaca*,char*);
 int escribirPosicionPolaca(t_polaca* ,int , char*);
 void guardarArchivoPolaca(t_polaca*);
 
-t_pila* pila;
-t_pila* pilaIds;
- t_polaca polaca;
+t_pila pila;
+t_pilaIds pilaIds;
+int posicion = 0;
+t_polaca polaca;
 
 
 %}
@@ -157,7 +161,7 @@ asignacion: ID { insertarPolaca(&polaca,yylval.str_val); } OP_ASIG expresion {in
 
 iteracion: WHILE P_A condicion P_C bloqueTemasComunesYEspeciales ENDW ;
 
-ifUnario: ID "=" IF P_A condicion COMA expresion COMA expresion P_C ;
+ifUnario: ID ASIG IF P_A condicion COMA expresion COMA expresion P_C ;
 
 decision: IF P_A condicion P_C THEN bloqueTemasComunesYEspeciales ENDIF
           | IF P_A condicion P_C THEN bloqueTemasComunesYEspeciales ELSE  bloqueTemasComunesYEspeciales ENDIF
@@ -172,18 +176,18 @@ comparacion: expresion OP_COMPARACION expresion
             | P_A expresion OP_COMPARACION expresion P_C
             ;
 
-expresion: expresion OP_SUM termino   {printf("3\n");}  { insertarPolaca(&polaca,"OP_SUM");  }
-         | expresion OP_RES termino   {printf("3\n");} { insertarPolaca(&polaca,"OP_RES"); }
+expresion: expresion OP_SUM termino   { insertarPolaca(&polaca,"OP_SUM");  }
+         | expresion OP_RES termino  { insertarPolaca(&polaca,"OP_RES"); }
          | termino                              
           ;
 
 termino: factor
         | termino OP_DIV factor   { insertarPolaca(&polaca,"OP_DIV");  }
-        | termino OP_MULT factor  {printf("4\n");}  { insertarPolaca(&polaca,"OP_MULT"); }
+        | termino OP_MULT factor   { insertarPolaca(&polaca,"OP_MULT"); }
         ;
 
-factor: ID                 {printf("56\n");}     { insertarPolaca(&polaca,yylval.str_val); }
-        | CONST_INT        {printf("6\n");}     { insertarPolaca(&polaca,yylval.str_val); }
+factor: ID                { insertarPolaca(&polaca,yylval.str_val); }
+        | CONST_INT        { insertarPolaca(&polaca,yylval.str_val); }
         | CONST_STR            { insertarPolaca(&polaca,yylval.str_val); }
         | CONST_REAL           { insertarPolaca(&polaca,yylval.str_val); }
       ;
@@ -191,12 +195,36 @@ factor: ID                 {printf("56\n");}     { insertarPolaca(&polaca,yylval
 let: LET listaVarLetIzq OP_ASIG P_A listaVarLetDer P_C
     ;
  
-listaVarLetIzq: ID 
-              | listaVarLetIzq COMA ID
+listaVarLetIzq: ID {
+                        t_infoIds infoId;
+                        infoId.nombre = yylval.str_val;
+                        apilarId(&pilaIds,&infoId);
+                }
+              | listaVarLetIzq COMA ID {
+                        t_infoIds infoId;
+                        infoId.nombre = yylval.str_val;
+                        apilarId(&pilaIds,&infoId);
+                }
               ;
- 
-listaVarLetDer: expresion
-              | listaVarLetDer PYC expresion
+
+listaVarLetDer: expresion {
+        t_infoIds* infoId;
+        *infoId = desapilarId(&pilaIds);
+                if(infoId!=NULL){
+                        printf("%s", infoId->nombre);
+                        // insertarPolaca(&polaca, info.nombre);
+                }
+        // else {printf("La cantidad de ids es insuficiente"); exit(-1);}
+        }
+              | listaVarLetDer PYC expresion {
+         t_infoIds* infoId;
+        *infoId = desapilarId(&pilaIds);
+                if(infoId!=NULL){
+                        printf("%s", infoId->nombre);
+                        // insertarPolaca(&polaca, info.nombre);
+                }
+        // else {printf("La cantidad de ids es insuficiente"); exit(-1);}
+              }
               ;
 
 bloqueDeclaracion: DEFVAR declaraciones ENDDEF 
@@ -218,14 +246,9 @@ listavariables: ID PYC
                 {
                      nuevoSimbolo(tipoDato,"--",(tipoDato=="String")?strlen(yylval.str_val):0);
                      t_infoIds* infoId;
-                     //ACA TENEMOS QUE APILAR LOS IDS PARA TENER SU TIPO AL INSERTAR EN POLACA
-                //      (*infoId).tipoDato = "dedetipoDato";
-                //      (*infoId).nombre = yylval.str_val;
-                // apilarId(pilaIds,infoId);
                 }
               | listavariables ID PYC {nuevoSimbolo(tipoDato,"--",(tipoDato=="String")?strlen(yylval.str_val):0);}
               ;
-
 
 entrada: GET ID 
         ;
@@ -238,7 +261,8 @@ salida: DISPLAY factor
 int main(int argc,char *argv[])
 {
    
-        crearPila(pila);
+        crearPila(&pila);
+        crearPilaIds(&pilaIds);
         crearPolaca(&polaca);
         if ((yyin = fopen(argv[1], "rt")) == NULL)
         {
@@ -277,13 +301,13 @@ int apilar(t_pila* pila,const t_info* infoPila)
     return(1);
 }
 
-t_info* desapilar(t_pila *pila)
+t_info desapilar(t_pila *pila)
 {   t_nodoPila *aux;
-    t_info * infoPila;
+    t_info infoPila;
     if(*pila==NULL)
-        return(0);
+        return (*pila)->info;
     aux=*pila;
-    *infoPila=(*pila)->info;
+    infoPila=(*pila)->info;
     *pila=(*pila)->psig; 
     free(aux); 
     return infoPila; 
@@ -299,19 +323,19 @@ int apilarId(t_pilaIds* pilaIds,const t_infoIds* infoPilaIds)
 {   t_nodoPilaIds *nuevoNodo=(t_nodoPilaIds*) malloc(sizeof(t_nodoPilaIds));
     if(nuevoNodo==NULL)
         return(0); //Sin_memoria
-    nuevoNodo->info=*infoPilaIds;
+    nuevoNodo->infoIds=*infoPilaIds;
     nuevoNodo->psig=*pilaIds;
     *pilaIds=nuevoNodo;
     return(1);
 }
 
-t_infoIds* desapilarId(t_pilaIds *pilaIds)
+t_infoIds desapilarId(t_pilaIds *pilaIds)
 {   t_nodoPilaIds *aux;
-    t_infoIds * infoPilaIds;
+    t_infoIds infoPilaIds;
     if(*pilaIds==NULL)
-        return(0);
+         return (*pilaIds)->infoIds;
     aux=*pilaIds;
-    *infoPilaIds=(*pilaIds)->info;
+    infoPilaIds=(*pilaIds)->infoIds;
     *pilaIds=(*pilaIds)->psig; 
     free(aux); 
     return infoPilaIds; 
@@ -323,17 +347,12 @@ t_infoIds* desapilarId(t_pilaIds *pilaIds)
 // esto no deberia ser una lista?
 
 void crearPolaca(t_polaca* ppolaca){
-               printf("creando \n");
 
         *ppolaca = NULL;
-
-         printf("creando párte 2 \n");
 }
 
 int insertarPolaca(t_polaca* ppolaca,char *contenido)
 {
-
-             printf("llegue 22 \n");
         t_nodoPolaca* nuevoNodo = (t_nodoPolaca*)malloc(sizeof(t_nodoPolaca));
         if(!nuevoNodo){
                 return 0;
@@ -342,18 +361,13 @@ int insertarPolaca(t_polaca* ppolaca,char *contenido)
         strcpy(nuevoNodo->info.contenido,contenido);
         nuevoNodo->info.posicion=posicion++;
         nuevoNodo->psig=NULL;
-              printf("llegue mama \n");
 
         while( *ppolaca)
-        {
-                        
-                ppolaca=&(*ppolaca)->psig;
-                
+        {            
+                ppolaca=&(*ppolaca)->psig;     
         }
         
-        *ppolaca=nuevoNodo;
-                       printf("llegue papap \n");
-        
+        *ppolaca=nuevoNodo;        
         return 1;
 }
 

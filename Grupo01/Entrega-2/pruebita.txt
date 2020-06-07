@@ -3,15 +3,7 @@ program
 beginp
  
  
-
-defvar
-float : a3;
-	f455;
-	h7;
-
-enddef
-
-a:= 3 * 3
+let uno,dos,tres := ("3";4;a+5)
 
 
 endp

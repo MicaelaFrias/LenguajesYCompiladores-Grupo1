@@ -66,6 +66,7 @@ ID			    {LETRA}({LETRA}|{DIGITO}|_)*
 ">"             { return OP_COMPARACION;}
 ">="            { return OP_COMPARACION;}
 "="             { return OP_COMPARACION;}
+"="             { return ASIG;}
 "<"             { return OP_COMPARACION;}
 "<="            { return OP_COMPARACION;}
 "<>"            { return OP_COMPARACION;}
