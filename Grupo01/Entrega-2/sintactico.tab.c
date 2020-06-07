@@ -609,10 +609,10 @@ static const yytype_uint16 yyrline[] =
      175,   180,   181,   182,   183,   184,   185,   186,   187,   188,
      189,   190,   191,   192,   193,   194,   195,   200,   200,   203,
      206,   209,   203,   226,   228,   234,   228,   256,   257,   257,
-     276,   276,   279,   280,   282,   283,   286,   287,   288,   289,
-     290,   291,   294,   295,   296,   299,   300,   301,   304,   305,
-     306,   307,   310,   313,   318,   325,   338,   353,   356,   357,
-     360,   363,   364,   365,   368,   373,   376,   383
+     280,   280,   283,   284,   286,   287,   290,   291,   292,   293,
+     294,   295,   298,   299,   300,   303,   304,   305,   308,   309,
+     310,   311,   314,   317,   322,   329,   342,   357,   360,   361,
+     364,   367,   368,   369,   372,   377,   380,   387
 };
 #endif
 
@@ -1905,6 +1905,10 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 271 "sintactico.y"
     {
+                        if(!strcmp(operador,"OR")&& cantComparaciones!=1){
+                            invertir_salto(comp);
+                        escribirPosicionPolaca(&polaca,posicion-2,comp);
+                   }
                      insertarPolaca(&polaca,"CMP"); insertarPolaca(&polaca,comp);
                      (!strcmp(operador,"OR"))?apilar(&pilaVerdadero,insertarPolaca(&polaca,"")):apilar(&pila,insertarPolaca(&polaca,""));
                 cantComparaciones = 0;
@@ -1914,126 +1918,126 @@ yyreduce:
   case 40:
 
 /* Line 1455 of yacc.c  */
-#line 276 "sintactico.y"
+#line 280 "sintactico.y"
     { invertir_salto(comp);;}
     break;
 
   case 42:
 
 /* Line 1455 of yacc.c  */
-#line 279 "sintactico.y"
+#line 283 "sintactico.y"
     {strcpy(operador, "OR");;}
     break;
 
   case 43:
 
 /* Line 1455 of yacc.c  */
-#line 280 "sintactico.y"
+#line 284 "sintactico.y"
     {strcpy(operador,"AND");;}
     break;
 
   case 46:
 
 /* Line 1455 of yacc.c  */
-#line 286 "sintactico.y"
+#line 290 "sintactico.y"
     {strcpy(comp, "BLE");;}
     break;
 
   case 47:
 
 /* Line 1455 of yacc.c  */
-#line 287 "sintactico.y"
+#line 291 "sintactico.y"
     {strcpy(comp, "BGE");;}
     break;
 
   case 48:
 
 /* Line 1455 of yacc.c  */
-#line 288 "sintactico.y"
+#line 292 "sintactico.y"
     {strcpy(comp,"BLT");;}
     break;
 
   case 49:
 
 /* Line 1455 of yacc.c  */
-#line 289 "sintactico.y"
+#line 293 "sintactico.y"
     {strcpy(comp, "BGT");;}
     break;
 
   case 50:
 
 /* Line 1455 of yacc.c  */
-#line 290 "sintactico.y"
+#line 294 "sintactico.y"
     {strcpy(comp, "BEQ");;}
     break;
 
   case 51:
 
 /* Line 1455 of yacc.c  */
-#line 291 "sintactico.y"
+#line 295 "sintactico.y"
     {strcpy(comp, "BNE");;}
     break;
 
   case 52:
 
 /* Line 1455 of yacc.c  */
-#line 294 "sintactico.y"
+#line 298 "sintactico.y"
     { insertarPolaca(&polaca,"OP_SUM");  ;}
     break;
 
   case 53:
 
 /* Line 1455 of yacc.c  */
-#line 295 "sintactico.y"
+#line 299 "sintactico.y"
     { insertarPolaca(&polaca,"OP_RES"); ;}
     break;
 
   case 56:
 
 /* Line 1455 of yacc.c  */
-#line 300 "sintactico.y"
+#line 304 "sintactico.y"
     { insertarPolaca(&polaca,"OP_DIV");  ;}
     break;
 
   case 57:
 
 /* Line 1455 of yacc.c  */
-#line 301 "sintactico.y"
+#line 305 "sintactico.y"
     { insertarPolaca(&polaca,"OP_MULT"); ;}
     break;
 
   case 58:
 
 /* Line 1455 of yacc.c  */
-#line 304 "sintactico.y"
+#line 308 "sintactico.y"
     { insertarPolaca(&polaca,yylval.str_val); ;}
     break;
 
   case 59:
 
 /* Line 1455 of yacc.c  */
-#line 305 "sintactico.y"
+#line 309 "sintactico.y"
     { insertarPolaca(&polaca,yylval.str_val); ;}
     break;
 
   case 60:
 
 /* Line 1455 of yacc.c  */
-#line 306 "sintactico.y"
+#line 310 "sintactico.y"
     { insertarPolaca(&polaca,yylval.str_val); ;}
     break;
 
   case 61:
 
 /* Line 1455 of yacc.c  */
-#line 307 "sintactico.y"
+#line 311 "sintactico.y"
     { insertarPolaca(&polaca,yylval.str_val); ;}
     break;
 
   case 63:
 
 /* Line 1455 of yacc.c  */
-#line 313 "sintactico.y"
+#line 317 "sintactico.y"
     {
                         t_infoIds infoIds;
                         infoIds.nombre= yyval.str_val;   
@@ -2044,7 +2048,7 @@ yyreduce:
   case 64:
 
 /* Line 1455 of yacc.c  */
-#line 318 "sintactico.y"
+#line 322 "sintactico.y"
     {
                          t_infoIds infoIds;
                         infoIds.nombre= yyval.str_val;   
@@ -2055,7 +2059,7 @@ yyreduce:
   case 65:
 
 /* Line 1455 of yacc.c  */
-#line 326 "sintactico.y"
+#line 330 "sintactico.y"
     {
                  t_infoIds infoIds; 
                 char* id = SacarDeCola(&cola, &infoIds); 
@@ -2072,7 +2076,7 @@ yyreduce:
   case 66:
 
 /* Line 1455 of yacc.c  */
-#line 340 "sintactico.y"
+#line 344 "sintactico.y"
     {
                t_infoIds infoIds; 
                 char* id = SacarDeCola(&cola, &infoIds); 
@@ -2089,28 +2093,28 @@ yyreduce:
   case 71:
 
 /* Line 1455 of yacc.c  */
-#line 363 "sintactico.y"
+#line 367 "sintactico.y"
     {tipoDato = "Float";}
     break;
 
   case 72:
 
 /* Line 1455 of yacc.c  */
-#line 364 "sintactico.y"
+#line 368 "sintactico.y"
     {tipoDato = "String";}
     break;
 
   case 73:
 
 /* Line 1455 of yacc.c  */
-#line 365 "sintactico.y"
+#line 369 "sintactico.y"
     {tipoDato = "Integer";}
     break;
 
   case 74:
 
 /* Line 1455 of yacc.c  */
-#line 369 "sintactico.y"
+#line 373 "sintactico.y"
     {
                      nuevoSimbolo(tipoDato,"--",(tipoDato=="String")?strlen(yylval.str_val):0);
                      t_infoIds* infoId;
@@ -2120,14 +2124,14 @@ yyreduce:
   case 75:
 
 /* Line 1455 of yacc.c  */
-#line 373 "sintactico.y"
+#line 377 "sintactico.y"
     {nuevoSimbolo(tipoDato,"--",(tipoDato=="String")?strlen(yylval.str_val):0);;}
     break;
 
   case 76:
 
 /* Line 1455 of yacc.c  */
-#line 377 "sintactico.y"
+#line 381 "sintactico.y"
     {
                 insertarPolaca(&polaca,yylval.str_val);
                 insertarPolaca(&polaca,"GET");
@@ -2137,7 +2141,7 @@ yyreduce:
   case 77:
 
 /* Line 1455 of yacc.c  */
-#line 384 "sintactico.y"
+#line 388 "sintactico.y"
     {
                 insertarPolaca(&polaca,"DISPLAY");
         ;}
@@ -2146,7 +2150,7 @@ yyreduce:
 
 
 /* Line 1455 of yacc.c  */
-#line 2150 "sintactico.tab.c"
+#line 2154 "sintactico.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2358,7 +2362,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 389 "sintactico.y"
+#line 393 "sintactico.y"
 
 
 int main(int argc,char *argv[])

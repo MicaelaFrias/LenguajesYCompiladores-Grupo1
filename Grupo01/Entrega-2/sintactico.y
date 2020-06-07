@@ -269,6 +269,10 @@ condicion: comparacion   { insertarPolaca(&polaca,"CMP"); insertarPolaca(&polaca
 
            } comparacion     
                 {
+                        if(!strcmp(operador,"OR")&& cantComparaciones!=1){
+                            invertir_salto(comp);
+                        escribirPosicionPolaca(&polaca,posicion-2,comp);
+                   }
                      insertarPolaca(&polaca,"CMP"); insertarPolaca(&polaca,comp);
                      (!strcmp(operador,"OR"))?apilar(&pilaVerdadero,insertarPolaca(&polaca,"")):apilar(&pila,insertarPolaca(&polaca,""));
                 cantComparaciones = 0;
