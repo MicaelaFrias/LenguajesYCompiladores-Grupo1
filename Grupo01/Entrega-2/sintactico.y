@@ -233,6 +233,10 @@ listaVarLetDer: expresion
          {
                  t_infoIds infoIds; 
                 char* id = SacarDeCola(&cola, &infoIds); 
+                if(id==""){
+                        printf("Numero de ids erróneo");
+                        exit(-1);
+                }
                  printf("desencole %s\n", id);
                 insertarPolaca(&polaca,id); 
                 insertarPolaca(&polaca,"OP_ASIG");   
@@ -244,6 +248,10 @@ listaVarLetDer: expresion
         {
                t_infoIds infoIds; 
                 char* id = SacarDeCola(&cola, &infoIds); 
+                 if(id==""){
+                        printf("Numero de ids erróneo");
+                        exit(-1);
+                }
                  printf("desencole %s\n", id);
                 insertarPolaca(&polaca,id); 
                 insertarPolaca(&polaca,"OP_ASIG");   
