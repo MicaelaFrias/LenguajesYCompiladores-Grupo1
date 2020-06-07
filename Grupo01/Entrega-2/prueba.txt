@@ -3,15 +3,12 @@ program
 beginp
  
 defvar
-<<<<<<< HEAD
-float : a3;f455;h7;
+float : a;f455;h7;
 string:a3;f45;h7;
 float : e;f;
-=======
 float: a3;f455;h7;
 string:a3;f45;h7;
 float: e;f;
->>>>>>> 7810b9f3d1cbd97f481410b3f01685f7560b0ea0
 int: j;k;
 enddef
 
@@ -58,13 +55,10 @@ display a3
 
 entero := 3+t
 
-<<<<<<< HEAD
 e = if(a<4,a+5,5)
-=======
 e = if(a>3,a+6,a+8)
 
 let uno,dos,tres := ("3";4;a+5)
->>>>>>> 7810b9f3d1cbd97f481410b3f01685f7560b0ea0
 
 endp
 

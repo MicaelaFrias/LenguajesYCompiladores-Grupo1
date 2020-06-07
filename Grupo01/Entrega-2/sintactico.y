@@ -6,6 +6,7 @@
 #include "sintactico.tab.h"
 int yystopparser=0;
 FILE  *yyin;
+char*operador;
 char* tipoDato;
 
 //////////////////////PILA
@@ -32,6 +33,7 @@ char* tipoDato;
     	struct s_nodoPilaIds* psig;
 	}t_nodoPilaIds;
 
+
 	typedef t_nodoPilaIds *t_pilaIds;
 
 /////////////////////POLACA
@@ -48,25 +50,48 @@ char* tipoDato;
 
 	typedef t_nodoPolaca* t_polaca;
 
+///////////////////COLA
 
+typedef struct s_nodoCola{
+t_infoIds infoIds;
+struct s_nodoCola* sig;
+}t_nodoCola;
+
+typedef struct {
+t_nodoCola* pri;
+t_nodoCola* ult;
+}t_cola;
+
+/////////////////DECLARACION FUNCIONES
 int insertarEnTS(char[],char[],int);
-int apilar(t_pila* ,const int );
+int apilar(t_pila* pila,const int iPosicion);
 int desapilar(t_pila *pila);
 void crearPila(t_pila* pila);
+<<<<<<< HEAD
 int pilaVacia(t_pila* pila);
 
 void crearPilaIds(t_pilaIds* pilaIds);
 char *  desapilarId(t_pilaIds *pilaIds);
 void crearPila(t_pila* );
+=======
+
+>>>>>>> b280b556093d8139a3fc2dd3bc9b750a9657eb30
 void crearPilaIds(t_pilaIds* pilaIds);
+char *  desapilarId(t_pilaIds *pilaIds);
 int apilarId(t_pilaIds* pilaIds,const t_infoIds* infoPilaIds);
+void  mostrarPilaIDs(t_pilaIds* );
+
+void crearCola(t_cola *pcola);
+int PonerEnCola(t_cola *pcola,const t_infoIds *infoIds);
+char* SacarDeCola (t_cola *pcola, t_infoIds *infoIds);
+
 void crearPolaca(t_polaca* );
 int insertarPolaca(t_polaca*,char*);
 int escribirPosicionPolaca(t_polaca* ,int , char*);
 void guardarArchivoPolaca(t_polaca*);
 void  mostrarPilaIDs(t_pilaIds* );
-int nuevoSimbolo(char* tipoDato,char valorString[],int longitud);
-char[] invertir_salto(char @comp[]);
+int nuevoSimbolo(char* tipoDato,char* valorString,int longitud);
+char* invertir_salto(char* comp);
 
 t_pila pila;
 t_pilaIds pilaIds;
@@ -75,8 +100,12 @@ t_polaca polaca;
 char comp[3];
 char op[3];
 
+<<<<<<< HEAD
 t_pila pilaVerdadero;
 t_pila pilaFalso;
+=======
+t_pila pila;
+>>>>>>> b280b556093d8139a3fc2dd3bc9b750a9657eb30
 t_cola cola;
 t_pilaIds pilaIds;
 int posicionPolaca = 0;
@@ -180,9 +209,13 @@ temaComunYEspecial:
 asignacion: ID { insertarPolaca(&polaca,yylval.str_val); } OP_ASIG expresion {insertarPolaca(&polaca,"OP_ASIG");}
                 ;
 
-iteracion: WHILE {apilar(&pila,posicion);} {insertarPolaca(&polaca,"ET");}  P_A condicion P_C   {insertarPolaca(&polaca,"BRANCH");}  {apilar(&pila,posicion); {insertarPolaca(&polaca,"Z");} } bloqueTemasComunesYEspeciales
-         {
-        
+iteracion: WHILE {
+        apilar(&pila,posicion);insertarPolaca(&polaca,"ET");
+        }  
+        P_A condicion P_C   {
+        insertarPolaca(&polaca,"BRANCH");apilar(&pila,posicion); insertarPolaca(&polaca,"Z");} 
+         bloqueTemasComunesYEspeciales
+        {
         insertarPolaca(&polaca,"BI");
          int iPosicion;
          char sPosicion[10];
@@ -200,6 +233,7 @@ iteracion: WHILE {apilar(&pila,posicion);} {insertarPolaca(&polaca,"ET");}  P_A 
         
 ifUnario: ID IF P_A condicion COMA expresion COMA expresion P_C ;
 
+<<<<<<< HEAD
 seleccion: IF P_A condicion {
                 if(!strcmp(comp,"OR")){
                         insertarPolaca(&polaca,"BI");
@@ -226,28 +260,44 @@ seleccion: IF P_A condicion {
           ;
 
 condicion: comparacion   { insertarPolaca(&polaca,"CMP"); insertarPolaca(&polaca,comp); apilar(&pilaFalso,insertarPolaca(&polaca,""));}
+=======
+seleccion: IF P_A condicion P_C THEN bloqueTemasComunesYEspeciales ENDIF{
+        int iPosicion;
+        char* pos;
+        iPosicion = desapilar(&pila); printf("Desapile %u", iPosicion); 
+        escribirPosicionPolaca(&polaca,iPosicion,itoa(insertarPolaca(&polaca,"ENDIF"), pos, 10));
+        }
+          | IF P_A condicion P_C THEN bloqueTemasComunesYEspeciales ELSE  bloqueTemasComunesYEspeciales ENDIF
+          ;
+
+condicion: comparacion   { insertarPolaca(&polaca,"CMP"); insertarPolaca(&polaca,comp); apilar(&pila,insertarPolaca(&polaca,""));}                       
+>>>>>>> b280b556093d8139a3fc2dd3bc9b750a9657eb30
            | condicion operador comparacion      
                 {
                         if(!strcmp(operador,"OR"))
                                 invertir_salto(comp);
+<<<<<<< HEAD
                         insertarPolaca(&polaca,"CMP"); insertarPolaca(&polaca,comp); apilar(&pilaFalso,insertarPolaca(&polaca,""));
+=======
+                     insertarPolaca(&polaca,"CMP"); insertarPolaca(&polaca,comp); apilar(&pila,insertarPolaca(&polaca,""));
+>>>>>>> b280b556093d8139a3fc2dd3bc9b750a9657eb30
                 }
-           |OP_NOT comparacion                   {insertarPolaca(&polaca);}  
+           |OP_NOT{ invertir_salto(comp);} comparacion                 
            ;
 
-operador: OP_OR {strcpy(@operador, "OR");}
-        | OP_AND {strcpy(@operador,"AND");}
+operador: OP_OR {strcpy(operador, "OR");}
+        | OP_AND {strcpy(operador,"AND");}
 
-comparacion: expresion comparador expresion              {insertarPolaca(&polaca, @comp);}
-            | P_A expresion comparador expresion P_C     {insertarPolaca(&polaca, @comp);}
+comparacion: expresion comparador expresion             
+            | P_A expresion comparador expresion P_C   
             ;
 
-comparador: OP_MAYOR {strcpy(@comp, "BLE");}
-        | OP_MENOR {strcpy(@comp, "BGE");}
-        | OP_MAYORIGUAL {strcpy(@comp,"BLT");}
-        | OP_MENORIGUAL {strcpy(@comp, "BGT");}
-        | OP_DISTINTO {strcpy(@comp, "BEQ");}
-        | OP_IGUAL {strcpy(@comp, "BNE");}
+comparador: OP_MAYOR {strcpy(comp, "BLE");}
+        | OP_MENOR {strcpy(comp, "BGE");}
+        | OP_MAYORIGUAL {strcpy(comp,"BLT");}
+        | OP_MENORIGUAL {strcpy(comp, "BGT");}
+        | OP_DISTINTO {strcpy(comp, "BEQ");}
+        | OP_IGUAL {strcpy(comp, "BNE");}
         ;
 
 expresion: expresion OP_SUM termino   { insertarPolaca(&polaca,"OP_SUM");  }
@@ -269,12 +319,45 @@ factor: ID                     { insertarPolaca(&polaca,yylval.str_val); }
 let: LET listaVarLetIzq OP_ASIG P_A listaVarLetDer P_C
     ;
  
-listaVarLetIzq: ID 
-              | listaVarLetIzq COMA ID 
+listaVarLetIzq: ID {
+                        t_infoIds infoIds;
+                        infoIds.nombre= yyval.str_val;   
+                        PonerEnCola(&cola, &infoIds);                   
+                }
+              | listaVarLetIzq COMA ID {
+                         t_infoIds infoIds;
+                        infoIds.nombre= yyval.str_val;   
+                        PonerEnCola(&cola, &infoIds);                                       
+                }
               ;
 
 listaVarLetDer: expresion
-              | listaVarLetDer PYC expresion 
+         {
+                 t_infoIds infoIds; 
+                char* id = SacarDeCola(&cola, &infoIds); 
+                if(id==""){
+                        printf("Numero de ids erróneo");
+                        yyerror();
+                }
+                insertarPolaca(&polaca,id); 
+                insertarPolaca(&polaca,"OP_ASIG");   
+               
+        }
+            
+        | listaVarLetDer PYC expresion 
+        
+        {
+               t_infoIds infoIds; 
+                char* id = SacarDeCola(&cola, &infoIds); 
+                 if(id==""){
+                        printf("Numero de ids ingresados en el LET erroneos.\n");
+                         printf("Syntax Error\n");
+                        exit(-1);
+                }
+                insertarPolaca(&polaca,id); 
+                insertarPolaca(&polaca,"OP_ASIG");   
+
+         }
               ;
 
 bloqueDeclaracion: DEFVAR declaraciones ENDDEF 
@@ -317,8 +400,8 @@ salida: DISPLAY factor
 
 int main(int argc,char *argv[])
 {
-   
         crearPila(&pila);
+        crearCola(&cola);
         crearPilaIds(&pilaIds);
         crearPolaca(&polaca);
         if ((yyin = fopen(argv[1], "rt")) == NULL)
@@ -366,7 +449,7 @@ int desapilar(t_pila *pila)
     t_nodoPila *aux;
     int iPosicion ;
     if(*pila==NULL)
-        return NULL;
+        return 0;
     aux=*pila;
     iPosicion=(*pila)->info.posicion ;
     *pila=(*pila)->psig; 
@@ -394,20 +477,20 @@ int apilarId(t_pilaIds* pilaIds,const t_infoIds* infoPilaIds)
 
 char * desapilarId(t_pilaIds *pilaIds)
 { 
-    printf("desapile");
     t_nodoPilaIds *aux;
     char * infoPilaIds;
     
     if(*pilaIds==NULL){
-         return NULL;
+         return (*pilaIds)->infoIds.nombre;
     }
 
     aux=*pilaIds;
-    *pilaIds=(*pilaIds)->psig; 
     infoPilaIds=(*pilaIds)->infoIds.nombre;
 
+    *pilaIds=(*pilaIds)->psig; 
     free(aux); 
-              
+        
+        
     return infoPilaIds; 
 }
 
@@ -429,9 +512,42 @@ void VaciarPila(t_pilaIds* pilaIds){
          pilaIds = NULL;
 }
 
-///////////////////////// POLACA
+///////////////////////////COLA
+void crearCola(t_cola *pcola) // Vacia la cola
+{
+    pcola->pri=NULL;
+    pcola->ult=NULL;
+}
 
-// esto no deberia ser una lista?
+int PonerEnCola(t_cola *pcola,const t_infoIds *infoIds)
+{
+    t_nodoCola* nue =(t_nodoCola*) malloc(sizeof(t_nodoCola));
+    if(nue==NULL)
+        return(0);
+    nue->infoIds=*infoIds;
+    nue->sig=NULL;
+    if(pcola->pri==NULL)
+        pcola->pri=nue;
+    else pcola->ult->sig=nue;
+    pcola->ult = nue;
+    return 1;
+}
+
+char* SacarDeCola (t_cola *pcola, t_infoIds *infoIds)
+{
+    t_nodoCola* aux;
+    if(pcola->pri == NULL)
+        return("");
+    aux=pcola->pri;
+    *infoIds=aux->infoIds;
+    pcola->pri=aux->sig;
+    free(aux);
+    if(pcola->pri==NULL)
+        pcola->ult=NULL;
+   return infoIds->nombre;
+}
+
+///////////////////////// POLACA
 
 void crearPolaca(t_polaca* ppolaca){
 
@@ -442,7 +558,7 @@ int insertarPolaca(t_polaca* ppolaca,char *contenido)
 {
         t_nodoPolaca* nuevoNodo = (t_nodoPolaca*)malloc(sizeof(t_nodoPolaca));
         if(!nuevoNodo){
-                return 0;
+                return 1;
         }
  
         strcpy(nuevoNodo->info.contenido,contenido);
@@ -455,11 +571,12 @@ int insertarPolaca(t_polaca* ppolaca,char *contenido)
         }
         
         *ppolaca=nuevoNodo;        
-        return 1;
+        return nuevoNodo->info.posicion;
 }
 
 int escribirPosicionPolaca(t_polaca* ppolaca,int posicion, char *contenido) //insertar en polaca y poner pos actual 
 	{
+                printf("El contenido es %s", contenido);
 	        t_nodoPolaca* aux;
 		aux=*ppolaca;
 	    while(aux!=NULL && aux->info.posicion<=posicion){
@@ -492,28 +609,21 @@ void guardarArchivoPolaca(t_polaca *ppolaca){
    
 ///////////////////////// UTILES
 
-char[] invertir_salto(char[] @comp){
-        switch (@comp){
-                case "BLE":
-                strcpy(@comp,"BGT");
-                break;
-                case "BGE":
-                strcpy(@comp,"BLT");
-                break;
-                case "BLT":
-                strcpy(@comp,"BGE");
-                break;
-                case "BGT":
-                strcpy(@comp,"BLE");
-                break;
-                case "BEQ":
-                strcpy(@comp,"BNE");
-                break;
-                case "BNE":
-                strcpy(@comp,"BEQ");
-                break;
-        }
-        return @comp;
+char* invertir_salto(char* comp){
+                if(!strcmp("BLE",comp))
+                strcpy(comp,"BGT");
+                else if(!strcmp("BGE",comp))
+                strcpy(comp,"BLT");
+                else if(!strcmp("BLT",comp))
+                strcpy(comp,"BGE");
+                else if(!strcmp("BGT",comp))
+                strcpy(comp,"BLE");
+                else if(!strcmp("BEQ",comp))
+                strcpy(comp,"BNE");
+                else if(!strcmp("BNE",comp))
+                strcpy(comp,"BEQ");
+
+        return comp;
 }
 ///////////////////////// TABLA DE SIMBOLOS
 int nuevoSimbolo(char* tipoDato,char valorString[],int longitud){
