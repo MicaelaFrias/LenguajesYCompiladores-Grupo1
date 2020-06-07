@@ -1,0 +1,9 @@
+
+program
+beginp
+ 
+ 
+let uno,dos,tres := ("3";4;a+5)
+
+
+endp
