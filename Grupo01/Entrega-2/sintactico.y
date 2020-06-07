@@ -196,7 +196,7 @@ temaComunYEspecial:
 asignacion: ID { insertarPolaca(&polaca,yylval.str_val); } OP_ASIG expresion {insertarPolaca(&polaca,"OP_ASIG");}
                 ;
 
-iteracion: WHILE {apilar(&pila,posicion);} {insertarPolaca(&polaca,"ET");}  P_A condicion P_C   {insertarPolaca(&polaca,"BRANCH");}  {apilar(&pila,posicion); {insertarPolaca(&polaca,"Z");} } bloqueTemasComunesYEspeciales
+iteracion: WHILE {apilar(&pila,posicion);insertarPolaca(&polaca,"ET");}  P_A condicion P_C   {insertarPolaca(&polaca,"BRANCH");}  {apilar(&pila,posicion); {insertarPolaca(&polaca,"Z");} } bloqueTemasComunesYEspeciales
          {
         
         insertarPolaca(&polaca,"BI");
@@ -394,7 +394,7 @@ int desapilar(t_pila *pila)
     t_nodoPila *aux;
     int iPosicion ;
     if(*pila==NULL)
-        return NULL;
+        return 0;
     aux=*pila;
     iPosicion=(*pila)->info.posicion ;
     *pila=(*pila)->psig; 
