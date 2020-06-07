@@ -62,12 +62,14 @@ int escribirPosicionPolaca(t_polaca* ,int , char*);
 void guardarArchivoPolaca(t_polaca*);
 void  mostrarPilaIDs(t_pilaIds* );
 int nuevoSimbolo(char* tipoDato,char valorString[],int longitud);
+char[] invertir_salto(char @comp[]);
 
 t_pila pila;
 t_pilaIds pilaIds;
 int posicion = 0;
 t_polaca polaca;
-char comparadoraux[3];
+char @comp[3];
+char @op[3];
 
 %}
 
@@ -96,7 +98,8 @@ char *str_val;
 %token FOR TO DO ENDFOR
 %token WHILE ENDW
 %token REPEAT UNTIL
-%token OP_LOG
+%token OP_OR
+%token OP_AND
 %token OP_NOT
 %token OP_DOSP
 %token OP_IGUAL
@@ -182,41 +185,38 @@ iteracion: WHILE {apilar(&pila,posicion);} {insertarPolaca(&polaca,"ET");}  P_A 
 
          insertarPolaca(&polaca,sPosicion);
 
-<<<<<<< HEAD
 
         } ENDW ;
-
-ifUnario: ID OP_COMPARACION IF P_A condicion COMA expresion COMA expresion P_C ;
-=======
-ifUnario: ID {printf("asig1");} ASIG {printf("asig"); }IF P_A condicion COMA expresion COMA expresion P_C ;
->>>>>>> 7810b9f3d1cbd97f481410b3f01685f7560b0ea0
+        
+ifUnario: ID IF P_A condicion COMA expresion COMA expresion P_C ;
 
 seleccion: IF P_A condicion P_C THEN bloqueTemasComunesYEspeciales ENDIF
           | IF P_A condicion P_C THEN bloqueTemasComunesYEspeciales ELSE  bloqueTemasComunesYEspeciales ENDIF
           ;
 
 condicion: comparacion                          
-           | condicion OP_LOG comparacion        {insertarPolaca(&polaca,"OP_LOG");}  
-           |OP_NOT comparacion                   {insertarPolaca(&polaca,"OP_NOT");}  
+           | condicion operador comparacion      
+                {
+                        if(!strcmp(@operador,"OR"))
+                                invertir_salto(@comp);
+                }
+           |OP_NOT comparacion                   {insertarPolaca(&polaca);}  
            ;
 
-<<<<<<< HEAD
-comparacion: expresion OP_COMPARACION expresion                {insertarPolaca(&polaca,"OP_COMPARACION");}
-            | P_A expresion OP_COMPARACION expresion P_C       {insertarPolaca(&polaca,"OP_COMPARACION");}
-=======
-comparacion: expresion comparador expresion 
-            | P_A expresion comparador expresion P_C
->>>>>>> 7810b9f3d1cbd97f481410b3f01685f7560b0ea0
+operador: OP_OR {strcpy(@operador, "OR");}
+        | OP_AND {strcpy(@operador,"AND");}
+
+comparacion: expresion comparador expresion              {insertarPolaca(&polaca, @comp);}
+            | P_A expresion comparador expresion P_C     {insertarPolaca(&polaca, @comp);}
             ;
 
-comparador: OP_MAYOR {strcpy(comparadoraux, "BLE");}
-        | OP_MENOR {strcpy(comparadoraux, "BGE");}
-        | OP_MAYORIGUAL {strcpy(comparadoraux,"BLT");}
-        | OP_MENORIGUAL {strcpy(comparadoraux, "BGT");}
-        | OP_DISTINTO {strcpy(comparadoraux, "BEQ");}
-        | OP_IGUAL {strcpy(comparadoraux, "BNE");}
+comparador: OP_MAYOR {strcpy(@comp, "BLE");}
+        | OP_MENOR {strcpy(@comp, "BGE");}
+        | OP_MAYORIGUAL {strcpy(@comp,"BLT");}
+        | OP_MENORIGUAL {strcpy(@comp, "BGT");}
+        | OP_DISTINTO {strcpy(@comp, "BEQ");}
+        | OP_IGUAL {strcpy(@comp, "BNE");}
         ;
-        
 
 expresion: expresion OP_SUM termino   { insertarPolaca(&polaca,"OP_SUM");  }
          | expresion OP_RES termino  { insertarPolaca(&polaca,"OP_RES"); }
@@ -374,14 +374,8 @@ char * desapilarId(t_pilaIds *pilaIds)
     *pilaIds=(*pilaIds)->psig; 
     infoPilaIds=(*pilaIds)->infoIds.nombre;
 
-<<<<<<< HEAD
     free(aux); 
               
-=======
-    *pilaIds=(*pilaIds)->psig; 
-    free(aux);    
-        
->>>>>>> cfb9cc5561e64aa799b6ee12f89b29ffbc767e6d
     return infoPilaIds; 
 }
 
@@ -459,7 +453,32 @@ void guardarArchivoPolaca(t_polaca *ppolaca){
 	    }
 		fclose(pint);
 	}
+   
+///////////////////////// UTILES
 
+char[] invertir_salto(char[] @comp){
+        switch (@comp){
+                case "BLE":
+                strcpy(@comp,"BGT");
+                break;
+                case "BGE":
+                strcpy(@comp,"BLT");
+                break;
+                case "BLT":
+                strcpy(@comp,"BGE");
+                break;
+                case "BGT":
+                strcpy(@comp,"BLE");
+                break;
+                case "BEQ":
+                strcpy(@comp,"BNE");
+                break;
+                case "BNE":
+                strcpy(@comp,"BEQ");
+                break;
+        }
+        return @comp;
+}
 ///////////////////////// TABLA DE SIMBOLOS
 int nuevoSimbolo(char* tipoDato,char valorString[],int longitud){
   FILE *tablasimbolos = fopen("ts.txt","rw");
@@ -494,3 +513,4 @@ int buscarEnTS(){
 
   fclose(tablasimbolos);
 }
+
