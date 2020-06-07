@@ -164,6 +164,7 @@ int posicion = 0;
 t_polaca polaca;
 char comp[3];
 char op[3];
+int cantComparaciones=0;
 
 t_pila pila;
 t_pila pilaVerdadero;
@@ -175,7 +176,7 @@ t_polaca polaca;
 
 
 /* Line 189 of yacc.c  */
-#line 179 "sintactico.tab.c"
+#line 180 "sintactico.tab.c"
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
@@ -267,7 +268,7 @@ typedef union YYSTYPE
 {
 
 /* Line 214 of yacc.c  */
-#line 106 "sintactico.y"
+#line 107 "sintactico.y"
 
 int int_val;
 double float_val;
@@ -276,7 +277,7 @@ char *str_val;
 
 
 /* Line 214 of yacc.c  */
-#line 280 "sintactico.tab.c"
+#line 281 "sintactico.tab.c"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -288,7 +289,7 @@ char *str_val;
 
 
 /* Line 264 of yacc.c  */
-#line 292 "sintactico.tab.c"
+#line 293 "sintactico.tab.c"
 
 #ifdef short
 # undef short
@@ -604,10 +605,10 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,   160,   160,   160,   166,   167,   167,   169,   169,   173,
-     174,   179,   180,   181,   182,   183,   184,   185,   186,   187,
-     188,   189,   190,   191,   192,   193,   194,   199,   199,   202,
-     205,   208,   202,   225,   227,   234,   227,   258,   259,   259,
+       0,   161,   161,   161,   167,   168,   168,   170,   170,   174,
+     175,   180,   181,   182,   183,   184,   185,   186,   187,   188,
+     189,   190,   191,   192,   193,   194,   195,   200,   200,   203,
+     206,   209,   203,   226,   228,   235,   228,   259,   260,   260,
      279,   279,   282,   283,   285,   286,   289,   290,   291,   292,
      293,   294,   297,   298,   299,   302,   303,   304,   307,   308,
      309,   310,   313,   316,   321,   328,   341,   357,   360,   361,
@@ -1640,161 +1641,161 @@ yyreduce:
         case 2:
 
 /* Line 1455 of yacc.c  */
-#line 160 "sintactico.y"
+#line 161 "sintactico.y"
     {printf("COMPILACION INICIADA\n");;}
     break;
 
   case 3:
 
 /* Line 1455 of yacc.c  */
-#line 162 "sintactico.y"
+#line 163 "sintactico.y"
     {printf("COMPILACION EXITOSA\n");;}
     break;
 
   case 5:
 
 /* Line 1455 of yacc.c  */
-#line 167 "sintactico.y"
+#line 168 "sintactico.y"
     {printf("--------------------------BLOQUE_DECLARACION\n\n\n");;}
     break;
 
   case 7:
 
 /* Line 1455 of yacc.c  */
-#line 169 "sintactico.y"
+#line 170 "sintactico.y"
     {printf("--------------------------BLOQUE_DECLARACION\n\n\n");;}
     break;
 
   case 11:
 
 /* Line 1455 of yacc.c  */
-#line 179 "sintactico.y"
+#line 180 "sintactico.y"
     {printf("--------------------------ITERACION\n\n\n");;}
     break;
 
   case 12:
 
 /* Line 1455 of yacc.c  */
-#line 180 "sintactico.y"
+#line 181 "sintactico.y"
     {printf("--------------------------DECISION\n\n\n");;}
     break;
 
   case 13:
 
 /* Line 1455 of yacc.c  */
-#line 181 "sintactico.y"
+#line 182 "sintactico.y"
     {printf("--------------------------LISTA_VARIABLES\n\n\n");;}
     break;
 
   case 14:
 
 /* Line 1455 of yacc.c  */
-#line 182 "sintactico.y"
+#line 183 "sintactico.y"
     {printf("--------------------------ASIGNACION\n\n\n");;}
     break;
 
   case 15:
 
 /* Line 1455 of yacc.c  */
-#line 183 "sintactico.y"
+#line 184 "sintactico.y"
     {printf("--------------------------ENTRADA\n\n\n");;}
     break;
 
   case 16:
 
 /* Line 1455 of yacc.c  */
-#line 184 "sintactico.y"
+#line 185 "sintactico.y"
     {printf("--------------------------SALIDA\n\n\n");;}
     break;
 
   case 17:
 
 /* Line 1455 of yacc.c  */
-#line 185 "sintactico.y"
+#line 186 "sintactico.y"
     {printf("--------------------------CONDICION\n\n\n");;}
     break;
 
   case 18:
 
 /* Line 1455 of yacc.c  */
-#line 186 "sintactico.y"
+#line 187 "sintactico.y"
     {printf("--------------------------EXPRESION\n\n\n");;}
     break;
 
   case 19:
 
 /* Line 1455 of yacc.c  */
-#line 187 "sintactico.y"
+#line 188 "sintactico.y"
     {printf("--------------------------TERMINO\n\n\n");;}
     break;
 
   case 20:
 
 /* Line 1455 of yacc.c  */
-#line 188 "sintactico.y"
+#line 189 "sintactico.y"
     {printf("--------------------------FACTOR\n\n\n");;}
     break;
 
   case 21:
 
 /* Line 1455 of yacc.c  */
-#line 189 "sintactico.y"
+#line 190 "sintactico.y"
     {printf("--------------------------LISTA_VARIABLES_LET_DERECHA\n\n\n");;}
     break;
 
   case 22:
 
 /* Line 1455 of yacc.c  */
-#line 190 "sintactico.y"
+#line 191 "sintactico.y"
     {printf("--------------------------LISTA_VARIABLES_LET_IZQUIERDA\n\n\n");;}
     break;
 
   case 23:
 
 /* Line 1455 of yacc.c  */
-#line 191 "sintactico.y"
+#line 192 "sintactico.y"
     {printf("--------------------------TIPO_DE_DATO\n\n\n");;}
     break;
 
   case 24:
 
 /* Line 1455 of yacc.c  */
-#line 192 "sintactico.y"
+#line 193 "sintactico.y"
     {printf("--------------------------IF_UNARIO\n\n\n");;}
     break;
 
   case 25:
 
 /* Line 1455 of yacc.c  */
-#line 193 "sintactico.y"
+#line 194 "sintactico.y"
     {printf("--------------------------LET\n\n\n");;}
     break;
 
   case 26:
 
 /* Line 1455 of yacc.c  */
-#line 194 "sintactico.y"
+#line 195 "sintactico.y"
     {printf("--------------------------COMENTARIO\n\n\n");;}
     break;
 
   case 27:
 
 /* Line 1455 of yacc.c  */
-#line 199 "sintactico.y"
+#line 200 "sintactico.y"
     { insertarPolaca(&polaca,yylval.str_val); ;}
     break;
 
   case 28:
 
 /* Line 1455 of yacc.c  */
-#line 199 "sintactico.y"
+#line 200 "sintactico.y"
     {insertarPolaca(&polaca,"OP_ASIG");;}
     break;
 
   case 29:
 
 /* Line 1455 of yacc.c  */
-#line 202 "sintactico.y"
+#line 203 "sintactico.y"
     {
         apilar(&pila,posicion);insertarPolaca(&polaca,"ET");
         ;}
@@ -1803,7 +1804,7 @@ yyreduce:
   case 30:
 
 /* Line 1455 of yacc.c  */
-#line 205 "sintactico.y"
+#line 206 "sintactico.y"
     {
         insertarPolaca(&polaca,"BRANCH");apilar(&pila,posicion); insertarPolaca(&polaca,"Z");;}
     break;
@@ -1811,7 +1812,7 @@ yyreduce:
   case 31:
 
 /* Line 1455 of yacc.c  */
-#line 208 "sintactico.y"
+#line 209 "sintactico.y"
     {
         insertarPolaca(&polaca,"BI");
          int iPosicion;
@@ -1833,7 +1834,7 @@ yyreduce:
   case 34:
 
 /* Line 1455 of yacc.c  */
-#line 227 "sintactico.y"
+#line 228 "sintactico.y"
     {
                 printf("LLEGUE A ULTIMA COMP %s",operador);
           if(!strcmp(operador,"OR")){
@@ -1846,7 +1847,7 @@ yyreduce:
   case 35:
 
 /* Line 1455 of yacc.c  */
-#line 234 "sintactico.y"
+#line 235 "sintactico.y"
     {
            int iPosicion;
         char posThen[25];
@@ -1863,7 +1864,7 @@ yyreduce:
   case 36:
 
 /* Line 1455 of yacc.c  */
-#line 245 "sintactico.y"
+#line 246 "sintactico.y"
     {
         int iPosicion;
         char posEnd[25];
@@ -1878,39 +1879,38 @@ yyreduce:
   case 37:
 
 /* Line 1455 of yacc.c  */
-#line 258 "sintactico.y"
-    { insertarPolaca(&polaca,"CMP"); insertarPolaca(&polaca,comp); apilar(&pila,insertarPolaca(&polaca,""));;}
+#line 259 "sintactico.y"
+    { insertarPolaca(&polaca,"CMP"); insertarPolaca(&polaca,comp) ;printf("\nINSERTE BRANCH %s\n",comp); apilar(&pila,insertarPolaca(&polaca,"")); cantComparaciones++;}
     break;
 
   case 38:
 
 /* Line 1455 of yacc.c  */
-#line 259 "sintactico.y"
+#line 260 "sintactico.y"
     {
                    char* pos;
                    int iPosicion;
                    printf("Lei un %s",operador);
                    //Tratamiento especial por ser OR
-                   if(!strcmp(operador,"OR")){
+                   if(!strcmp(operador,"OR") && cantComparaciones==1){
                             invertir_salto(comp);
                             iPosicion = desapilar(&pila); 
-                            apilar(&pilaVerdadero,insertarPolaca(&polaca,""));
+                            apilar(&pilaVerdadero,iPosicion);
+                        escribirPosicionPolaca(&polaca,posicion-2,comp);
+
                    }
-                   escribirPosicionPolaca(&polaca,posicion-2,comp);
-                   
+
            ;}
     break;
 
   case 39:
 
 /* Line 1455 of yacc.c  */
-#line 272 "sintactico.y"
+#line 274 "sintactico.y"
     {
-                        if(!strcmp(operador,"OR"))
-                                invertir_salto(comp);
-                                printf("inverti el branch a %s",comp);
-                     insertarPolaca(&polaca,"CMP"); insertarPolaca(&polaca,comp); 
+                     insertarPolaca(&polaca,"CMP"); insertarPolaca(&polaca,comp);printf("\nINSERTE BRANCH %s\n",comp); 
                      (!strcmp(operador,"OR"))?apilar(&pilaVerdadero,insertarPolaca(&polaca,"")):apilar(&pila,insertarPolaca(&polaca,""));
+                cantComparaciones = 0;
                 ;}
     break;
 

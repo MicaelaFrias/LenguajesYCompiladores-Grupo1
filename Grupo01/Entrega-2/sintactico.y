@@ -93,6 +93,7 @@ int posicion = 0;
 t_polaca polaca;
 char comp[3];
 char op[3];
+int cantComparaciones=0;
 
 t_pila pila;
 t_pila pilaVerdadero;
@@ -255,26 +256,25 @@ seleccion: IF P_A condicion{
         //   | IF condicion THEN bloqueTemasComunesYEspeciales ELSE  bloqueTemasComunesYEspeciales ENDIF
         //   ;
 
-condicion: comparacion   { insertarPolaca(&polaca,"CMP"); insertarPolaca(&polaca,comp); apilar(&pila,insertarPolaca(&polaca,""));}                       
+condicion: comparacion   { insertarPolaca(&polaca,"CMP"); insertarPolaca(&polaca,comp) ;printf("\nINSERTE BRANCH %s\n",comp); apilar(&pila,insertarPolaca(&polaca,"")); cantComparaciones++}                       
            | condicion operador{
                    char* pos;
                    int iPosicion;
                    printf("Lei un %s",operador);
                    //Tratamiento especial por ser OR
-                   if(!strcmp(operador,"OR")){
+                   if(!strcmp(operador,"OR") && cantComparaciones==1){
                             invertir_salto(comp);
                             iPosicion = desapilar(&pila); 
-                            apilar(&pilaVerdadero,insertarPolaca(&polaca,""));
+                            apilar(&pilaVerdadero,iPosicion);
+                        escribirPosicionPolaca(&polaca,posicion-2,comp);
+
                    }
-                   escribirPosicionPolaca(&polaca,posicion-2,comp);
-                   
+
            } comparacion     
                 {
-                        if(!strcmp(operador,"OR"))
-                                invertir_salto(comp);
-                                printf("inverti el branch a %s",comp);
-                     insertarPolaca(&polaca,"CMP"); insertarPolaca(&polaca,comp); 
+                     insertarPolaca(&polaca,"CMP"); insertarPolaca(&polaca,comp);printf("\nINSERTE BRANCH %s\n",comp); 
                      (!strcmp(operador,"OR"))?apilar(&pilaVerdadero,insertarPolaca(&polaca,"")):apilar(&pila,insertarPolaca(&polaca,""));
+                cantComparaciones = 0;
                 }
            |OP_NOT{ invertir_salto(comp);} comparacion                 
            ;
