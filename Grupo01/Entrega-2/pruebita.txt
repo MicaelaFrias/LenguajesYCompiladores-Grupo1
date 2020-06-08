@@ -2,10 +2,6 @@
 program
 beginp
 
-while (a>8 and f4==1)
-a3 :=4 
-endw
-
-
+e = if(a<4,a+5,5)
 
 endp

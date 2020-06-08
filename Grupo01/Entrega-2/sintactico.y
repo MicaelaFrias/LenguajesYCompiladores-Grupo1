@@ -91,6 +91,7 @@ t_pila pila;
 t_polaca polaca;
 char comp[3];
 char op[3];
+char idValor[25];
 int cantComparaciones=0;
 
 t_pila pilaFalso;
@@ -205,7 +206,7 @@ iteracion: WHILE {
         int posicionInicial, posicionBranch;
         char posFalso[25];
         char posInicio[25];
-        while(!pilaVacia(&pilaVerdadero)){
+        if(!pilaVacia(&pilaVerdadero)){
                 posicionInicial = desapilar(&pilaVerdadero); 
                 sprintf(posInicio,"%d",posicionInicial);
                 insertarPolaca(&polaca,"BI");
@@ -221,23 +222,49 @@ iteracion: WHILE {
 
 
 ifUnario: ID{
-     //guardamos en char* el yyval del id
-} ASIG IF P_A condicion COMA {
-        //desapilar pilaVerdadero
-//va a insertar en cada una de esas posiciones la posicion actual
-        }expresion{
-//apilar nodo vacio y apilar pos en pila ids
-//insertar el asig
+                strcpy(idValor,yylval.str_val);//guardamos en char* el yyval del id
+        } 
+        ASIG IF P_A condicion COMA {
+                //desapilar pilaVerdadero
+                int posicionBranch;
+                char posActual[25];
+                sprintf(posActual,"%d",posicionPolaca);
+                while(!pilaVacia(&pilaVerdadero)){
+                        posicionBranch = desapilar(&pilaVerdadero); 
+                        escribirPosicionPolaca(&polaca,posicionBranch,posActual);
+                }
 
-} COMA{
-           //desapilar pilaFalso.
-//va a insertar en cada una de esas posiciones la posicion actual     
-} expresion{
-//apilar nodo vacio y apilar pos en pila ids
-//insertar el asig
-} P_C {
-        //insertamos ids en polaca (en posiciones de pilaids)
-}; 
+        }
+        expresion{
+                insertarPolaca(&polaca,idValor);
+                insertarPolaca(&polaca,"OP_ASIG");
+                insertarPolaca(&polaca,"BI");
+                apilar(&pilaVerdadero,insertarPolaca(&polaca,""));
+        } 
+        COMA{
+                //desapilar pilaFalso.
+                int posicionBranch;
+                char posActual[25];
+                sprintf(posActual,"%d",posicionPolaca);
+                while(!pilaVacia(&pilaFalso)){
+                        posicionBranch = desapilar(&pilaFalso); 
+                        escribirPosicionPolaca(&polaca,posicionBranch,posActual);
+                }
+        }
+
+        expresion{
+                insertarPolaca(&polaca,idValor);
+                insertarPolaca(&polaca,"OP_ASIG");
+        } 
+        P_C {
+                int posicionBranch;
+                char posActual[25];
+                sprintf(posActual,"%d",posicionPolaca);
+                if(!pilaVacia(&pilaVerdadero)){
+                        posicionBranch = desapilar(&pilaVerdadero); 
+                        escribirPosicionPolaca(&polaca,posicionBranch,posActual);
+                }
+        }; 
 
 seleccion: seleccionSinElse finSeleccion;
 
