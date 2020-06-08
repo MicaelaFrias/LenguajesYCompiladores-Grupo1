@@ -202,20 +202,20 @@ iteracion: WHILE {
         apilar(&pilaVerdadero,insertarPolaca(&polaca,"ET"));
         }  
         P_A condicion P_C  bloqueTemasComunesYEspeciales ENDW {
-        int iPosicion;
+        int posicionInicial, posicionBranch;
+        char posFalso[25];
         char posInicio[25];
         while(!pilaVacia(&pilaVerdadero)){
-                iPosicion = desapilar(&pilaVerdadero); 
-                sprintf(posInicio,"%d",iPosicion);
+                posicionInicial = desapilar(&pilaVerdadero); 
+                sprintf(posInicio,"%d",posicionInicial);
                 insertarPolaca(&polaca,"BI");
                 escribirPosicionPolaca(&polaca,insertarPolaca(&polaca,""),posInicio);
         }
-        //  while(!pilaVacia(&pilaFalso)){
-        //         iPosicion = desapilar(&pilaVerdadero); 
-        //         sprintf(posInicio,"%d",iPosicion);
-        //         insertarPolaca($polaca,"BI");
-        //         escribirPosicionPolaca(&polaca,insertarPolaca(&polaca,""),posInicio);
-        // }
+        sprintf(posFalso,"%d",insertarPolaca(&polaca,""));
+         while(!pilaVacia(&pilaFalso)){
+                posicionBranch = desapilar(&pilaFalso); 
+                escribirPosicionPolaca(&polaca,posicionBranch,posFalso);
+        }
 
         };
 
@@ -276,7 +276,7 @@ finSeleccion: ELSE{
 ;
 
 
-condicion: comparacion   { insertarPolaca(&polaca,"CMP"); insertarPolaca(&polaca,comp) ; apilar(&pila,insertarPolaca(&polaca,"")); cantComparaciones++}                       
+condicion: comparacion   { insertarPolaca(&polaca,"CMP"); insertarPolaca(&polaca,comp) ; apilar(&pilaFalso,insertarPolaca(&polaca,"")); cantComparaciones++}                       
            | condicion operador{
                    char* pos;
                    int iPosicion;
