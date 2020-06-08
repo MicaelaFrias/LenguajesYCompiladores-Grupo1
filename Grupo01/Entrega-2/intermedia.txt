@@ -1,0 +1,16 @@
+_3.5
+a
+CMP
+BEQ
+
+a
+_5
+CMP
+BLE
+13
+a
+_3
+OP_ASIG
+a
+_4
+OP_ASIG
