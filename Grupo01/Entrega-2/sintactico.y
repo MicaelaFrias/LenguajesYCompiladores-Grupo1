@@ -60,18 +60,6 @@ char* tipoDatoActual;
 
 	}t_variables;
 
-///////////////////COLA
-
-typedef struct s_nodoCola{
-t_infoIds infoIds;
-struct s_nodoCola* sig;
-}t_nodoCola;
-
-typedef struct {
-t_nodoCola* pri;
-t_nodoCola* ult;
-}t_cola;
-
 /////////////////DECLARACION FUNCIONES
 int insertarEnTS(char[],char[],int);
 int apilar(t_pila* pila,const int iPosicion);
@@ -84,10 +72,6 @@ void crearPilaIds(t_pilaIds* pilaIds);
 char *  desapilarId(t_pilaIds *pilaIds);
 int apilarId(t_pilaIds* pilaIds,const t_infoIds* infoPilaIds);
 void  mostrarPilaIDs(t_pilaIds* );
-
-void crearCola(t_cola *pcola);
-int PonerEnCola(t_cola *pcola,const t_infoIds *infoIds);
-char* SacarDeCola (t_cola *pcola, t_infoIds *infoIds);
 
 void crearPolaca(t_polaca* );
 int insertarPolaca(t_polaca*,char*);
@@ -111,7 +95,6 @@ int cantComparaciones=0;
 
 t_pila pilaFalso;
 t_pila pilaVerdadero;
-t_cola cola;
 t_pilaIds pilaIds;
 int posicionPolaca = 0;
 t_polaca polaca;
@@ -415,22 +398,19 @@ let: LET listaVarLetIzq OP_ASIG P_A listaVarLetDer P_C
 listaVarLetIzq: ID {
                         t_infoIds infoIds;
                         strcpy(infoIds.nombre, yyval.str_val);   
-                        printf("%s", yyval.str_val);
-                        PonerEnCola(&cola, &infoIds);                   
+                        apilarId(&pilaIds, &infoIds);                   
                 }
               | ID COMA listaVarLetIzq {
                          t_infoIds infoIds;
-                         
-                        printf("%s", yyval.str_val);
                         strcpy(infoIds.nombre, yyval.str_val);   
-                        PonerEnCola(&cola, &infoIds);                                       
+                        apilarId(&pilaIds, &infoIds);                                                       
                 }
               ;
 
 listaVarLetDer: expresion
          {
-                 t_infoIds infoIds; 
-                char* id = SacarDeCola(&cola, &infoIds); 
+                char* id = desapilarId(&pilaIds); 
+                printf("DESAPILE %s\n\n", id);
                 if(id==""){
                      printf("Numero de ids ingresados en el LET erroneos.\n");
                         yyerror();
@@ -443,8 +423,8 @@ listaVarLetDer: expresion
         | listaVarLetDer PYC expresion 
         
         {
-               t_infoIds infoIds; 
-                char* id = SacarDeCola(&cola, &infoIds); 
+                char* id = desapilarId(&pilaIds); 
+                printf("\n\nDESAPILE %s", id);
                  if(id==""){
                         printf("Numero de ids ingresados en el LET erroneos.\n");
                          yyerror();
@@ -504,7 +484,6 @@ int main(int argc,char *argv[])
 {
         crearPila(&pilaFalso);
         crearPila(&pilaVerdadero);
-        crearCola(&cola);
         crearPilaIds(&pilaIds);
         crearPolaca(&polaca);
         if ((yyin = fopen(argv[1], "rt")) == NULL)
@@ -517,7 +496,7 @@ int main(int argc,char *argv[])
         }
         fclose(yyin);
         guardarArchivoPolaca(&polaca);
-        mostrarArrayVariables(arrayVariables);
+        // mostrarArrayVariables(arrayVariables);
         return 0;
 }
 int yyerror(void)
@@ -612,41 +591,6 @@ void VaciarPila(t_pilaIds* pilaIds){
          pilaIds = NULL;
 }
 
-///////////////////////////COLA
-void crearCola(t_cola *pcola) // Vacia la cola
-{
-    pcola->pri=NULL;
-    pcola->ult=NULL;
-}
-
-int PonerEnCola(t_cola *pcola,const t_infoIds *infoIds)
-{
-    t_nodoCola* nue =(t_nodoCola*) malloc(sizeof(t_nodoCola));
-    if(nue==NULL)
-        return(0);
-    nue->infoIds=*infoIds;
-    nue->sig=NULL;
-    if(pcola->pri==NULL)
-        pcola->pri=nue;
-    else pcola->ult->sig=nue;
-    pcola->ult = nue;
-    return 1;
-}
-
-char* SacarDeCola (t_cola *pcola, t_infoIds *infoIds)
-{
-    t_nodoCola* aux;
-    if(pcola->pri == NULL)
-        return("");
-    aux=pcola->pri;
-    *infoIds=aux->infoIds;
-    pcola->pri=aux->sig;
-    free(aux);
-    if(pcola->pri==NULL)
-        pcola->ult=NULL;
-   return infoIds->nombre;
-}
-
 ///////////////////////// POLACA
 
 void crearPolaca(t_polaca* ppolaca){
@@ -676,7 +620,6 @@ int insertarPolaca(t_polaca* ppolaca,char *contenido)
 
 int escribirPosicionPolaca(t_polaca* ppolaca,int posicion, char *contenido) //insertar en polaca y poner pos actual 
 	{
-                printf("El contenido es %s", contenido);
 	        t_nodoPolaca* aux;
 		aux=*ppolaca;
 	    while(aux!=NULL && aux->info.posicion<=posicion){
