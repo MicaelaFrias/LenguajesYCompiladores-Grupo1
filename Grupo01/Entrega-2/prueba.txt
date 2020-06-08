@@ -1,13 +1,9 @@
 
 program
 beginp
- 
 defvar
-float:a;f455;h7;
-string:a3;f45;h7;
-float:e;f;
-float:a3;
-string:a3;f45;h7;
+float:a;f455;h7;f4;dos;tres;e;
+string:a3;f45;b;uno;
 float:e;f;
 int:j;k;
 enddef
@@ -18,29 +14,12 @@ a:=3
 endif
 
 while (a>8 and f4==1)
-a3 :=4 
+a3 :="hola" 
 endw
-
-A:=B
-
-
 ***//***
 ***/COMENTARIO/***
 
-
-
-
-a := a
-a := 2
-a := 2.5
-a := "aaaaaaaaaaa"
-a := "aa"
-a := ""
-a := "aaa"
-a := "aaaa"
-a := "aaaaa"
-
-if("dede">32 and 332>ded)
+if(13>32 or 332>2)
 then
 b:="aaa"
 b:="aaa"
@@ -52,15 +31,8 @@ get a3
 display "hola"
 display 1
 display a3
-
-entero := 3+t
-
 e = if(a<4,a+5,5)
 e = if(a>3,a+6,a+8)
 
 let uno,dos,tres := ("3";4;a+5)
-
 endp
-
-
-

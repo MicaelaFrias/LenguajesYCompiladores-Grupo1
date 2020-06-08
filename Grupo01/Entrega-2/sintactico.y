@@ -410,7 +410,6 @@ listaVarLetIzq: ID {
 listaVarLetDer: expresion
          {
                 char* id = desapilarId(&pilaIds); 
-                printf("DESAPILE %s\n\n", id);
                 if(id==""){
                      printf("Numero de ids ingresados en el LET erroneos.\n");
                         yyerror();
@@ -424,7 +423,6 @@ listaVarLetDer: expresion
         
         {
                 char* id = desapilarId(&pilaIds); 
-                printf("\n\nDESAPILE %s", id);
                  if(id==""){
                         printf("Numero de ids ingresados en el LET erroneos.\n");
                          yyerror();
