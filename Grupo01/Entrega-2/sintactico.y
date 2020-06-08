@@ -401,16 +401,16 @@ listaVarLetDer: expresion
 bloqueDeclaracion: DEFVAR declaraciones ENDDEF 
                   ;
 
-declaraciones: declaracion
-              | declaraciones declaracion
+declaraciones: declaracion 
+              | declaraciones declaracion 
               ;           
 
-declaracion: tipodato OP_DOSP listavariables          
-            ;
+declaracion: tipodato OP_DOSP listavariables 
+        ;
 
-tipodato: FLOAT {tipoDato = "Float"}
-        | STRING {tipoDato = "String"}
-        |  INT {tipoDato = "Integer"}
+tipodato: FLOAT {tipoDato = "Float"} 
+        | STRING {tipoDato = "String"} 
+        |  INT {tipoDato = "Integer"} 
         ;
 
 listavariables: ID PYC                 
@@ -418,7 +418,18 @@ listavariables: ID PYC
                      nuevoSimbolo(tipoDato,"--",(tipoDato=="String")?strlen(yylval.str_val):0);
                      t_infoIds* infoId;
                 }
-              | listavariables ID PYC {nuevoSimbolo(tipoDato,"--",(tipoDato=="String")?strlen(yylval.str_val):0);}
+                {
+                insertarPolaca(&polaca,yylval.str_val);
+                insertarPolaca(&polaca,tipoDato);
+                insertarPolaca(&polaca,":");
+                }
+              | listavariables ID PYC 
+              { nuevoSimbolo(tipoDato,"--",(tipoDato=="String")?strlen(yylval.str_val):0);}
+                {
+                insertarPolaca(&polaca,yylval.str_val);
+                insertarPolaca(&polaca,tipoDato);
+                insertarPolaca(&polaca,":");
+                }
               ;
 
 entrada: GET ID 
