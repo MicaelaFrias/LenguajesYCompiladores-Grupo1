@@ -472,24 +472,12 @@ listavariables: ID PYC
               ;
 
 entrada: GET ID 
-              | listavariables ID PYC 
-
                {
-                  strcpy(arrayVariables[indice].nombreVaribale,yylval.str_val);  
-                  strcpy(arrayVariables[indice].tipoVariable,tipoDato);  
-           
-                  indice++;
+                  insertarPolaca(&polaca,yylval.str_val);
+                  insertarPolaca(&polaca,"GET");  
                 }   
-              
-              {nuevoSimbolo(tipoDato,"--",(tipoDato=="String")?strlen(yylval.str_val):0);}
               ;
 
-entrada: GET ID  
-        {
-                insertarPolaca(&polaca,yylval.str_val);
-                insertarPolaca(&polaca,"GET");
-        }
-        ;
 
 salida: DISPLAY factor 
         {
