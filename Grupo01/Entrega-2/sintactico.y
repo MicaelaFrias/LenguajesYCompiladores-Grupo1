@@ -5,8 +5,11 @@
 #include <conio.h>
 #include "sintactico.tab.h"
 int yystopparser=0;
+int posicion = 0;
+int indice = 0;
 FILE  *yyin;
 char* tipoDato;
+char* tipoDatoActual;
 
 //////////////////////PILA
 	typedef struct
@@ -48,6 +51,15 @@ char* tipoDato;
 
 	typedef t_nodoPolaca* t_polaca;
 
+typedef struct
+	{
+		char nombreVaribale[30];
+		char tipoVariable[30];
+
+	}t_variables;
+
+
+
 
 int insertarEnTS(char[],char[],int);
 int apilar(t_pila* ,const int );
@@ -61,11 +73,16 @@ int insertarPolaca(t_polaca*,char*);
 int escribirPosicionPolaca(t_polaca* ,int , char*);
 void guardarArchivoPolaca(t_polaca*);
 void  mostrarPilaIDs(t_pilaIds* );
+void mostrarArrayVariables(t_variables* );
+void validarDeclaracionID(char *);
+char * obtenerTipoDeDato(char *);
 
 t_pila pila;
 t_pilaIds pilaIds;
-int posicion = 0;
+
 t_polaca polaca;
+
+t_variables arrayVariables[500];
 
 
 %}
@@ -157,8 +174,8 @@ temaComunYEspecial:
 
 
                         
-asignacion: ID { insertarPolaca(&polaca,yylval.str_val); } OP_ASIG expresion {insertarPolaca(&polaca,"OP_ASIG");}
-                ;
+asignacion: ID  {validarDeclaracionID(yylval.str_val); tipoDatoActual = obtenerTipoDeDato(yylval.str_val);   insertarPolaca(&polaca,yylval.str_val); } OP_ASIG  expresion  {insertarPolaca(&polaca,"OP_ASIG");}  
+                ; 
 
 iteracion: WHILE {apilar(&pila,posicion);} {insertarPolaca(&polaca,"ET");}  P_A condicion P_C   {insertarPolaca(&polaca,"BRANCH");}  {apilar(&pila,posicion); {insertarPolaca(&polaca,"Z");} } bloqueTemasComunesYEspeciales
          {
@@ -176,10 +193,9 @@ iteracion: WHILE {apilar(&pila,posicion);} {insertarPolaca(&polaca,"ET");}  P_A 
 
          insertarPolaca(&polaca,sPosicion);
 
-
         } ENDW ;
 
-ifUnario: ID OP_COMPARACION IF P_A condicion COMA expresion COMA expresion P_C ;
+ifUnario: ID  OP_COMPARACION IF P_A condicion COMA expresion COMA expresion P_C ;
 
 decision: IF P_A condicion P_C THEN bloqueTemasComunesYEspeciales ENDIF
           | IF P_A condicion P_C THEN bloqueTemasComunesYEspeciales ELSE  bloqueTemasComunesYEspeciales ENDIF
@@ -204,17 +220,42 @@ termino: factor
         | termino OP_MULT factor   { insertarPolaca(&polaca,"OP_MULT"); }
         ;
 
-factor: ID                     { insertarPolaca(&polaca,yylval.str_val); }
-        | CONST_INT            { insertarPolaca(&polaca,yylval.str_val); }
-        | CONST_STR            { insertarPolaca(&polaca,yylval.str_val); }
-        | CONST_REAL           { insertarPolaca(&polaca,yylval.str_val); }
+factor: ID                { validarDeclaracionID(yylval.str_val);  
+                           char* sTipoVariable;
+                           sTipoVariable  = obtenerTipoDeDato(yylval.str_val);
+                           if (strcmp(sTipoVariable,tipoDatoActual) != 0 ){
+                                printf("Se espera dato del tipo %s y recibe tipo de dato %s\n",tipoDatoActual,sTipoVariable);
+                                return yyerror();   
+                           }
+
+
+                              insertarPolaca(&polaca,yylval.str_val);    }
+
+
+        | CONST_INT    { if(strcmp(tipoDatoActual,"Integer") != 0){
+                                printf("Se espera dato del tipo %s y recibe tipo de dato %s\n",tipoDatoActual,"Integer");
+                                return yyerror();
+                         }  
+                       }        { insertarPolaca(&polaca,yylval.str_val); }
+
+        | CONST_STR     { if(strcmp(tipoDatoActual,"String") != 0){
+                                printf("Se espera dato del tipo %s y recibe tipo de dato %s\n",tipoDatoActual,"String");
+                                return yyerror();
+                         }  
+                       }              { insertarPolaca(&polaca,yylval.str_val); }
+
+        | CONST_REAL    { if(strcmp(tipoDatoActual,"Float") != 0){
+                                printf("Se espera dato del tipo %s y recibe tipo de dato %s\n",tipoDatoActual,"Float");
+                                return yyerror();
+                         }  
+                       }             { insertarPolaca(&polaca,yylval.str_val); }
       ;
 
 let: LET listaVarLetIzq OP_ASIG P_A listaVarLetDer P_C
     ;
  
-listaVarLetIzq: ID 
-              | listaVarLetIzq COMA ID 
+listaVarLetIzq: ID                       
+              | listaVarLetIzq COMA ID  
               ;
 
 listaVarLetDer: expresion
@@ -231,23 +272,46 @@ declaraciones: declaracion
 declaracion: tipodato OP_DOSP listavariables          
             ;
 
-tipodato: FLOAT {tipoDato = "Float"}
-        | STRING {tipoDato = "String"}
+tipodato:  FLOAT {tipoDato = "Float"}    
+        |  STRING {tipoDato = "String"}
         |  INT {tipoDato = "Integer"}
         ;
 
-listavariables: ID PYC                 
+listavariables: ID PYC  
+                {
+                  strcpy(arrayVariables[indice].nombreVaribale,yylval.str_val);  
+                  strcpy(arrayVariables[indice].tipoVariable,tipoDato);  
+           
+                  indice++;
+                }       
+
                 {
                      nuevoSimbolo(tipoDato,"--",(tipoDato=="String")?strlen(yylval.str_val):0);
                      t_infoIds* infoId;
                 }
-              | listavariables ID PYC {nuevoSimbolo(tipoDato,"--",(tipoDato=="String")?strlen(yylval.str_val):0);}
+              | listavariables ID PYC 
+
+               {
+                  strcpy(arrayVariables[indice].nombreVaribale,yylval.str_val);  
+                  strcpy(arrayVariables[indice].tipoVariable,tipoDato);  
+           
+                  indice++;
+                }   
+              
+              {nuevoSimbolo(tipoDato,"--",(tipoDato=="String")?strlen(yylval.str_val):0);}
               ;
 
-entrada: GET ID 
+entrada: GET ID  
+        {
+                insertarPolaca(&polaca,yylval.str_val);
+                insertarPolaca(&polaca,"GET");
+        }
         ;
 
 salida: DISPLAY factor 
+        {
+                insertarPolaca(&polaca,"DISPLAY");
+        }
         ;
 
 %%
@@ -268,6 +332,7 @@ int main(int argc,char *argv[])
         }
         fclose(yyin);
         guardarArchivoPolaca(&polaca);
+        mostrarArrayVariables(arrayVariables);
         return 0;
 }
 int yyerror(void)
@@ -329,6 +394,55 @@ int apilarId(t_pilaIds* pilaIds,const t_infoIds* infoPilaIds)
     return(1);
 }
 
+
+void validarDeclaracionID(char * nombreID){
+        
+    int i;
+    int iExiste = 0;
+    for(i=0;i<indice;i++)
+    {
+        if ( strcmp(arrayVariables[i].nombreVaribale,nombreID) == 0)
+        {
+                iExiste = 1;
+        }
+    }
+
+    if (iExiste == 0){
+        printf("La variable %s no esta declarada\n",nombreID);
+        yyerror();
+    }
+    
+}
+
+char * obtenerTipoDeDato(char* nombreID){
+        
+         int i;
+
+    for(i=0;i<indice;i++)
+    {
+       if ( strcmp(arrayVariables[i].nombreVaribale,nombreID) == 0)
+        {
+               return arrayVariables[i].tipoVariable;
+        }
+    }
+   
+
+}
+
+void mostrarArrayVariables(t_variables* vec){
+        
+         int i;
+
+    for(i=0;i<indice;i++)
+    {
+         printf("variable: %s \t",vec[i].nombreVaribale);
+         printf("tipovariable: %s \t",vec[i].tipoVariable);
+         printf("\n");
+    }
+   
+
+}
+
 char * desapilarId(t_pilaIds *pilaIds)
 { 
     printf("desapile");
@@ -343,8 +457,10 @@ char * desapilarId(t_pilaIds *pilaIds)
     *pilaIds=(*pilaIds)->psig; 
     infoPilaIds=(*pilaIds)->infoIds.nombre;
 
+
     free(aux); 
               
+
     return infoPilaIds; 
 }
 
