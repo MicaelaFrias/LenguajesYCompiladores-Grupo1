@@ -221,9 +221,9 @@ iteracion: WHILE {
 
 
 ifUnario: ID{
-        //guardamos en char* el yyval del id
+     //guardamos en char* el yyval del id
 } ASIG IF P_A condicion COMA {
-        //desapilar pilaVerdadero.
+        //desapilar pilaVerdadero
 //va a insertar en cada una de esas posiciones la posicion actual
         }expresion{
 //apilar nodo vacio y apilar pos en pila ids
