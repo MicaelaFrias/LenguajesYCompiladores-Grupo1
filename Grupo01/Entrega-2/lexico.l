@@ -52,8 +52,8 @@ ID			    {LETRA}({LETRA}|{DIGITO}|_)*
 "int"  		    { return INT;}
 "display"       { return DISPLAY;}
 "get"           { return GET;}
-"and"           { return OP_LOG;}
-"or"            { return OP_LOG;}
+"and"           { return OP_AND;}
+"or"            { return OP_OR;}
 "not"           { return OP_NOT;}
 ":="			{ return OP_ASIG;}
 ":"		    	{ return OP_DOSP;}
@@ -63,19 +63,20 @@ ID			    {LETRA}({LETRA}|{DIGITO}|_)*
 "/"		    	{ return OP_DIV;}
 "("		    	{ return P_A;}
 ")"		    	{ return P_C;}
-">"             { return OP_COMPARACION;}
-">="            { return OP_COMPARACION;}
-"="             { return OP_COMPARACION;}
-"="             { return ASIG;}
-"<"             { return OP_COMPARACION;}
-"<="            { return OP_COMPARACION;}
-"<>"            { return OP_COMPARACION;}
+"="         { return ASIG;}
+">"             { return OP_MAYOR;}
+">="            { return OP_MAYORIGUAL;}
+"=="            { return OP_IGUAL;}
+"<"             { return OP_MENOR;}
+"<="            { return OP_MENORIGUAL;}
+"<>"            { return OP_DISTINTO;}
 ";"             { return PYC;}
-"and"           { return OP_LOG;}
-"or"            { return OP_LOG;}
-"not"           { return OP_LOG;}
+"and"           { return OP_AND;}
+"or"            { return OP_OR;}
+"not"           { return OP_NOT;}
 
-{ID}		    {
+
+{ID}		        {
                      yylval.str_val = strdup(yytext);
                     return ID;
                 }
@@ -116,6 +117,7 @@ ID			    {LETRA}({LETRA}|{DIGITO}|_)*
                     nuevoSimbolo("--",yytext,0);
                     return CONST_REAL; 
                 }
+                
 
 {COMA}			{ return COMA;}
 {COMENTARIOS}	{ return COMENTARIOS;}
