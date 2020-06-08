@@ -1,9 +1,0 @@
-a
-_5
-CMP
-BNE
-8
-a
-_4
-OP_ASIG
-ENDIF

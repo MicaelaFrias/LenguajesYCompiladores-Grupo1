@@ -6,7 +6,7 @@ defvar
 float:a;f455;h7;
 string:a3;f45;h7;
 float:e;f;
-float:a3;f455;h7;
+float:a3;
 string:a3;f45;h7;
 float:e;f;
 int:j;k;
