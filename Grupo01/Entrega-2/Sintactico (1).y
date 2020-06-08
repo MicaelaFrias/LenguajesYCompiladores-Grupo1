@@ -5,12 +5,9 @@
 #include <conio.h>
 #include "sintactico.tab.h"
 int yystopparser=0;
-int posicion = 0;
-int indice = 0;
 FILE  *yyin;
 char operador[30];
 char* tipoDato;
-char* tipoDatoActual;
 
 //////////////////////PILA
 	typedef struct
@@ -352,34 +349,10 @@ termino: factor
         | termino OP_MULT factor   { insertarPolaca(&polaca,"OP_MULT"); }
         ;
 
-factor: ID                { validarDeclaracionID(yylval.str_val);  
-                           char* sTipoVariable;
-                           sTipoVariable  = obtenerTipoDeDato(yylval.str_val);
-                           if (strcmp(sTipoVariable,tipoDatoActual)){
-                                printf("Se espera dato del tipo %s y recibe tipo de dato %s\n",tipoDatoActual,sTipoVariable);
-                                return yyerror();   
-                           }
-                           insertarPolaca(&polaca,yylval.str_val);   
-                            }
-
-
-        | CONST_INT    { if(strcmp(tipoDatoActual,"Integer")){
-                                printf("Se espera dato del tipo %s y recibe tipo de dato %s\n",tipoDatoActual,"Integer");
-                                return yyerror();
-                         }  
-                       }        { insertarPolaca(&polaca,yylval.str_val); }
-
-        | CONST_STR     { if(strcmp(tipoDatoActual,"String")){
-                                printf("Se espera dato del tipo %s y recibe tipo de dato %s\n",tipoDatoActual,"String");
-                                return yyerror();
-                         }  
-                       }              { insertarPolaca(&polaca,yylval.str_val); }
-
-        | CONST_REAL    { if(strcmp(tipoDatoActual,"Float")){
-                                printf("Se espera dato del tipo %s y recibe tipo de dato %s\n",tipoDatoActual,"Float");
-                                return yyerror();
-                         }  
-                       }             { insertarPolaca(&polaca,yylval.str_val); }
+factor: ID                     { insertarPolaca(&polaca,yylval.str_val); }
+        | CONST_INT            { insertarPolaca(&polaca,yylval.str_val); }
+        | CONST_STR            { insertarPolaca(&polaca,yylval.str_val); }
+        | CONST_REAL           { insertarPolaca(&polaca,yylval.str_val); }
       ;
 
 let: LET listaVarLetIzq OP_ASIG P_A listaVarLetDer P_C
@@ -442,32 +415,17 @@ tipodato: FLOAT {tipoDato = "Float"}
 
 listavariables: ID PYC                 
                 {
-                  strcpy(arrayVariables[indice].nombreVaribale,yylval.str_val);  
-                  strcpy(arrayVariables[indice].tipoVariable,tipoDato);  
-                  indice++;    
-                  nuevoSimbolo(tipoDato,"--",(tipoDato=="String")?strlen(yylval.str_val):0);
+                     nuevoSimbolo(tipoDato,"--",(tipoDato=="String")?strlen(yylval.str_val):0);
+                     t_infoIds* infoId;
                 }
-              | listavariables ID PYC {
-                  nuevoSimbolo(tipoDato,"--",(tipoDato=="String")?strlen(yylval.str_val):0);
-                  strcpy(arrayVariables[indice].nombreVaribale,yylval.str_val);  
-                  strcpy(arrayVariables[indice].tipoVariable,tipoDato);  
-                  indice++;    
-                  }
+              | listavariables ID PYC {nuevoSimbolo(tipoDato,"--",(tipoDato=="String")?strlen(yylval.str_val):0);}
               ;
 
 entrada: GET ID 
         {
                 insertarPolaca(&polaca,yylval.str_val);
                 insertarPolaca(&polaca,"GET");
-                  insertarPolaca(&polaca,"GET");  
-                insertarPolaca(&polaca,"GET");
-                  insertarPolaca(&polaca,"GET");  
-                insertarPolaca(&polaca,"GET");
-        }  
-                }   
-        }  
-                }   
-        }  
+        }
         ;
 
 salida: DISPLAY factor 
@@ -495,7 +453,6 @@ int main(int argc,char *argv[])
         }
         fclose(yyin);
         guardarArchivoPolaca(&polaca);
-        mostrarArrayVariables(arrayVariables);
         return 0;
 }
 int yyerror(void)
@@ -736,3 +693,4 @@ int buscarEnTS(){
 
   fclose(tablasimbolos);
 }
+

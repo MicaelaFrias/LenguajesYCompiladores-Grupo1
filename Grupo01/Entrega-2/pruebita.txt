@@ -1,7 +1,12 @@
 
 program
 beginp
-
-e = if(a<4,a+5,5)
+defvar
+int:a;e;
+enddef
+if(a==5)
+then
+a:=4
+endif
 
 endp
