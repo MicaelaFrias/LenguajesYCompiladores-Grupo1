@@ -290,21 +290,28 @@ seleccionSinElse: IF P_A condicion
         ;
 
 finSeleccion: ELSE{
-                int posicionBranch, cant = 1;;
+                int posicionBranch, cant = 1, posAux;
                 char sPosicionPolaca[25];
                 sprintf(sPosicionPolaca,"%d",posicionPolaca);
+                posAux = desapilar(&pilaFalso);
                 while(!pilaVacia(&pilaFalso) && cant>=0){
                         posicionBranch = desapilar(&pilaFalso);
                         escribirPosicionPolaca(&polaca,posicionBranch,sPosicionPolaca);
                 cant--;
+                //apilo nuevamente el salto del BI anterior, solo quiero desapilar el de la condicion
+                apilar(&pilaFalso,posAux);
 
                 }
         }
                 bloqueTemasComunesYEspeciales ENDIF{
-                         char sPosicionPolaca[25];
-                        sprintf(sPosicionPolaca,"%d",posicionPolaca);
-                        escribirPosicionPolaca(&polaca,posicion,sPosicionPolaca);
-                }
+                       int posicionBranch;
+                        char posEndIf[25];
+                        sprintf(posEndIf,"%d",insertarPolaca(&polaca,"ENDIF"));
+                        if(!pilaVacia(&pilaFalso)){
+                                posicionBranch = desapilar(&pilaFalso);
+                                escribirPosicionPolaca(&polaca,posicionBranch,posEndIf);
+                                }
+                        }
         | ENDIF {
                 
                 int posicionBranch, cant = 1;

@@ -19,15 +19,15 @@ then
 if(h7>44 or a>9)
 then 
 h7:=44
+else
+b:="aaa"
 endif
-
 a:=32
 endif
-
 a:=9
 else
 b:="aaa"
-endif 
+endif  
 
 if (3.5==a)
 then 
