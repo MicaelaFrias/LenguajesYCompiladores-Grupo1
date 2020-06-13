@@ -7,9 +7,9 @@
 int yystopparser=0;
 int posicion = 0;
 int indice = 0;
-//para controlar la cantidad de saltos por falso
-int vecCantFalsos[30];
-int cantIfs=0;
+//para controlar la cantidad de saltos por falso en los cliclos anidados
+int vecFalsosAnidados[30];
+int cantCliclosAnidados=0;
 int cantFalsos=0;
 FILE  *yyin;
 char operador[30];
@@ -209,9 +209,26 @@ asignacion: ID { validarDeclaracionID(yylval.str_val); tipoDatoActual = obtenerT
 
 iteracion: WHILE {
                 apilar(&pilaVerdadero,insertarPolaca(&polaca,"ET"));
+                cantCliclosAnidados++; 
+                //guardamos la cantidad de saltos por falso que tiene el if anidado anterior
+                if(cantCliclosAnidados>1){ 
+                        vecFalsosAnidados[cantCliclosAnidados-2] = cantFalsos;
+                        cantFalsos = 0;
+                        }
                 }  
-        P_A condicion P_C  bloqueTemasComunesYEspeciales ENDW {
-        int posicionInicial, posicionBranch;
+        P_A condicion{
+                 cantComparaciones = 0;
+        } P_C {
+                int posicionBranch=0;
+                char sPosicionPolaca [25];
+                sprintf(sPosicionPolaca,"%d",posicionPolaca);
+                 if(!pilaVacia(&pilaVerdadero)){
+                        posicionBranch = desapilar(&pilaVerdadero); 
+                        escribirPosicionPolaca(&polaca,posicionBranch,sPosicionPolaca);
+                }
+        }  
+        bloqueTemasComunesYEspeciales ENDW {
+        int posicionInicial, posicionBranch, falsosADesapilar = (cantFalsos ==2)?1:0;
         char posFalso[25];
         char posInicio[25];
         if(!pilaVacia(&pilaVerdadero)){
@@ -221,10 +238,15 @@ iteracion: WHILE {
                 escribirPosicionPolaca(&polaca,insertarPolaca(&polaca,""),posInicio);
         }
         sprintf(posFalso,"%d",insertarPolaca(&polaca,"ENDW"));
-         while(!pilaVacia(&pilaFalso)){
+         while(!pilaVacia(&pilaFalso) &&falsosADesapilar>=0){
                 posicionBranch = desapilar(&pilaFalso); 
                 escribirPosicionPolaca(&polaca,posicionBranch,posFalso);
+                falsosADesapilar--;
         }
+        //actualizamos la cantidad de falsos que tenia el if anterior
+        cantFalsos = vecFalsosAnidados[cantCliclosAnidados-2];
+        //reducimos la cant de cantCliclosAnidados
+        cantCliclosAnidados--;
 
         };
 
@@ -278,15 +300,16 @@ ifUnario: ID{   validarDeclaracionID(yylval.str_val); tipoDatoActual = obtenerTi
 seleccion: seleccionSinElse finSeleccion;
 
 seleccionSinElse: IF {
-                cantIfs++; 
+                cantCliclosAnidados++; 
                 //guardamos la cantidad de saltos por falso que tiene el if anidado anterior
-                if(cantIfs>1){ 
-                        vecCantFalsos[cantIfs-2] = cantFalsos;
-                        printf("\n CANTIDAD FALSOS GUARDADA %d\n", vecCantFalsos[cantIfs-2]);
+                if(cantCliclosAnidados>1){ 
+                        vecFalsosAnidados[cantCliclosAnidados-2] = cantFalsos;
                         cantFalsos = 0;
                         }
                 } 
-        P_A condicion
+        P_A condicion{
+                 cantComparaciones = 0;
+        }
         P_C THEN{
                 int iPosicion;
                 char posThen[25];
@@ -305,13 +328,11 @@ seleccionSinElse: IF {
 finSeleccion: ELSE{
                 int posicionBranch, falsosADesapilar = (cantFalsos ==2)?1:0, posAux;
                 char sPosicionPolaca[25];
-                printf("\n CANTIDAD FALSOS ELSE %d\n", cantFalsos);
                 sprintf(sPosicionPolaca,"%d",posicionPolaca);
                 //desapilo salto de BI
                 posAux = desapilar(&pilaFalso);
                 while(!pilaVacia(&pilaFalso) && falsosADesapilar>=0){
                         posicionBranch = desapilar(&pilaFalso);
-                        printf("\n DESAPILE %d \n", posicionBranch);
                         escribirPosicionPolaca(&polaca,posicionBranch,sPosicionPolaca);
                 falsosADesapilar--;
                 }
@@ -328,17 +349,15 @@ finSeleccion: ELSE{
                         escribirPosicionPolaca(&polaca,posicionBranch,posEndIf);
                         }
                 //actualizamos la cantidad de falsos que tenia el if anterior
-                cantFalsos = vecCantFalsos[cantIfs-2];
-                printf("\n CANTIDAD FALSOS ANTERIOR %d\n", cantFalsos);
-                //reducimos la cant de cantIfs
-                cantIfs--;
+                cantFalsos = vecFalsosAnidados[cantCliclosAnidados-2];
+                //reducimos la cant de cantCliclosAnidados
+                cantCliclosAnidados--;
                 }
                         
         | ENDIF {
                 
                 int posicionBranch, falsosADesapilar = (cantFalsos ==2)?2:1;
                 char posEndIf[25];
-                printf("\n CANTIDAD FALSOS END %d\n", cantFalsos);
                 sprintf(posEndIf,"%d",insertarPolaca(&polaca,"ENDIF"));
                 while(!pilaVacia(&pilaFalso)&& falsosADesapilar>=0){
                 posicionBranch = desapilar(&pilaFalso);
@@ -346,10 +365,9 @@ finSeleccion: ELSE{
                 falsosADesapilar--;
                 }
                 //actualizamos la cantidad de falsos que tenia el if anterior
-                cantFalsos = vecCantFalsos[cantIfs-2];
-                printf("\n CANTIDAD FALSOS ANTERIOR %d\n", cantFalsos);
-                //reducimos la cant de cantIfs
-                cantIfs--;
+                cantFalsos = vecFalsosAnidados[cantCliclosAnidados-2];
+                //reducimos la cant de cantCliclosAnidados
+                cantCliclosAnidados--;
         }
 ;
 
@@ -372,7 +390,6 @@ condicion: comparacion   { insertarPolaca(&polaca,"CMP"); insertarPolaca(&polaca
                      insertarPolaca(&polaca,"CMP"); insertarPolaca(&polaca,comp);
                      apilar(&pilaFalso,insertarPolaca(&polaca,""));
                      cantFalsos++; 
-                cantComparaciones = 0;
                 }
            |OP_NOT{ invertir_salto(comp);} comparacion                 
            ;

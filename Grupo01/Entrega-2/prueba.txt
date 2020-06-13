@@ -8,6 +8,7 @@ float:e;f;
 int:j;k;
 enddef
 
+***/IF ANIDADO/***
 if(13>32 or 332>2)
 then
 b:="aaa"
@@ -31,14 +32,41 @@ else
 b:="aaa"
 endif   
 
+***/IF/***
 if (3.5==a)
 then 
 a:=3
 endif
 
+***/WHILE ANIDADO/***
+while (a>8 and f4==1)
+a3 :="hola" 
+while (h7>8 or h7==1)
+a3 :="chau" 
+endw 
+endw 
+
+***/WHILE/***
 while (a>8 and f4==1)
 a3 :="hola" 
 endw
+
+***/WHILE E IF ANIDADOS/***
+while (a>8 and f4==1)
+a3 :="hola" 
+
+if (3.5==a)
+then 
+a:=3
+endif
+
+if (3.5==a or a>5)
+then 
+a:=3
+endif
+
+endw 
+
 ***//***
 ***/COMENTARIO/***
 
