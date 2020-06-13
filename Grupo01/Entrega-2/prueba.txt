@@ -1,4 +1,3 @@
-
 program
 beginp
 defvar
@@ -7,6 +6,7 @@ string:a3;f45;b;uno;
 float:e;f;
 int:j;k;
 enddef
+
 
 ***/IF ANIDADO/***
 if(13>32 or 332>2)

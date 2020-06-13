@@ -409,15 +409,16 @@ comparador: OP_MAYOR {strcpy(comp, "BLE");}
         | OP_IGUAL {strcpy(comp, "BNE");}
         ;
 
-expresion: expresion OP_SUM termino   {insertarPolaca(&polaca,"OP_SUM");  }
-         | expresion OP_RES termino  {insertarPolaca(&polaca,"OP_RES"); }
+expresion: termino OP_SUM expresion {insertarPolaca(&polaca,"OP_SUM"); }
+         | termino OP_RES expresion {insertarPolaca(&polaca,"OP_RES"); }
          | termino                              
           ;
 
-termino: factor
-        | termino OP_DIV factor   { insertarPolaca(&polaca,"OP_DIV");  }
-        | termino OP_MULT factor   { insertarPolaca(&polaca,"OP_MULT"); }
+termino: factor OP_DIV termino      { insertarPolaca(&polaca,"OP_DIV");  }
+        | factor OP_MULT termino    { insertarPolaca(&polaca,"OP_MULT"); }
+        | factor
         ;
+        
 
 factor: ID                { validarDeclaracionID(yylval.str_val);  
                            char* sTipoVariable;

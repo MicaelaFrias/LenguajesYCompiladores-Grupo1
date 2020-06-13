@@ -14,9 +14,7 @@ FILE  *yyin;
 DIGITO		    [0-9]
 LETRA		    [a-zA-Z]
 COMA            [","]
-COM_INI         ["***/"]    
-COM_FIN         ["/***"]
-COMENTARIOS     ["***/"]({LETRA}|{DIGITO}|.)*["/***"]
+COMENTARIOS     "***/"([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*"/***"
 CONST_STR       \"(({LETRA}|{DIGITO}|[\?\¿\!\¡=#$%()\[\]{}_-]){0,30})\"
 CONST_REAL      {DIGITO}+"."{DIGITO}+
 CONST_INT       {DIGITO}+
