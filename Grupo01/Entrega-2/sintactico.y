@@ -65,6 +65,7 @@ int insertarEnTS(char[],char[],int);
 int apilar(t_pila* pila,const int iPosicion);
 int desapilar(t_pila *pila);
 void crearPila(t_pila* pila);
+void VaciarPila(t_pila* pila);
 int pilaVacia(t_pila* pila);
 
 
@@ -86,6 +87,8 @@ void mostrarArrayVariables(t_variables* );
 void validarDeclaracionID(char *);
 char * obtenerTipoDeDato(char *);
 
+
+//declaracion de variables
 t_pila pila;
 t_polaca polaca;
 char comp[3];
@@ -98,8 +101,9 @@ t_pila pilaVerdadero;
 t_pilaIds pilaIds;
 int posicionPolaca = 0;
 t_polaca polaca;
-
 t_variables arrayVariables[500];
+
+
 
 %}
 
@@ -274,7 +278,7 @@ seleccionSinElse: IF P_A condicion
                 int iPosicion;
                 char posThen[25];
                 sprintf(posThen,"%d",posicionPolaca);
-                while(!pilaVacia(&pilaVerdadero)){
+                if(!pilaVacia(&pilaVerdadero)){
                 iPosicion = desapilar(&pilaVerdadero); 
                 escribirPosicionPolaca(&polaca,iPosicion,posThen);
                 }
@@ -286,13 +290,14 @@ seleccionSinElse: IF P_A condicion
         ;
 
 finSeleccion: ELSE{
-                int posicionBranch;
+                int posicionBranch, cant = 1;;
                 char sPosicionPolaca[25];
                 sprintf(sPosicionPolaca,"%d",posicionPolaca);
-                posicion = desapilar(&pilaFalso);
-                while(!pilaVacia(&pilaFalso)){
+                while(!pilaVacia(&pilaFalso) && cant>=0){
                         posicionBranch = desapilar(&pilaFalso);
                         escribirPosicionPolaca(&polaca,posicionBranch,sPosicionPolaca);
+                cant--;
+
                 }
         }
                 bloqueTemasComunesYEspeciales ENDIF{
@@ -302,13 +307,15 @@ finSeleccion: ELSE{
                 }
         | ENDIF {
                 
-                int posicionBranch;
+                int posicionBranch, cant = 1;
                 char posEndIf[25];
                 sprintf(posEndIf,"%d",insertarPolaca(&polaca,"ENDIF"));
-                while(!pilaVacia(&pilaFalso)){
+                while(!pilaVacia(&pilaFalso)&& cant>=0){
                 posicionBranch = desapilar(&pilaFalso);
                 escribirPosicionPolaca(&polaca,posicionBranch,posEndIf);
+                cant--;
                 }
+     
         }
 ;
 
@@ -329,6 +336,7 @@ condicion: comparacion   { insertarPolaca(&polaca,"CMP"); insertarPolaca(&polaca
                 {
                      insertarPolaca(&polaca,"CMP"); insertarPolaca(&polaca,comp);
                      apilar(&pilaFalso,insertarPolaca(&polaca,""));
+
                 cantComparaciones = 0;
                 }
            |OP_NOT{ invertir_salto(comp);} comparacion                 
@@ -536,7 +544,9 @@ int desapilar(t_pila *pila)
     free(aux); 
     return iPosicion; 
 }
-
+void VaciarPila(t_pila* pila){
+         pila = NULL;
+}
 
 int pilaVacia(t_pila* ppila){
         return !(*ppila);
@@ -585,9 +595,6 @@ void mostrarPilaIDs(t_pilaIds* pilaIds)
          
 }
 
-void VaciarPila(t_pilaIds* pilaIds){
-         pilaIds = NULL;
-}
 
 ///////////////////////// POLACA
 
@@ -713,6 +720,7 @@ char* invertir_salto(char* comp){
 
         return comp;
 }
+
 ///////////////////////// TABLA DE SIMBOLOS
 int nuevoSimbolo(char* tipoDato,char valorString[],int longitud){
   FILE *tablasimbolos = fopen("ts.txt","rw");

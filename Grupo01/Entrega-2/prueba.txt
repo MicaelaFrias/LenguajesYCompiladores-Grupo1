@@ -8,6 +8,27 @@ float:e;f;
 int:j;k;
 enddef
 
+if(13>32 or 332>2)
+then
+b:="aaa"
+b:="aaa"
+
+if(a>32 or a<7)
+then 
+
+if(h7>44 or a>9)
+then 
+h7:=44
+endif
+
+a:=32
+endif
+
+a:=9
+else
+b:="aaa"
+endif 
+
 if (3.5==a)
 then 
 a:=3
