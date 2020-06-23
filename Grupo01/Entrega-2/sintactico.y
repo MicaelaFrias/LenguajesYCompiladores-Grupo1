@@ -14,7 +14,7 @@ int cantFalsos=0;
 FILE  *yyin;
 char operador[30];
 char* tipoDato;
-char* tipoDatoActual;
+char tipoDatoActual[50] = "";
 
 //////////////////////PILA
 	typedef struct
@@ -204,7 +204,7 @@ temaComunYEspecial:
 
 
                         
-asignacion: ID { validarDeclaracionID(yylval.str_val); tipoDatoActual = obtenerTipoDeDato(yylval.str_val);  insertarPolaca(&polaca,yylval.str_val); } OP_ASIG expresion {insertarPolaca(&polaca,"OP_ASIG"); tipoDatoActual = NULL;}
+asignacion: ID { validarDeclaracionID(yylval.str_val); strcpy(tipoDatoActual,obtenerTipoDeDato(yylval.str_val));  insertarPolaca(&polaca,yylval.str_val); } OP_ASIG expresion {insertarPolaca(&polaca,"OP_ASIG"); strcpy(tipoDatoActual,"");}
                 ;
 
 iteracion: WHILE {
@@ -251,7 +251,7 @@ iteracion: WHILE {
         };
 
 
-ifUnario: ID{   validarDeclaracionID(yylval.str_val); tipoDatoActual = obtenerTipoDeDato(yylval.str_val); 
+ifUnario: ID{   validarDeclaracionID(yylval.str_val); strcpy(tipoDatoActual,obtenerTipoDeDato(yylval.str_val)); 
                 strcpy(idValor,yylval.str_val);//guardamos en char* el yyval del id
         } 
         ASIG IF P_A condicion COMA {
@@ -294,7 +294,7 @@ ifUnario: ID{   validarDeclaracionID(yylval.str_val); tipoDatoActual = obtenerTi
                         posicionBranch = desapilar(&pilaVerdadero); 
                         escribirPosicionPolaca(&polaca,posicionBranch,posActual);
                 }
-                tipoDatoActual = NULL;
+                strcpy(tipoDatoActual,"");
         }; 
 
 seleccion: seleccionSinElse finSeleccion;
@@ -394,10 +394,10 @@ condicion: comparacion   { insertarPolaca(&polaca,"CMP"); insertarPolaca(&polaca
            |OP_NOT{ invertir_salto(comp);} comparacion                 
            ;
 
-operador: OP_OR  {strcpy(operador, "OR");}
-        | OP_AND {strcpy(operador,"AND");}
+operador: OP_OR  {strcpy(operador, "OR");   strcpy(tipoDatoActual,"");  } 
+        | OP_AND {strcpy(operador,"AND");  strcpy(tipoDatoActual,"");  }
 ;
-comparacion: expresion comparador expresion             
+comparacion: expresion comparador expresion                     
             | P_A expresion comparador expresion P_C   
             ;
 
@@ -420,34 +420,71 @@ termino: factor OP_DIV termino      { insertarPolaca(&polaca,"OP_DIV");  }
         ;
         
 
-factor: ID                { validarDeclaracionID(yylval.str_val);  
-                           char* sTipoVariable;
-                           sTipoVariable  = obtenerTipoDeDato(yylval.str_val);
-                           if (tipoDatoActual && strcmp(sTipoVariable,tipoDatoActual)){
-                                printf("Se espera dato del tipo %s y recibe tipo de dato %s\n",tipoDatoActual,sTipoVariable);
-                                return yyerror();   
-                           }
-                           insertarPolaca(&polaca,yylval.str_val);   
-                            }
+factor: ID                { 
 
+                        if(!strcmp(tipoDatoActual ,"")){
 
-        | CONST_INT    { if(tipoDatoActual && strcmp(tipoDatoActual,"Integer") && strcmp(tipoDatoActual,"Float")){
+                              strcpy(tipoDatoActual,obtenerTipoDeDato(yylval.str_val));  
+                        }else{
+
+                                validarDeclaracionID(yylval.str_val);  
+                                char sTipoVariable[50];
+
+                                strcpy(sTipoVariable, obtenerTipoDeDato(yylval.str_val));
+                                
+                                if (strcmp(sTipoVariable,tipoDatoActual)){
+                                        printf("Se espera dato del tipo %s y recibe tipo de dato %s\n",tipoDatoActual,sTipoVariable);
+                                        return yyerror();   
+                                }
+                               
+                                
+                        }
+
+                         insertarPolaca(&polaca,yylval.str_val);   }
+  
+        | CONST_INT    { 
+
+                         if(!strcmp(tipoDatoActual ,"")){
+
+                              strcpy(tipoDatoActual,obtenerTipoDeDato(yylval.str_val));  
+                        }else{
+                
+                        if(strcmp(tipoDatoActual,"Integer") && strcmp(tipoDatoActual,"Float")){
                                 printf("Se espera dato del tipo %s y recibe tipo de dato %s\n",tipoDatoActual,"Integer");
                                 return yyerror();
                          }  
+
+                        }
                          insertarPolaca(&polaca,yylval.str_val);
                         }
 
-        | CONST_STR     { if(tipoDatoActual && strcmp(tipoDatoActual,"String")){
+        | CONST_STR     {
+
+                          if(!strcmp(tipoDatoActual ,"")){
+
+                              strcpy(tipoDatoActual,obtenerTipoDeDato(yylval.str_val));  
+                        }else{
+                
+                         if(strcmp(tipoDatoActual,"String")){
                                 printf("Se espera dato del tipo %s y recibe tipo de dato %s\n",tipoDatoActual,"String");
                                 return yyerror();
                          }  
+
+                        }
                          insertarPolaca(&polaca,yylval.str_val);
                         }
 
-        | CONST_REAL    { if(tipoDatoActual && strcmp(tipoDatoActual,"Float")){
+        | CONST_REAL    { 
+                           if(!strcmp(tipoDatoActual ,"")){
+
+                              strcpy(tipoDatoActual,obtenerTipoDeDato(yylval.str_val));  
+                        }else{
+
+                        if(strcmp(tipoDatoActual,"Float")){
                                 printf("Se espera dato del tipo %s y recibe tipo de dato %s\n",tipoDatoActual,"Float");
                                 return yyerror();
+                         }
+
                          }
                           insertarPolaca(&polaca,yylval.str_val); 
                         }
