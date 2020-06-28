@@ -890,10 +890,12 @@ void generarAsm(t_variables* vec){
         }
 		
 	fprintf(final,"\n.CODE \n");
-	fprintf(final,"mov ax,@data \n");
-	fprintf(final,"mov ds,ax;\n");
-	fprintf(final,"mov ax,4C00h\n");
-	fprintf(final,"int 21h\n");
+	fprintf(final,"mov ah, 1;\n");
+	fprintf(final,"int 21h ;\n");
+	fprintf(final,"MOV AX, 4C00h; \n");
+	fprintf(final,"int 21h;\n");
+        //PROGRAMA DE USUARIO
+        
 	fprintf(final,"END\n");
 
         ////////////////////////////////PROGRAMA DEL USUARIO

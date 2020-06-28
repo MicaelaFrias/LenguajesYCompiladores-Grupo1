@@ -1,5 +1,5 @@
 include macros2.asm
-include numbers.asm
+include number.asm
 .MODEL LARGE
 .386
 .STACK 200h
@@ -19,8 +19,8 @@ _j dd ?
 _k dd ?
 
 .CODE 
-mov ax,@data 
-mov ds,ax;
-mov ax,4C00h
-int21h
+mov ah, 1;
+int 21h ;
+MOV AX, 4C00h; 
+int 21h;
 END
