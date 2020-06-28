@@ -7,6 +7,7 @@
 int yystopparser=0;
 int posicion = 0;
 int indice = 0;
+
 //para controlar la cantidad de saltos por falso en los cliclos anidados
 int vecFalsosAnidados[30];
 int cantCliclosAnidados=0;
@@ -59,7 +60,7 @@ char tipoDatoActual[50] = "";
         
         typedef struct
 	{
-		char nombreVaribale[30];
+		char nombreVariable[30];
 		char tipoVariable[30];
 
 	}t_variables;
@@ -91,6 +92,8 @@ void mostrarArrayVariables(t_variables* );
 void validarDeclaracionID(char *);
 char * obtenerTipoDeDato(char *);
 
+///funciones para assembler
+void crear_cabecera_asm(t_variables* vec);
 
 //declaracion de variables
 t_pila pila;
@@ -106,8 +109,6 @@ t_pilaIds pilaIds;
 int posicionPolaca = 0;
 t_polaca polaca;
 t_variables arrayVariables[500];
-
-
 
 %}
 
@@ -313,6 +314,7 @@ seleccionSinElse: IF {
         P_C THEN{
                 int iPosicion;
                 char posThen[25];
+                //salto por verdadero
                 sprintf(posThen,"%d",posicionPolaca);
                 if(!pilaVacia(&pilaVerdadero)){
                 iPosicion = desapilar(&pilaVerdadero); 
@@ -332,6 +334,7 @@ finSeleccion: ELSE{
                 //desapilo salto de BI
                 posAux = desapilar(&pilaFalso);
                 while(!pilaVacia(&pilaFalso) && falsosADesapilar>=0){
+                        //salto por falso
                         posicionBranch = desapilar(&pilaFalso);
                         escribirPosicionPolaca(&polaca,posicionBranch,sPosicionPolaca);
                 falsosADesapilar--;
@@ -343,6 +346,7 @@ finSeleccion: ELSE{
                 bloqueTemasComunesYEspeciales ENDIF{
                 int posicionBranch;
                 char posEndIf[25];
+                //salto por falso
                 sprintf(posEndIf,"%d",insertarPolaca(&polaca,"ENDIF"));
                 if(!pilaVacia(&pilaFalso)){
                         posicionBranch = desapilar(&pilaFalso);
@@ -358,6 +362,7 @@ finSeleccion: ELSE{
                 
                 int posicionBranch, falsosADesapilar = (cantFalsos ==2)?2:1;
                 char posEndIf[25];
+                //salto por falso
                 sprintf(posEndIf,"%d",insertarPolaca(&polaca,"ENDIF"));
                 while(!pilaVacia(&pilaFalso)&& falsosADesapilar>=0){
                 posicionBranch = desapilar(&pilaFalso);
@@ -548,14 +553,14 @@ tipodato: FLOAT {tipoDato = "Float"}
 
 listavariables: ID PYC                 
                 {
-                  strcpy(arrayVariables[indice].nombreVaribale,yylval.str_val);  
+                  strcpy(arrayVariables[indice].nombreVariable,yylval.str_val);  
                   strcpy(arrayVariables[indice].tipoVariable,tipoDato);  
                   indice++;    
                   nuevoSimbolo(tipoDato,"--",(tipoDato=="String")?strlen(yylval.str_val):0);
                 }
               | listavariables ID PYC {
                   nuevoSimbolo(tipoDato,"--",(tipoDato=="String")?strlen(yylval.str_val):0);
-                  strcpy(arrayVariables[indice].nombreVaribale,yylval.str_val);  
+                  strcpy(arrayVariables[indice].nombreVariable,yylval.str_val);  
                   strcpy(arrayVariables[indice].tipoVariable,tipoDato);  
                   indice++;    
                   }
@@ -589,10 +594,11 @@ int main(int argc,char *argv[])
         else
         {
                 yyparse();
+           
         }
         fclose(yyin);
         guardarArchivoPolaca(&polaca);
-        // mostrarArrayVariables(arrayVariables);
+        crear_cabecera_asm(arrayVariables);
         return 0;
 }
 int yyerror(void)
@@ -697,7 +703,7 @@ int insertarPolaca(t_polaca* ppolaca,char *contenido)
 {
         t_nodoPolaca* nuevoNodo = (t_nodoPolaca*)malloc(sizeof(t_nodoPolaca));
         if(!nuevoNodo){
-                return 1;
+                return 0;
         }
  
         strcpy(nuevoNodo->info.contenido,contenido);
@@ -752,7 +758,7 @@ void validarDeclaracionID(char * nombreID){
     int iExiste = 0;
     for(i=0;i<indice;i++)
     {
-        if ( strcmp(arrayVariables[i].nombreVaribale,nombreID) == 0)
+        if ( strcmp(arrayVariables[i].nombreVariable,nombreID) == 0)
         {
                 iExiste = 1;
         }
@@ -771,7 +777,7 @@ char * obtenerTipoDeDato(char* nombreID){
 
     for(i=0;i<indice;i++)
     {
-       if ( strcmp(arrayVariables[i].nombreVaribale,nombreID) == 0)
+       if ( strcmp(arrayVariables[i].nombreVariable,nombreID) == 0)
         {
                return arrayVariables[i].tipoVariable;
         }
@@ -786,7 +792,7 @@ void mostrarArrayVariables(t_variables* vec){
 
     for(i=0;i<indice;i++)
     {
-         printf("variable: %s \t",vec[i].nombreVaribale);
+         printf("variable: %s \t",vec[i].nombreVariable);
          printf("tipovariable: %s \t",vec[i].tipoVariable);
          printf("\n");
     }
@@ -845,3 +851,52 @@ int buscarEnTS(){
 
   fclose(tablasimbolos);
 }
+
+///////////////////////////ASSEMBLER
+void crear_cabecera_asm(t_variables* vec){
+	printf("***Generando ASM**** \n");
+	FILE *final = fopen("Final.asm","w");
+	if(final == NULL)
+	{
+		printf("Error al crear el archivo Final.asm");
+		getchar();
+		exit(0);
+	}
+	fprintf(final, "include macros2.asm\n");
+	fprintf(final, "include numbers.asm\n");
+	fprintf(final,".MODEL LARGE\n");
+	fprintf(final,".386\n");
+	fprintf(final,".STACK 200h\n");
+	fprintf(final,".DATA\n");
+		
+        //escirbimos las variables de TS en la cabecera del archivo assembler
+        int i = 0;
+	int contador_aux = 1, tipoDatoId;
+	 while(i<indice)  
+	{
+        tipoDatoId = (!strcmp(vec[i].tipoVariable, "Integer"))?1:(!strcmp(vec[i].tipoVariable, "Float"))?2:3;
+        printf("\n TIPO DE DATO %d\n", tipoDatoId);
+        switch(tipoDatoId){
+                case 1: 	  
+                        fprintf(final,"_%s dd %s\n",vec[i].nombreVariable, vec[i].nombreVariable));         
+                        break;
+                case 2:    
+                        fprintf(final,"_%s dd %s\n",vec[i].nombreVariable, vec[i].nombreVariable);        
+                        break;
+                case 3:  
+                        fprintf(final,"%s ,'$', %d dup(?)\n",vec[i].nombreVariable,(int)(52-sizeof(vec[i].nombreVariable)));
+                        break;		
+                }
+    
+        i++;
+        }
+		
+	fprintf(final,"\n.CODE \n");
+	fprintf(final,"mov ax,@data \n");
+	fprintf(final,"mov ds,ax;\n");
+	fprintf(final,"mov ax,4C00h\n");
+	fprintf(final,"int21h\n");
+	fprintf(final,"END\n");
+	fclose(final);
+
+} 

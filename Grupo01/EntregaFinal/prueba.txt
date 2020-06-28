@@ -9,7 +9,7 @@ enddef
 
 
 ***/IF ANIDADO/***
-if(13>32 or 332>2)
+if(a>f455 or a>f455 )
 then
 b:="aaa"
 b:="aaa"
@@ -33,7 +33,7 @@ b:="aaa"
 endif   
 
 ***/IF/***
-if (3.5==a)
+if (a==3.5)
 then 
 a:=3
 endif
@@ -55,12 +55,12 @@ endw
 while (a>8 and f4==1)
 a3 :="hola" 
 
-if (3.5==a)
+if (a==3)
 then 
 a:=3
 endif
 
-if (3.5==a or a>5)
+if (a==4 or a>5)
 then 
 a:=3
 endif
@@ -70,7 +70,7 @@ endw
 ***//***
 ***/COMENTARIO/***
 
-if(13>32 or 332>2)
+if(a>32 or a>2)
 then
 b:="aaa"
 b:="aaa"
@@ -79,11 +79,9 @@ b:="aaa"
 endif 
 
 get a3
-display "hola"
-display 1
-display a3
-e = if(a<4,a+5,5)
-e = if(a>3,a+6,a+8)
+display a
 
-let uno,dos,tres := ("3";4;a+5)
+e = if(a<a,a+5,a)
+e = if(a>a,a+6,a+8)
+
 endp
