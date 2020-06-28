@@ -9,7 +9,7 @@ enddef
 
 
 ***/IF ANIDADO/***
-if(13>32 or 332>2)
+if(3.5>33 or a>f455)
 then
 b:="aaa"
 b:="aaa"
@@ -33,7 +33,7 @@ b:="aaa"
 endif   
 
 ***/IF/***
-if (3.5==a)
+if (a3=="rfrf")
 then 
 a:=3
 endif
@@ -52,7 +52,7 @@ a3 :="hola"
 endw
 
 ***/WHILE E IF ANIDADOS/***
-while (a>8 and f4==1)
+while (a>a and f4==a)
 a3 :="hola" 
 
 if (3.5==a)
