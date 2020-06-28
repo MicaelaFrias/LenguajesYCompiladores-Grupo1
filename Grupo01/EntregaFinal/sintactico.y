@@ -863,12 +863,12 @@ void generarAsm(t_variables* vec){
 		exit(0);
 	}
 	fprintf(final, "include macros2.asm\n");
-	fprintf(final, "include numbers.asm\n");
+	fprintf(final, "include number.asm\n");
 	fprintf(final,".MODEL LARGE\n");
 	fprintf(final,".386\n");
 	fprintf(final,".STACK 200h\n");
 	fprintf(final,".DATA\n");
-	/////DECLARAMOS VARIABLES	
+	////////////////////////////////DECLARAMOS VARIABLES	
         int i = 0;
 	int contador_aux = 1, tipoDatoId;
 	 while(i<indice)  
@@ -893,8 +893,11 @@ void generarAsm(t_variables* vec){
 	fprintf(final,"mov ax,@data \n");
 	fprintf(final,"mov ds,ax;\n");
 	fprintf(final,"mov ax,4C00h\n");
-	fprintf(final,"int21h\n");
+	fprintf(final,"int 21h\n");
 	fprintf(final,"END\n");
+
+        ////////////////////////////////PROGRAMA DEL USUARIO
+
 	fclose(final);
 
 } 
