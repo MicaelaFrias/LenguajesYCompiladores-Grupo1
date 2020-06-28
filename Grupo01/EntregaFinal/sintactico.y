@@ -93,7 +93,7 @@ void validarDeclaracionID(char *);
 char * obtenerTipoDeDato(char *);
 
 ///funciones para assembler
-void generaAsm(t_variables* vec);
+void generarAsm(t_variables* vec);
 
 //declaracion de variables
 t_pila pila;
@@ -598,7 +598,7 @@ int main(int argc,char *argv[])
         }
         fclose(yyin);
         guardarArchivoPolaca(&polaca);
-        generaAsm(arrayVariables);
+        generarAsm(arrayVariables);
         return 0;
 }
 int yyerror(void)
@@ -853,7 +853,7 @@ int buscarEnTS(){
 }
 
 ///////////////////////////ASSEMBLER
-void generaAsm(t_variables* vec){
+void generarAsm(t_variables* vec){
 	printf("***Generando ASM**** \n");
 	FILE *final = fopen("Final.asm","w");
 	if(final == NULL)
@@ -880,10 +880,10 @@ void generaAsm(t_variables* vec){
                         fprintf(final,"_%s dd %s\n",vec[i].nombreVariable, "?"));         
                         break;
                 case 2:    
-                        fprintf(final,"_%s dd %s\n",vec[i].nombreVariable, "?");        
+                        fprintf(final,"_%s dd %s\n",vec[i].nombreVariable,"?");        
                         break;
                 case 3:  
-                        fprintf(final,"_%s dw %s\n",vec[i].nombreVariable, "?");
+                        fprintf(final,"_%s dd %s\n",vec[i].nombreVariable,"?"); 
                         break;		
                 }
     
