@@ -868,24 +868,23 @@ void generarAsm(t_variables* vec){
 	fprintf(final,".386\n");
 	fprintf(final,".STACK 200h\n");
 	fprintf(final,".DATA\n");
-		
-        //escirbimos las variables de TS en la cabecera del archivo assembler
+	/////DECLARAMOS VARIABLES	
         int i = 0;
 	int contador_aux = 1, tipoDatoId;
 	 while(i<indice)  
 	{
-        tipoDatoId = (!strcmp(vec[i].tipoVariable, "Integer"))?1:(!strcmp(vec[i].tipoVariable, "Float"))?2:3;
-        switch(tipoDatoId){
-                case 1: 	  
-                        fprintf(final,"_%s dd %s\n",vec[i].nombreVariable, "?"));         
-                        break;
-                case 2:    
-                        fprintf(final,"_%s dd %s\n",vec[i].nombreVariable,"?");        
-                        break;
-                case 3:  
-                        fprintf(final,"_%s dd %s\n",vec[i].nombreVariable,"?"); 
-                        break;		
-                }
+                tipoDatoId = (!strcmp(vec[i].tipoVariable, "Integer"))?1:(!strcmp(vec[i].tipoVariable, "Float"))?2:3;
+                switch(tipoDatoId){
+                        case 1: 	  
+                                fprintf(final,"_%s dd %s\n",vec[i].nombreVariable, "?");         
+                                break;
+                        case 2:    
+                                fprintf(final,"_%s dd %s\n",vec[i].nombreVariable,"?");        
+                                break;
+                        case 3:  
+                                fprintf(final,"_%s dw %s\n",vec[i].nombreVariable,"?"); 
+                                break;		
+                        }
     
                 i++;
         }

@@ -3,7 +3,6 @@ beginp
 defvar
 float:a;f455;h7;f4;dos;tres;e;
 string:a3;f45;b;uno;
-float:e;f;
 int:j;k;
 enddef
 

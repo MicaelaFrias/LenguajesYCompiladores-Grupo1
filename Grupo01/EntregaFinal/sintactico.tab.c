@@ -164,7 +164,7 @@ void validarDeclaracionID(char *);
 char * obtenerTipoDeDato(char *);
 
 ///funciones para assembler
-void crear_cabecera_asm(t_variables* vec);
+void generarAsm(t_variables* vec);
 
 //declaracion de variables
 t_pila pila;
@@ -2648,7 +2648,7 @@ int main(int argc,char *argv[])
         }
         fclose(yyin);
         guardarArchivoPolaca(&polaca);
-        crear_cabecera_asm(arrayVariables);
+        generarAsm(arrayVariables);
         return 0;
 }
 int yyerror(void)
@@ -2903,68 +2903,48 @@ int buscarEnTS(){
 }
 
 ///////////////////////////ASSEMBLER
-void crear_cabecera_asm(t_variables* vec){
+void generarAsm(t_variables* vec){
 	printf("***Generando ASM**** \n");
-		FILE *final = fopen("Final.asm","w");
+	FILE *final = fopen("Final.asm","w");
 	if(final == NULL)
 	{
 		printf("Error al crear el archivo Final.asm");
 		getchar();
 		exit(0);
 	}
-	
 	fprintf(final, "include macros2.asm\n");
 	fprintf(final, "include numbers.asm\n");
 	fprintf(final,".MODEL LARGE\n");
 	fprintf(final,".386\n");
 	fprintf(final,".STACK 200h\n");
 	fprintf(final,".DATA\n");
-		
-        //escirbimos las variables de TS en la cabecera del archivo assembler
+	/////DECLARAMOS VARIABLES	
         int i = 0;
 	int contador_aux = 1, tipoDatoId;
 	 while(i<indice)  
 	{
-        tipoDatoId = (!strcmp(vec[i].tipoVariable, "Integer"))?1:(!strcmp(vec[i].tipoVariable, "Float"))?2:3;
-        printf("\n TIPO DE DATO %d\n", tipoDatoId);
-        switch(tipoDatoId){
-                case 2:    
-                        if(strcmp(vec[i].nombreVariable,"")==0)
-                                fprintf(final,"_%s dd\n",vec[i].nombreVariable); 
-                        else
-                        printf("\n INSERTE VARIABLE %d\n", vec[i].nombreVariable);
-                                fprintf(final,"_%s dd %s\n",vec[i].nombreVariable, vec[i].nombreVariable); 
-                                
-                        break;
-                // case 3:  
-                //         if(strcmp(aux->valor,"")==0)
-                //                 fprintf(final,"_%s db ,'$', 50 dup(?)\n",vec[i].nombreVariable);
-                //         else
-                //                 { 
-                //                 fprintf(final,"_aux%d db %s ,'$', %d dup(?)\n",contador_aux,vec[i].nombreVariable,(int)(52-aux->longitud));contador_aux++;}
-                                        
-                        
-                //         break;		
-                // case 1: 	  
-                //         if(strcmp(aux->valor,"")==0)
-                //                 fprintf(final,"_%s dd\n",aux->nombre); 
-                //         else
-                //                 fprintf(final,"_%s dd %s\n",aux->nombre, aux->valor); 
-                                
-                //         break;
-                }
+                tipoDatoId = (!strcmp(vec[i].tipoVariable, "Integer"))?1:(!strcmp(vec[i].tipoVariable, "Float"))?2:3;
+                switch(tipoDatoId){
+                        case 1: 	  
+                                fprintf(final,"_%s dd %s\n",vec[i].nombreVariable, "?");         
+                                break;
+                        case 2:    
+                                fprintf(final,"_%s dd %s\n",vec[i].nombreVariable,"?");        
+                                break;
+                        case 3:  
+                                fprintf(final,"_%s dw %s\n",vec[i].nombreVariable,"?"); 
+                                break;		
+                        }
     
-        // if(aux->longitud>=0) sprintf(longitud,"%d",aux->longitud);
-        // else strcpy(longitud,"-");
-        i++;
+                i++;
         }
 		
-	// fprintf(final,"\n.CODE \n");
-	// fprintf(final,"mov ax,@data \n");
-	// fprintf(final,"mov ds,ax;\n");
-	// fprintf(final,"mov ax,4C00h\n");
-	// fprintf(final,"int21h\n");
-	// fprintf(final,"END\n");
+	fprintf(final,"\n.CODE \n");
+	fprintf(final,"mov ax,@data \n");
+	fprintf(final,"mov ds,ax;\n");
+	fprintf(final,"mov ax,4C00h\n");
+	fprintf(final,"int21h\n");
+	fprintf(final,"END\n");
 	fclose(final);
 
 } 

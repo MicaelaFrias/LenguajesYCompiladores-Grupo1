@@ -1,40 +1,26 @@
 include macros2.asm
-include number.asm
-
-.MODEL  SMALL
+include numbers.asm
+.MODEL LARGE
 .386
 .STACK 200h
-
 .DATA
-;variables de la tabla de simbolos
-a dd ?
-b dd ?
-result dd ?
-R dd ?
-_100m dd 100000.0
+_a dd ?
+_f455 dd ?
+_h7 dd ?
+_f4 dd ?
+_dos dd ?
+_tres dd ?
+_e dd ?
+_a3 dw ?
+_f45 dw ?
+_b dw ?
+_uno dw ?
+_j dd ?
+_k dd ?
 
-.CODE
-
-MOV AX,@DATA
-MOV DS,AX
-FINIT; Inicializa el coprocesador
-
-
-;asignacion 
-FFREE
- FLD _100m
- FSTP a
- 
-;imprimiendo real
-
-  DisplayFloat a,2
-
-
-FINAL:
-   mov ah, 1 ; pausa, espera que oprima una tecla
-   int 21h ; AH=1 es el servicio de lectura
-   MOV AX, 4C00h ; Sale del Dos
-   INT 21h       ; Enviamos la interrupci?n 21h
-END ; final del archivo.
-
-
+.CODE 
+mov ax,@data 
+mov ds,ax;
+mov ax,4C00h
+int21h
+END
