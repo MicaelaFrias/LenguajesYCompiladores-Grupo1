@@ -86,13 +86,14 @@ void guardarArchivoPolaca(t_polaca*);
 void  mostrarPilaIDs(t_pilaIds* );
 int nuevoSimbolo(char* tipoDato,char* valorString,int longitud);
 char* invertir_salto(char* comp);
-
+void liberarPolaca(t_polaca *polaca);
 
 void mostrarArrayVariables(t_variables* );
 void validarDeclaracionID(char *);
 char * obtenerTipoDeDato(char *);
 
 ///funciones para assembler
+void generarCodigoUsuario(FILE * finalFile);
 void generarAsm(t_variables* vec);
 
 //declaracion de variables
@@ -599,6 +600,7 @@ int main(int argc,char *argv[])
         fclose(yyin);
         guardarArchivoPolaca(&polaca);
         generarAsm(arrayVariables);
+        liberarPolaca(&polaca);
         return 0;
 }
 int yyerror(void)
@@ -736,21 +738,28 @@ int escribirPosicionPolaca(t_polaca* ppolaca,int posicion, char *contenido) //in
 
 void guardarArchivoPolaca(t_polaca *ppolaca){
 		FILE*pint=fopen("intermedia.txt","w+");
-		t_nodoPolaca* nuevoNodo;
+		t_nodoPolaca* aux;
+                aux = *ppolaca;
 		if(!pint){
 			printf("Error al crear el archivo intermedia.txt\n");
 			return;
 		}
-		while(*ppolaca)
+		while(aux)
 	    {
-	        nuevoNodo=*ppolaca;
-	        fprintf(pint, "%s\n",nuevoNodo->info.contenido);
-	        *ppolaca=(*ppolaca)->psig;
-	        free(nuevoNodo);
+	        fprintf(pint, "%s\n",aux->info.contenido);
+	        aux=aux->psig;
 	    }
 		fclose(pint);
 	}
-   
+void liberarPolaca(t_polaca *ppolaca){
+	t_nodoPolaca* nuevoNodo;	
+	while(*ppolaca)
+        {
+        nuevoNodo=*ppolaca;
+        *ppolaca=(*ppolaca)->psig;
+        free(nuevoNodo);
+        }
+}
 ///////////////////////// UTILES
 void validarDeclaracionID(char * nombreID){
         
@@ -853,21 +862,29 @@ int buscarEnTS(){
 }
 
 ///////////////////////////ASSEMBLER
+void generarCodigoUsuario(FILE* finalFile){
+        t_nodoPolaca* aux;
+        aux = polaca;
+        while(aux){
+	        printf("\n LEI DE LA POLACA %s \n", aux->info.contenido);
+	        aux=aux->psig;
+	}
+}
 void generarAsm(t_variables* vec){
 	printf("***Generando ASM**** \n");
-	FILE *final = fopen("Final.asm","w");
-	if(final == NULL)
+	FILE *finalFile = fopen("Final.asm","w");
+	if(finalFile == NULL)
 	{
 		printf("Error al crear el archivo Final.asm");
 		getchar();
 		exit(0);
 	}
-	fprintf(final, "include macros2.asm\n");
-	fprintf(final, "include number.asm\n");
-	fprintf(final,".MODEL LARGE\n");
-	fprintf(final,".386\n");
-	fprintf(final,".STACK 200h\n");
-	fprintf(final,".DATA\n");
+	fprintf(finalFile, "include macros2.asm\n");
+	fprintf(finalFile, "include number.asm\n");
+	fprintf(finalFile,".MODEL LARGE\n");
+	fprintf(finalFile,".386\n");
+	fprintf(finalFile,".STACK 200h\n");
+	fprintf(finalFile,".DATA\n");
 	////////////////////////////////DECLARAMOS VARIABLES	
         int i = 0;
 	int contador_aux = 1, tipoDatoId;
@@ -876,30 +893,30 @@ void generarAsm(t_variables* vec){
                 tipoDatoId = (!strcmp(vec[i].tipoVariable, "Integer"))?1:(!strcmp(vec[i].tipoVariable, "Float"))?2:3;
                 switch(tipoDatoId){
                         case 1: 	  
-                                fprintf(final,"_%s dd %s\n",vec[i].nombreVariable, "?");         
+                                fprintf(finalFile,"_%s dd %s\n",vec[i].nombreVariable, "?");         
                                 break;
                         case 2:    
-                                fprintf(final,"_%s dd %s\n",vec[i].nombreVariable,"?");        
+                                fprintf(finalFile,"_%s dd %s\n",vec[i].nombreVariable,"?");        
                                 break;
                         case 3:  
-                                fprintf(final,"_%s dw %s\n",vec[i].nombreVariable,"?"); 
+                                fprintf(finalFile,"_%s dw %s\n",vec[i].nombreVariable,"?"); 
                                 break;		
                         }
     
                 i++;
         }
 		
-	fprintf(final,"\n.CODE \n");
-	fprintf(final,"mov ah, 1;\n");
-	fprintf(final,"int 21h ;\n");
-	fprintf(final,"MOV AX, 4C00h; \n");
-	fprintf(final,"int 21h;\n");
+	fprintf(finalFile,"\n.CODE \n");
+	fprintf(finalFile,"mov ah, 1;\n");
+	fprintf(finalFile,"int 21h ;\n");
+	fprintf(finalFile,"MOV AX, 4C00h; \n");
+	fprintf(finalFile,"int 21h;\n");
         //PROGRAMA DE USUARIO
-        
-	fprintf(final,"END\n");
+        generarCodigoUsuario(finalFile);
+	fprintf(finalFile,"END\n");
 
         ////////////////////////////////PROGRAMA DEL USUARIO
 
-	fclose(final);
+	fclose(finalFile);
 
 } 
