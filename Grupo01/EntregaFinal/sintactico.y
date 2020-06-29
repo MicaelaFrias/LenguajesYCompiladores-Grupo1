@@ -65,6 +65,17 @@ char tipoDatoActual[50] = "";
 
 	}t_variables;
 
+//para operadores en assembler
+typedef struct
+{
+        char nombreOperador[30];
+}t_operador;
+
+typedef struct
+{
+        char nombrePalabraReservada[30];
+}t_palabraReservada;
+
 /////////////////DECLARACION FUNCIONES
 int insertarEnTS(char[],char[],int);
 int apilar(t_pila* pila,const int iPosicion);
@@ -95,7 +106,10 @@ char * obtenerTipoDeDato(char *);
 ///funciones para assembler
 void generarCodigoUsuario(FILE * finalFile);
 void generarAsm(t_variables* vec);
-
+void llenarVectorOperadores(t_operador [30]);
+void llenarVectorPalabrasReservadas(t_palabraReservada [30]);
+t_operador vectorOperadores[32];
+t_palabraReservada vectorPalabrasReservadas [30];
 //declaracion de variables
 t_pila pila;
 t_polaca polaca;
@@ -599,6 +613,7 @@ int main(int argc,char *argv[])
         }
         fclose(yyin);
         guardarArchivoPolaca(&polaca);
+        llenarVectorOperadores(vectorOperadores);
         generarAsm(arrayVariables);
         liberarPolaca(&polaca);
         return 0;
@@ -862,11 +877,35 @@ int buscarEnTS(){
 }
 
 ///////////////////////////ASSEMBLER
+void llenarVectorOperadores(t_operador vecOperadores[30]){
+      strcpy(vecOperadores[0].nombreOperador ,"OP_SUM");
+      strcpy(vecOperadores[1].nombreOperador ,"OP_MULT");
+      strcpy(vecOperadores[2].nombreOperador ,"OP_DIV");
+      strcpy(vecOperadores[3].nombreOperador, "OP_RES");
+
+}
+
+void llenarVectorPalabrasReservadas(t_palabraReservada vectorPalabrasReservadas[30]){
+      strcpy(vectorPalabrasReservadas[0].nombrePalabraReservada ,"CMP");
+      strcpy(vectorPalabrasReservadas[1].nombrePalabraReservada ,"BGT");
+      strcpy(vectorPalabrasReservadas[2].nombrePalabraReservada ,"BNE");
+      strcpy(vectorPalabrasReservadas[3].nombrePalabraReservada, "BLE");
+      //continuar
+
+}
+
 void generarCodigoUsuario(FILE* finalFile){
         t_nodoPolaca* aux;
         aux = polaca;
+        //insertar codigo de usuario en assembler
         while(aux){
 	        printf("\n LEI DE LA POLACA %s \n", aux->info.contenido);
+                //apilamos operandos
+                //vemos si es un perador, y por ende no esta en el vector de operadores
+                //si no lo esta, vemos si no es una palabra reservada como cmp o los branchs
+
+                //hasta llegar a operador
+                //
 	        aux=aux->psig;
 	}
 }
@@ -893,13 +932,13 @@ void generarAsm(t_variables* vec){
                 tipoDatoId = (!strcmp(vec[i].tipoVariable, "Integer"))?1:(!strcmp(vec[i].tipoVariable, "Float"))?2:3;
                 switch(tipoDatoId){
                         case 1: 	  
-                                fprintf(finalFile,"_%s dd %s\n",vec[i].nombreVariable, "?");         
+                                fprintf(finalFile,"%s dd %s\n",vec[i].nombreVariable, "?");         
                                 break;
                         case 2:    
-                                fprintf(finalFile,"_%s dd %s\n",vec[i].nombreVariable,"?");        
+                                fprintf(finalFile,"%s dd %s\n",vec[i].nombreVariable,"?");        
                                 break;
                         case 3:  
-                                fprintf(finalFile,"_%s dw %s\n",vec[i].nombreVariable,"?"); 
+                                fprintf(finalFile,"%s dw %s\n",vec[i].nombreVariable,"?"); 
                                 break;		
                         }
     

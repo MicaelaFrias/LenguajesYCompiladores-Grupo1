@@ -4,19 +4,19 @@ include number.asm
 .386
 .STACK 200h
 .DATA
-_a dd ?
-_f455 dd ?
-_h7 dd ?
-_f4 dd ?
-_dos dd ?
-_tres dd ?
-_e dd ?
-_a3 dw ?
-_f45 dw ?
-_b dw ?
-_uno dw ?
-_j dd ?
-_k dd ?
+a dd ?
+f455 dd ?
+h7 dd ?
+f4 dd ?
+dos dd ?
+tres dd ?
+e dd ?
+a3 dw ?
+f45 dw ?
+b dw ?
+uno dw ?
+j dd ?
+k dd ?
 
 .CODE 
 mov ah, 1;
