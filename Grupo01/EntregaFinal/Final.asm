@@ -25,4 +25,11 @@ mov ah, 1;
 int 21h ;
 MOV AX, 4C00h; 
 int 21h;
+FLD f455
+FSTP f455
+FLD f455
+FLD _3
+FADD 
+FLD èþc
+FSTP èþc
 END

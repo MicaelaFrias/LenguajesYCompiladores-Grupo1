@@ -765,6 +765,7 @@ int apilarOperando(t_pilaOperandos* pilaOperandos,char nombreOperando[30])
     strcpy(nuevoNodo->infoOperandos.nombre,nombreOperando);
           nuevoNodo->psig=*pilaOperandos;
     *pilaOperandos=nuevoNodo;
+printf("\n apile %s\n", nuevoNodo->infoOperandos.nombre);
     return(1);
 }
 
@@ -783,7 +784,7 @@ char* desapilarOperando(t_pilaOperandos *pilaOperandos)
     *pilaOperandos=(*pilaOperandos)->psig; 
     free(aux); 
         
-        
+printf("\ndesapile %s\n", nombreOperando);
     return nombreOperando; 
 }
 
@@ -1012,10 +1013,11 @@ void llenarVectorOperadores(t_operador vecOperadores[30]){
 
 void llenarVectorPalabrasReservadas(t_palabraReservada vectorPalabrasReservadas[30]){
       strcpy(vectorPalabrasReservadas[0].nombrePalabraReservada ,"CMP");
-      strcpy(vectorPalabrasReservadas[1].nombrePalabraReservada ,"BGT");
-      strcpy(vectorPalabrasReservadas[2].nombrePalabraReservada ,"BNE");
-      strcpy(vectorPalabrasReservadas[3].nombrePalabraReservada, "BLE");
-      //continuar
+      strcpy(vectorPalabrasReservadas[1].nombrePalabraReservada ,"BLE");
+      strcpy(vectorPalabrasReservadas[2].nombrePalabraReservada ,"BLT");
+      strcpy(vectorPalabrasReservadas[3].nombrePalabraReservada, "BLT");
+      strcpy(vectorPalabrasReservadas[4].nombrePalabraReservada, "BEQ");
+      strcpy(vectorPalabrasReservadas[5].nombrePalabraReservada, "BNE");
 
 }
 
@@ -1050,13 +1052,42 @@ void generarCodigoUsuario(FILE* finalFile, t_polaca* polaca){
                 if(!esOperador(aux->info.contenido)){
                         if(!esVariableReservada(aux->info.contenido)){
                                 printf("\n SOY OPERANDO");
+                                apilarOperando(&pilaOperandos,aux->info.contenido);
                         }
                         else{ //si no lo esta, vemos si no es una palabra reservada como cmp o los branchs
+                                if(!strcmp(aux->info.contenido,"CMP")){
+                                        //si es comparador desapilo 2
 
+                                }
+                                else{
+                                        //si es un salto leo el siguiente valor de la polaca
+                                }
                         }
                 }
-                else{ //hasta llegar a operador (esta en el array de operadores)
+                else{ //si es un operador desapilo los dos apilados anteriormetne
+                        if(!strcmp(aux->info.contenido ,"OP_SUM")){
+                             
+                                fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
+                                fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
+                                fprintf(finalFile,"FADD \n");
 
+                        }
+                        if(!strcmp(aux->info.contenido ,"OP_MULT")){
+
+                        }
+                        if(!strcmp(aux->info.contenido ,"OP_DIV")){
+
+                        }
+                        if(!strcmp(aux->info.contenido ,"OP_RES")){
+
+                        }
+                        if(!strcmp(aux->info.contenido , "OP_ASIG")){
+                                char* idAsigna;
+                                //desapilamos el id al que se le asigna valor
+                                strcpy(idAsigna,desapilarOperando(&pilaOperandos));
+                                fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
+                                fprintf(finalFile,"FSTP %s\n",idAsigna);
+                        }
                 }
                 
 	        aux=aux->psig;
