@@ -17,6 +17,8 @@ b dw ?
 uno dw ?
 j dd ?
 k dd ?
+_50.3 dd 50.3
+_3 dd 3
 
 .CODE 
 mov ah, 1;
