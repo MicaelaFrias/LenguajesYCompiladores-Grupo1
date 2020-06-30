@@ -151,6 +151,7 @@ t_TS TS;
 void crearPilaOperandos(t_pilaOperandos* pilaOperandos);
 int apilarOperando(t_pilaOperandos* pilaOperandos,char nombreOperando[30]);
 char* desapilarOperando(t_pilaOperandos *pilaOperandos);
+int pilaOperandoVacia(t_pilaOperandos* ppilaOperando);
 //declaracion de variables
 t_pila pila;
 char comp[3];
@@ -788,7 +789,9 @@ printf("\ndesapile %s\n", nombreOperando);
     return nombreOperando; 
 }
 
-
+int pilaOperandoVacia(t_pilaOperandos* ppilaOperando){
+        return !(*ppilaOperando);
+}
 ///////////////////////// POLACA
 
 void crearPolaca(t_polaca* ppolaca){
@@ -1057,10 +1060,17 @@ void generarCodigoUsuario(FILE* finalFile, t_polaca* polaca){
                         else{ //si no lo esta, vemos si no es una palabra reservada como cmp o los branchs
                                 if(!strcmp(aux->info.contenido,"CMP")){
                                         //si es comparador desapilo 2
-
+                                fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
+                                fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
+                                fprintf(finalFile,"FXCH \n");
+                                fprintf(finalFile,"FCOM \n");      
+                                ;      
                                 }
                                 else{
                                         //si es un salto leo el siguiente valor de la polaca
+                                        char* salto = aux->info.contenido;
+                                        aux=aux->psig;
+                                        fprintf(finalFile,"%s %s\n",salto,aux->info.contenido);
                                 }
                         }
                 }
@@ -1073,18 +1083,25 @@ void generarCodigoUsuario(FILE* finalFile, t_polaca* polaca){
 
                         }
                         if(!strcmp(aux->info.contenido ,"OP_MULT")){
-
+                                fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
+                                fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
+                                fprintf(finalFile,"FMUL \n");
                         }
                         if(!strcmp(aux->info.contenido ,"OP_DIV")){
-
+                                fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
+                                fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
+                                fprintf(finalFile,"FDIV \n");
                         }
                         if(!strcmp(aux->info.contenido ,"OP_RES")){
-
+                                fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
+                                fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
+                                fprintf(finalFile,"FADD \n");
                         }
                         if(!strcmp(aux->info.contenido , "OP_ASIG")){
                                 char* idAsigna;
                                 //desapilamos el id al que se le asigna valor
                                 strcpy(idAsigna,desapilarOperando(&pilaOperandos));
+                                if(pilaOperandoVacia(&pilaOperandos));
                                 fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
                                 fprintf(finalFile,"FSTP %s\n",idAsigna);
                         }
