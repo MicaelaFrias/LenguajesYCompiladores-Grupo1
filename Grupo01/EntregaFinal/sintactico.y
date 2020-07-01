@@ -766,7 +766,6 @@ int apilarOperando(t_pilaOperandos* pilaOperandos,char nombreOperando[30])
     strcpy(nuevoNodo->infoOperandos.nombre,nombreOperando);
           nuevoNodo->psig=*pilaOperandos;
     *pilaOperandos=nuevoNodo;
-printf("\n apile %s\n", nuevoNodo->infoOperandos.nombre);
     return(1);
 }
 
@@ -785,7 +784,6 @@ char* desapilarOperando(t_pilaOperandos *pilaOperandos)
     *pilaOperandos=(*pilaOperandos)->psig; 
     free(aux); 
         
-printf("\ndesapile %s\n", nombreOperando);
     return nombreOperando; 
 }
 
@@ -1010,7 +1008,7 @@ void llenarVectorOperadores(t_operador vecOperadores[30]){
       strcpy(vecOperadores[1].nombreOperador ,"OP_MULT");
       strcpy(vecOperadores[2].nombreOperador ,"OP_DIV");
       strcpy(vecOperadores[3].nombreOperador, "OP_RES");
-      strcpy(vecOperadores[3].nombreOperador, "OP_ASIG");
+      strcpy(vecOperadores[4].nombreOperador, "OP_ASIG");
 
 }
 
@@ -1024,13 +1022,13 @@ void llenarVectorPalabrasReservadas(t_palabraReservada vectorPalabrasReservadas[
       strcpy(vectorPalabrasReservadas[6].nombrePalabraReservada, "BI");
       strcpy(vectorPalabrasReservadas[7].nombrePalabraReservada ,"ENDIF");
       strcpy(vectorPalabrasReservadas[8].nombrePalabraReservada ,"ET");
-
+      strcpy(vectorPalabrasReservadas[9].nombrePalabraReservada ,"ENDW");
 
 }
 
 int esOperador(char valor[32]){
         int i = 0;
-        for(i = 0;i<=sizeof(vectorOperadores);i++){
+        for(i = 0;i<=5;i++){
                 if(!strcmp(vectorOperadores[i].nombreOperador,valor))
                 return 1;
         }
@@ -1039,7 +1037,7 @@ int esOperador(char valor[32]){
 
 int esPalabraReservada(char valor[32] ){
         int i = 0;
-        for(i = 0;i<=sizeof(vectorPalabrasReservadas);i++){
+        for(i = 0;i<=10;i++){
                 if(!strcmp(vectorPalabrasReservadas[i].nombrePalabraReservada,valor))
                 return 1;
         }
@@ -1059,27 +1057,25 @@ void generarCodigoUsuario(FILE* finalFile, t_polaca* polaca){
                 //vemos si no es un operador, y por ende no esta en el vector de operadores
                 if(!esOperador(aux->info.contenido)){
                         if(!esPalabraReservada(aux->info.contenido)){
-                                printf("\n SOY OPERANDO");
                                 apilarOperando(&pilaOperandos,aux->info.contenido);
                         }
                         else{ //si no lo esta, vemos si no es una palabra reservada como cmp o los branchs
+
                                 if(!strcmp(aux->info.contenido,"CMP")){
                                         //si es comparador desapilo 2
                                 fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
                                 fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
                                 fprintf(finalFile,"FXCH \n");
-                                fprintf(finalFile,"FCOM \n");      
-                                ;      
+                                fprintf(finalFile,"FCOM \n");           
                                 }
                                 else{
-                                        if(!strcmp(aux->info.contenido,"ENDIF") || !strcmp(aux->info.contenido,"ET"))
+                                        if(!strcmp(aux->info.contenido,"ENDIF") || !strcmp(aux->info.contenido,"ET") || !strcmp(aux->info.contenido,"ENDW") )
                                         fprintf(finalFile,"%s: \n",aux->info.contenido);
                                         
                                         else{
                                                 //si es un salto leo el siguiente valor de la polaca
                                                 char salto[30];
                                                 strcpy(salto,aux->info.contenido);
-                                                printf("\n SALTO %s", salto);
                                                 aux=aux->psig;
                                                 fprintf(finalFile,"%s %s\n",salto,aux->info.contenido);
                                         }
@@ -1087,7 +1083,8 @@ void generarCodigoUsuario(FILE* finalFile, t_polaca* polaca){
                                 
                         }
                 }
-                else{ //si es un operador desapilo los dos apilados anteriormetne
+                else{ //si es un operador desapilo los dos apilados anteriormente
+
                         if(!strcmp(aux->info.contenido ,"OP_SUM")){
                              
                                 fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
