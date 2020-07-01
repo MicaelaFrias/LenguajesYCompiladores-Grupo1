@@ -140,7 +140,7 @@ void llenarVectorPalabrasReservadas(t_palabraReservada [30]);
 t_operador vectorOperadores[32];
 t_palabraReservada vectorPalabrasReservadas [30];
 int esOperador(char valor[32]);
-int esVariableReservada(char valor[32]);
+int esPalabraReservada(char valor[32]);
 
 //estructura ts
 int insertarEnTS(t_TS*,t_dato_TS*);
@@ -1017,10 +1017,14 @@ void llenarVectorOperadores(t_operador vecOperadores[30]){
 void llenarVectorPalabrasReservadas(t_palabraReservada vectorPalabrasReservadas[30]){
       strcpy(vectorPalabrasReservadas[0].nombrePalabraReservada ,"CMP");
       strcpy(vectorPalabrasReservadas[1].nombrePalabraReservada ,"BLE");
-      strcpy(vectorPalabrasReservadas[2].nombrePalabraReservada ,"BLT");
+      strcpy(vectorPalabrasReservadas[2].nombrePalabraReservada ,"BGT");
       strcpy(vectorPalabrasReservadas[3].nombrePalabraReservada, "BLT");
       strcpy(vectorPalabrasReservadas[4].nombrePalabraReservada, "BEQ");
       strcpy(vectorPalabrasReservadas[5].nombrePalabraReservada, "BNE");
+      strcpy(vectorPalabrasReservadas[6].nombrePalabraReservada, "BI");
+      strcpy(vectorPalabrasReservadas[7].nombrePalabraReservada ,"ENDIF");
+      strcpy(vectorPalabrasReservadas[8].nombrePalabraReservada ,"ET");
+
 
 }
 
@@ -1033,7 +1037,7 @@ int esOperador(char valor[32]){
         return 0;
 }
 
-int esVariableReservada(char valor[32] ){
+int esPalabraReservada(char valor[32] ){
         int i = 0;
         for(i = 0;i<=sizeof(vectorPalabrasReservadas);i++){
                 if(!strcmp(vectorPalabrasReservadas[i].nombrePalabraReservada,valor))
@@ -1045,6 +1049,7 @@ int esVariableReservada(char valor[32] ){
 //CODIGO USUARIO
 void generarCodigoUsuario(FILE* finalFile, t_polaca* polaca){
         t_nodoPolaca* aux;
+        int tieneOperador = 0;
         t_pilaOperandos pilaOperandos;
         crearPilaOperandos(&pilaOperandos);
         aux = *polaca;
@@ -1053,7 +1058,7 @@ void generarCodigoUsuario(FILE* finalFile, t_polaca* polaca){
                 //apilamos operandos
                 //vemos si no es un operador, y por ende no esta en el vector de operadores
                 if(!esOperador(aux->info.contenido)){
-                        if(!esVariableReservada(aux->info.contenido)){
+                        if(!esPalabraReservada(aux->info.contenido)){
                                 printf("\n SOY OPERANDO");
                                 apilarOperando(&pilaOperandos,aux->info.contenido);
                         }
@@ -1067,11 +1072,19 @@ void generarCodigoUsuario(FILE* finalFile, t_polaca* polaca){
                                 ;      
                                 }
                                 else{
-                                        //si es un salto leo el siguiente valor de la polaca
-                                        char* salto = aux->info.contenido;
-                                        aux=aux->psig;
-                                        fprintf(finalFile,"%s %s\n",salto,aux->info.contenido);
+                                        if(!strcmp(aux->info.contenido,"ENDIF") || !strcmp(aux->info.contenido,"ET"))
+                                        fprintf(finalFile,"%s: \n",aux->info.contenido);
+                                        
+                                        else{
+                                                //si es un salto leo el siguiente valor de la polaca
+                                                char salto[30];
+                                                strcpy(salto,aux->info.contenido);
+                                                printf("\n SALTO %s", salto);
+                                                aux=aux->psig;
+                                                fprintf(finalFile,"%s %s\n",salto,aux->info.contenido);
+                                        }
                                 }
+                                
                         }
                 }
                 else{ //si es un operador desapilo los dos apilados anteriormetne
@@ -1080,31 +1093,39 @@ void generarCodigoUsuario(FILE* finalFile, t_polaca* polaca){
                                 fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
                                 fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
                                 fprintf(finalFile,"FADD \n");
+                                tieneOperador = 1;
 
                         }
-                        if(!strcmp(aux->info.contenido ,"OP_MULT")){
+                         if(!strcmp(aux->info.contenido ,"OP_MULT")){
                                 fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
                                 fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
                                 fprintf(finalFile,"FMUL \n");
+                                tieneOperador = 1;
+
                         }
-                        if(!strcmp(aux->info.contenido ,"OP_DIV")){
+                         if(!strcmp(aux->info.contenido ,"OP_DIV")){
                                 fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
                                 fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
                                 fprintf(finalFile,"FDIV \n");
+                                tieneOperador = 1;
+
                         }
-                        if(!strcmp(aux->info.contenido ,"OP_RES")){
+                         if(!strcmp(aux->info.contenido ,"OP_RES")){
                                 fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
                                 fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
                                 fprintf(finalFile,"FADD \n");
+                                tieneOperador = 1;
+
                         }
-                        if(!strcmp(aux->info.contenido , "OP_ASIG")){
-                                char* idAsigna;
+                         if(!strcmp(aux->info.contenido , "OP_ASIG")){
                                 //desapilamos el id al que se le asigna valor
-                                strcpy(idAsigna,desapilarOperando(&pilaOperandos));
-                                if(pilaOperandoVacia(&pilaOperandos));
+                                if(!tieneOperador)
                                 fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
-                                fprintf(finalFile,"FSTP %s\n",idAsigna);
+                                fprintf(finalFile,"FSTP %s\n",desapilarOperando(&pilaOperandos));
+                                tieneOperador = 0;
+                        
                         }
+
                 }
                 
 	        aux=aux->psig;
@@ -1126,8 +1147,8 @@ void generarAsm(t_TS* TS){
 	fprintf(finalFile,".386\n");
 	fprintf(finalFile,".STACK 200h\n");
 	fprintf(finalFile,".DATA\n");
-	////////////////////////////////DECLARAMOS VARIABLES	
-        //estructuras necesarias para recorrer la TS
+	//////////////////////////////DECLARAMOS VARIABLES	
+        // estructuras necesarias para recorrer la TS
 	int  tipoDatoId;
         t_nodo_TS* aux;
         aux = *TS;
