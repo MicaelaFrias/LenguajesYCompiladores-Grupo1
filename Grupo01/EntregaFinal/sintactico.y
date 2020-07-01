@@ -7,6 +7,7 @@
 int yystopparser=0;
 int posicion = 0;
 int indice = 0;
+
 //para controlar la cantidad de saltos por falso en los cliclos anidados
 int vecFalsosAnidados[30];
 int cantCliclosAnidados=0;
@@ -59,13 +60,53 @@ char tipoDatoActual[50] = "";
         
         typedef struct
 	{
-		char nombreVaribale[30];
+		char nombreVariable[30];
 		char tipoVariable[30];
 
 	}t_variables;
 
+//para operadores en assembler
+typedef struct
+{
+        char nombreOperador[30];
+}t_operador;
+
+typedef struct
+{
+        char nombrePalabraReservada[30];
+}t_palabraReservada;
+
+////////para pila de operandos
+
+typedef struct
+{
+        char nombre[30];
+}t_infoOperandos;
+
+typedef struct s_nodoPilaOperandos{
+t_infoOperandos infoOperandos;
+struct s_nodoPilaOperandos* psig;
+}t_nodoPilaOperandos;
+
+
+typedef t_nodoPilaOperandos *t_pilaOperandos;
+////////para TS
+typedef struct s_dato_TS
+{
+  char nombre[32];
+  char tipo[32];
+  char valor[32];
+  int longitud;
+} t_dato_TS;
+
+typedef struct s_nodo_TS
+{
+  t_dato_TS dato;
+  struct s_nodo_TS *sig;
+} t_nodo_TS;
+
+typedef t_nodo_TS* t_TS;
 /////////////////DECLARACION FUNCIONES
-int insertarEnTS(char[],char[],int);
 int apilar(t_pila* pila,const int iPosicion);
 int desapilar(t_pila *pila);
 void crearPila(t_pila* pila);
@@ -85,16 +126,34 @@ void guardarArchivoPolaca(t_polaca*);
 void  mostrarPilaIDs(t_pilaIds* );
 int nuevoSimbolo(char* tipoDato,char* valorString,int longitud);
 char* invertir_salto(char* comp);
-
+void liberarPolaca(t_polaca *polaca);
 
 void mostrarArrayVariables(t_variables* );
 void validarDeclaracionID(char *);
 char * obtenerTipoDeDato(char *);
 
+////////FUNCIONES PARA ASSEMBLER
+void generarCodigoUsuario(FILE * finalFile, t_polaca* polaca);
+void generarAsm(t_TS* );
+void llenarVectorOperadores(t_operador [30]);
+void llenarVectorPalabrasReservadas(t_palabraReservada [30]);
+t_operador vectorOperadores[32];
+t_palabraReservada vectorPalabrasReservadas [30];
+int esOperador(char valor[32]);
+int esVariableReservada(char valor[32]);
 
+//estructura ts
+int insertarEnTS(t_TS*,t_dato_TS*);
+void crearTS(t_TS *);
+void liberarTS(t_TS*);
+t_TS TS;
+//pila operandos
+void crearPilaOperandos(t_pilaOperandos* pilaOperandos);
+int apilarOperando(t_pilaOperandos* pilaOperandos,char nombreOperando[30]);
+char* desapilarOperando(t_pilaOperandos *pilaOperandos);
+int pilaOperandoVacia(t_pilaOperandos* ppilaOperando);
 //declaracion de variables
 t_pila pila;
-t_polaca polaca;
 char comp[3];
 char op[3];
 char idValor[25];
@@ -106,8 +165,6 @@ t_pilaIds pilaIds;
 int posicionPolaca = 0;
 t_polaca polaca;
 t_variables arrayVariables[500];
-
-
 
 %}
 
@@ -313,6 +370,7 @@ seleccionSinElse: IF {
         P_C THEN{
                 int iPosicion;
                 char posThen[25];
+                //salto por verdadero
                 sprintf(posThen,"%d",posicionPolaca);
                 if(!pilaVacia(&pilaVerdadero)){
                 iPosicion = desapilar(&pilaVerdadero); 
@@ -332,6 +390,7 @@ finSeleccion: ELSE{
                 //desapilo salto de BI
                 posAux = desapilar(&pilaFalso);
                 while(!pilaVacia(&pilaFalso) && falsosADesapilar>=0){
+                        //salto por falso
                         posicionBranch = desapilar(&pilaFalso);
                         escribirPosicionPolaca(&polaca,posicionBranch,sPosicionPolaca);
                 falsosADesapilar--;
@@ -343,6 +402,7 @@ finSeleccion: ELSE{
                 bloqueTemasComunesYEspeciales ENDIF{
                 int posicionBranch;
                 char posEndIf[25];
+                //salto por falso
                 sprintf(posEndIf,"%d",insertarPolaca(&polaca,"ENDIF"));
                 if(!pilaVacia(&pilaFalso)){
                         posicionBranch = desapilar(&pilaFalso);
@@ -358,6 +418,7 @@ finSeleccion: ELSE{
                 
                 int posicionBranch, falsosADesapilar = (cantFalsos ==2)?2:1;
                 char posEndIf[25];
+                //salto por falso
                 sprintf(posEndIf,"%d",insertarPolaca(&polaca,"ENDIF"));
                 while(!pilaVacia(&pilaFalso)&& falsosADesapilar>=0){
                 posicionBranch = desapilar(&pilaFalso);
@@ -548,14 +609,14 @@ tipodato: FLOAT {tipoDato = "Float"}
 
 listavariables: ID PYC                 
                 {
-                  strcpy(arrayVariables[indice].nombreVaribale,yylval.str_val);  
+                  strcpy(arrayVariables[indice].nombreVariable,yylval.str_val);  
                   strcpy(arrayVariables[indice].tipoVariable,tipoDato);  
                   indice++;    
                   nuevoSimbolo(tipoDato,"--",(tipoDato=="String")?strlen(yylval.str_val):0);
                 }
               | listavariables ID PYC {
                   nuevoSimbolo(tipoDato,"--",(tipoDato=="String")?strlen(yylval.str_val):0);
-                  strcpy(arrayVariables[indice].nombreVaribale,yylval.str_val);  
+                  strcpy(arrayVariables[indice].nombreVariable,yylval.str_val);  
                   strcpy(arrayVariables[indice].tipoVariable,tipoDato);  
                   indice++;    
                   }
@@ -579,6 +640,7 @@ salida: DISPLAY factor
 int main(int argc,char *argv[])
 {
         crearPila(&pilaFalso);
+        crearTS(&TS);
         crearPila(&pilaVerdadero);
         crearPilaIds(&pilaIds);
         crearPolaca(&polaca);
@@ -589,10 +651,17 @@ int main(int argc,char *argv[])
         else
         {
                 yyparse();
+           
         }
         fclose(yyin);
         guardarArchivoPolaca(&polaca);
-        // mostrarArrayVariables(arrayVariables);
+        //ññenamos arrays para codigo usuario assembler
+        llenarVectorOperadores(vectorOperadores);
+        llenarVectorPalabrasReservadas(vectorPalabrasReservadas);
+        //generamos assembler
+        generarAsm(&TS);
+        liberarPolaca(&polaca);
+        liberarTS(&TS);
         return 0;
 }
 int yyerror(void)
@@ -663,11 +732,11 @@ char * desapilarId(t_pilaIds *pilaIds)
     char * infoPilaIds;
     
     if(*pilaIds==NULL){
-         return (*pilaIds)->infoIds.nombre;
+         return NULL;
     }
 
     aux=*pilaIds;
-    infoPilaIds=(*pilaIds)->infoIds.nombre;
+    strcpy(infoPilaIds,(*pilaIds)->infoIds.nombre);
 
     *pilaIds=(*pilaIds)->psig; 
     free(aux); 
@@ -684,8 +753,45 @@ void mostrarPilaIDs(t_pilaIds* pilaIds)
         }
          
 }
+//////////////////////////PILA OPERANDOS
+void crearPilaOperandos(t_pilaOperandos* pilaOperandos){
+        pilaOperandos = NULL;
+}
 
+int apilarOperando(t_pilaOperandos* pilaOperandos,char nombreOperando[30])
+{   t_nodoPilaOperandos *nuevoNodo=(t_nodoPilaOperandos*) malloc(sizeof(t_nodoPilaOperandos));
+    if(nuevoNodo==NULL)
+        return(0); //Sin_memoria
 
+    strcpy(nuevoNodo->infoOperandos.nombre,nombreOperando);
+          nuevoNodo->psig=*pilaOperandos;
+    *pilaOperandos=nuevoNodo;
+printf("\n apile %s\n", nuevoNodo->infoOperandos.nombre);
+    return(1);
+}
+
+char* desapilarOperando(t_pilaOperandos *pilaOperandos)
+{ 
+    t_nodoPilaOperandos *aux;
+    char * nombreOperando;
+    
+    if(*pilaOperandos==NULL){
+         return NULL;
+    }
+
+    aux=*pilaOperandos;
+    strcpy(nombreOperando,(*pilaOperandos)->infoOperandos.nombre);
+
+    *pilaOperandos=(*pilaOperandos)->psig; 
+    free(aux); 
+        
+printf("\ndesapile %s\n", nombreOperando);
+    return nombreOperando; 
+}
+
+int pilaOperandoVacia(t_pilaOperandos* ppilaOperando){
+        return !(*ppilaOperando);
+}
 ///////////////////////// POLACA
 
 void crearPolaca(t_polaca* ppolaca){
@@ -697,7 +803,7 @@ int insertarPolaca(t_polaca* ppolaca,char *contenido)
 {
         t_nodoPolaca* nuevoNodo = (t_nodoPolaca*)malloc(sizeof(t_nodoPolaca));
         if(!nuevoNodo){
-                return 1;
+                return 0;
         }
  
         strcpy(nuevoNodo->info.contenido,contenido);
@@ -730,21 +836,28 @@ int escribirPosicionPolaca(t_polaca* ppolaca,int posicion, char *contenido) //in
 
 void guardarArchivoPolaca(t_polaca *ppolaca){
 		FILE*pint=fopen("intermedia.txt","w+");
-		t_nodoPolaca* nuevoNodo;
+		t_nodoPolaca* aux;
+                aux = *ppolaca;
 		if(!pint){
 			printf("Error al crear el archivo intermedia.txt\n");
 			return;
 		}
-		while(*ppolaca)
+		while(aux)
 	    {
-	        nuevoNodo=*ppolaca;
-	        fprintf(pint, "%s\n",nuevoNodo->info.contenido);
-	        *ppolaca=(*ppolaca)->psig;
-	        free(nuevoNodo);
+	        fprintf(pint, "%s\n",aux->info.contenido);
+	        aux=aux->psig;
 	    }
 		fclose(pint);
 	}
-   
+void liberarPolaca(t_polaca *ppolaca){
+	t_nodoPolaca* nuevoNodo;	
+	while(*ppolaca)
+        {
+        nuevoNodo=*ppolaca;
+        *ppolaca=(*ppolaca)->psig;
+        free(nuevoNodo);
+        }
+}
 ///////////////////////// UTILES
 void validarDeclaracionID(char * nombreID){
         
@@ -752,7 +865,7 @@ void validarDeclaracionID(char * nombreID){
     int iExiste = 0;
     for(i=0;i<indice;i++)
     {
-        if ( strcmp(arrayVariables[i].nombreVaribale,nombreID) == 0)
+        if ( strcmp(arrayVariables[i].nombreVariable,nombreID) == 0)
         {
                 iExiste = 1;
         }
@@ -771,7 +884,7 @@ char * obtenerTipoDeDato(char* nombreID){
 
     for(i=0;i<indice;i++)
     {
-       if ( strcmp(arrayVariables[i].nombreVaribale,nombreID) == 0)
+       if ( strcmp(arrayVariables[i].nombreVariable,nombreID) == 0)
         {
                return arrayVariables[i].tipoVariable;
         }
@@ -786,7 +899,7 @@ void mostrarArrayVariables(t_variables* vec){
 
     for(i=0;i<indice;i++)
     {
-         printf("variable: %s \t",vec[i].nombreVaribale);
+         printf("variable: %s \t",vec[i].nombreVariable);
          printf("tipovariable: %s \t",vec[i].tipoVariable);
          printf("\n");
     }
@@ -813,8 +926,9 @@ char* invertir_salto(char* comp){
 
 ///////////////////////// TABLA DE SIMBOLOS
 int nuevoSimbolo(char* tipoDato,char valorString[],int longitud){
-  FILE *tablasimbolos = fopen("ts.txt","rw");
+  FILE *tablaSimbolos = fopen("ts.txt","rw");
   char lineaescrita[100];
+  t_dato_TS datoTs ;
   char valorBuscado[100];
   char linealeida[100];
   char *lineasiguiente;
@@ -824,24 +938,239 @@ int nuevoSimbolo(char* tipoDato,char valorString[],int longitud){
           "%s\t\t%s\t\t%s\t\t%d":
           "%s\t\t%s\t\t%s\t\t--",
           yylval.str_val,tipoDato,valorString,longitud); //nombre-tipo de dato-valor-longitud
+//llenamos dato para TS
+strcpy(datoTs.nombre, yylval.str_val);
+strcpy(datoTs.tipo,tipoDato);
+datoTs.longitud = longitud;
+strcpy(datoTs.valor,valorString);
 
-  lineasiguiente = fgets(linealeida,100,tablasimbolos);
+
+insertarEnTS(&TS,&datoTs);
+
+  lineasiguiente = fgets(linealeida,100,tablaSimbolos);
   while(lineasiguiente  && !encontro){
 	  strcpy(valorBuscado,lineaescrita);
 	  strcat(valorBuscado,"\n");
           encontro = !strcmp(valorBuscado,linealeida);
-	  lineasiguiente = fgets(linealeida,100,tablasimbolos);
+	  lineasiguiente = fgets(linealeida,100,tablaSimbolos);
   }
-  fclose(tablasimbolos);
-  tablasimbolos = fopen("ts.txt","a");
+  fclose(tablaSimbolos);
+  tablaSimbolos = fopen("ts.txt","a");
   if(!encontro){
-    fprintf(tablasimbolos,"%s\n",lineaescrita);
+    fprintf(tablaSimbolos,"%s\n",lineaescrita);
   }
-  fclose(tablasimbolos);
+  fclose(tablaSimbolos);
 }
+
 int buscarEnTS(){
-  FILE *tablasimbolos = fopen("ts.txt","rw");
+  FILE *tablaSimbolos = fopen("ts.txt","rw");
   
 
-  fclose(tablasimbolos);
+  fclose(tablaSimbolos);
 }
+
+int insertarEnTS(t_TS* ts,t_dato_TS* dato){
+t_nodo_TS* nuevoNodo = (t_nodo_TS*)malloc(sizeof(t_nodo_TS));
+        if(!nuevoNodo){
+                return 0;
+        }
+        //insertamos simbolo
+        strcpy(nuevoNodo->dato.nombre,dato->nombre);
+        strcpy(nuevoNodo->dato.tipo ,dato->tipo);
+        strcpy(nuevoNodo->dato.valor,dato->valor);
+        nuevoNodo->dato.longitud = dato->longitud;
+        nuevoNodo->sig=NULL;
+
+
+        while( *ts)
+        {            
+                ts=&(*ts)->sig;     
+        }       
+        
+        *ts=nuevoNodo;        
+        return 1;
+}
+
+void crearTS(t_TS * ts){
+        *ts = NULL;
+}
+
+void liberarTS(t_TS* ts){
+        t_nodo_TS* nuevoNodo;	
+        while(*ts)
+        {
+        nuevoNodo=*ts;
+        *ts=(*ts)->sig;
+        free(nuevoNodo);
+        }
+}
+///////////////////////////ASSEMBLER
+void llenarVectorOperadores(t_operador vecOperadores[30]){
+      strcpy(vecOperadores[0].nombreOperador ,"OP_SUM");
+      strcpy(vecOperadores[1].nombreOperador ,"OP_MULT");
+      strcpy(vecOperadores[2].nombreOperador ,"OP_DIV");
+      strcpy(vecOperadores[3].nombreOperador, "OP_RES");
+      strcpy(vecOperadores[3].nombreOperador, "OP_ASIG");
+
+}
+
+void llenarVectorPalabrasReservadas(t_palabraReservada vectorPalabrasReservadas[30]){
+      strcpy(vectorPalabrasReservadas[0].nombrePalabraReservada ,"CMP");
+      strcpy(vectorPalabrasReservadas[1].nombrePalabraReservada ,"BLE");
+      strcpy(vectorPalabrasReservadas[2].nombrePalabraReservada ,"BLT");
+      strcpy(vectorPalabrasReservadas[3].nombrePalabraReservada, "BLT");
+      strcpy(vectorPalabrasReservadas[4].nombrePalabraReservada, "BEQ");
+      strcpy(vectorPalabrasReservadas[5].nombrePalabraReservada, "BNE");
+
+}
+
+int esOperador(char valor[32]){
+        int i = 0;
+        for(i = 0;i<=sizeof(vectorOperadores);i++){
+                if(!strcmp(vectorOperadores[i].nombreOperador,valor))
+                return 1;
+        }
+        return 0;
+}
+
+int esVariableReservada(char valor[32] ){
+        int i = 0;
+        for(i = 0;i<=sizeof(vectorPalabrasReservadas);i++){
+                if(!strcmp(vectorPalabrasReservadas[i].nombrePalabraReservada,valor))
+                return 1;
+        }
+        return 0;
+}
+
+//CODIGO USUARIO
+void generarCodigoUsuario(FILE* finalFile, t_polaca* polaca){
+        t_nodoPolaca* aux;
+        t_pilaOperandos pilaOperandos;
+        crearPilaOperandos(&pilaOperandos);
+        aux = *polaca;
+        //insertar codigo de usuario en assembler
+        while(aux){
+                //apilamos operandos
+                //vemos si no es un operador, y por ende no esta en el vector de operadores
+                if(!esOperador(aux->info.contenido)){
+                        if(!esVariableReservada(aux->info.contenido)){
+                                printf("\n SOY OPERANDO");
+                                apilarOperando(&pilaOperandos,aux->info.contenido);
+                        }
+                        else{ //si no lo esta, vemos si no es una palabra reservada como cmp o los branchs
+                                if(!strcmp(aux->info.contenido,"CMP")){
+                                        //si es comparador desapilo 2
+                                fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
+                                fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
+                                fprintf(finalFile,"FXCH \n");
+                                fprintf(finalFile,"FCOM \n");      
+                                ;      
+                                }
+                                else{
+                                        //si es un salto leo el siguiente valor de la polaca
+                                        char* salto = aux->info.contenido;
+                                        aux=aux->psig;
+                                        fprintf(finalFile,"%s %s\n",salto,aux->info.contenido);
+                                }
+                        }
+                }
+                else{ //si es un operador desapilo los dos apilados anteriormetne
+                        if(!strcmp(aux->info.contenido ,"OP_SUM")){
+                             
+                                fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
+                                fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
+                                fprintf(finalFile,"FADD \n");
+
+                        }
+                        if(!strcmp(aux->info.contenido ,"OP_MULT")){
+                                fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
+                                fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
+                                fprintf(finalFile,"FMUL \n");
+                        }
+                        if(!strcmp(aux->info.contenido ,"OP_DIV")){
+                                fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
+                                fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
+                                fprintf(finalFile,"FDIV \n");
+                        }
+                        if(!strcmp(aux->info.contenido ,"OP_RES")){
+                                fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
+                                fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
+                                fprintf(finalFile,"FADD \n");
+                        }
+                        if(!strcmp(aux->info.contenido , "OP_ASIG")){
+                                char* idAsigna;
+                                //desapilamos el id al que se le asigna valor
+                                strcpy(idAsigna,desapilarOperando(&pilaOperandos));
+                                if(pilaOperandoVacia(&pilaOperandos));
+                                fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
+                                fprintf(finalFile,"FSTP %s\n",idAsigna);
+                        }
+                }
+                
+	        aux=aux->psig;
+	}
+}
+
+void generarAsm(t_TS* TS){
+	printf("***Generando ASM**** \n");
+	FILE *finalFile = fopen("Final.asm","w");
+	if(finalFile == NULL)
+	{
+		printf("Error al crear el archivo Final.asm");
+		getchar();
+		exit(0);
+	}
+	fprintf(finalFile, "include macros2.asm\n");
+	fprintf(finalFile, "include number.asm\n");
+	fprintf(finalFile,".MODEL LARGE\n");
+	fprintf(finalFile,".386\n");
+	fprintf(finalFile,".STACK 200h\n");
+	fprintf(finalFile,".DATA\n");
+	////////////////////////////////DECLARAMOS VARIABLES	
+        //estructuras necesarias para recorrer la TS
+	int  tipoDatoId;
+        t_nodo_TS* aux;
+        aux = *TS;
+	
+            //recorremos la Tabla de simbolos (estructura) y declaramos ids y ctes
+	 while(aux)  
+	{
+                tipoDatoId = (!strcmp(aux->dato.tipo, "Integer"))?1:
+                (!strcmp(aux->dato.tipo, "Float"))?2:
+                (!strcmp(aux->dato.tipo, "String"))?3:0;
+                switch(tipoDatoId){
+                        case 0:
+                        //Si es 0 no tiene tipo por lo tanto es una cte y guardamos valor
+                                if(!strcmp(aux->dato.tipo,"String"))
+                                        fprintf(finalFile,"%s dw %s\n",aux->dato.nombre, aux->dato.valor);  
+                                else
+                                        fprintf(finalFile,"%s dd %s\n",aux->dato.nombre, aux->dato.valor);         
+                                break;
+                        case 1: 	  
+                                fprintf(finalFile,"%s dd %s\n",aux->dato.nombre, "?");         
+                                break;
+                        case 2:    
+                                fprintf(finalFile,"%s dd %s\n",aux->dato.nombre,"?");        
+                                break;
+                        case 3:  
+                                fprintf(finalFile,"%s dw %s\n",aux->dato.nombre,"?"); 
+                                break;		
+                        }
+    
+                aux=aux->sig;
+        }
+		
+	fprintf(finalFile,"\n.CODE \n");
+	fprintf(finalFile,"mov ah, 1;\n");
+	fprintf(finalFile,"int 21h ;\n");
+	fprintf(finalFile,"MOV AX, 4C00h; \n");
+	fprintf(finalFile,"int 21h;\n");
+        //PROGRAMA DE USUARIO
+        generarCodigoUsuario(finalFile, &polaca);
+	fprintf(finalFile,"END\n");
+
+        ////////////////////////////////PROGRAMA DEL USUARIO
+
+	fclose(finalFile);
+
+} 
