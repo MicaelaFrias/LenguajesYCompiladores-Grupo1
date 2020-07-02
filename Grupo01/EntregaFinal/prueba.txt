@@ -2,7 +2,7 @@ program
 beginp
 defvar
 float:a;f455;h7;f4;dos;tres;e;
-string:a3;f45;h7;b;uno;
+string:a3;f45;b;uno;
 int:j;k;
 enddef
 
@@ -23,7 +23,7 @@ else
 b:="aaa"
 endif
 
-a:=a
+a:=32
 endif
 
 a:=9
@@ -34,7 +34,7 @@ endif
 ***/IF/***
 if (a==3.5)
 then 
-a:=3 + f455 + 2.5 + j + k
+a:=3
 endif
 
 ***/WHILE ANIDADO/***
@@ -51,12 +51,12 @@ a3 :="hola"
 endw
 
 ***/WHILE E IF ANIDADOS/***
-while (a>a and f4==a)
+while (a>8 and f4==1)
 a3 :="hola" 
 
 if (a==3)
 then 
-a:=2.5 + 2.5 
+a:=3
 endif
 
 if (a==4 or a>5)
@@ -82,5 +82,7 @@ display a
 
 e = if(a<a,a+5,a)
 e = if(a>a,a+6,a+8)
+
+let uno,dos,tres := ("3";4;a+5)
 
 endp

@@ -15,8 +15,9 @@ int cantFalsos=0;
 FILE  *yyin;
 char operador[30];
 char* tipoDato;
+char idAsigna [30];
 char tipoDatoActual[50] = "";
-
+char res[30];
 //////////////////////PILA
 	typedef struct
 	{
@@ -131,14 +132,16 @@ void liberarPolaca(t_polaca *polaca);
 void mostrarArrayVariables(t_variables* );
 void validarDeclaracionID(char *);
 char * obtenerTipoDeDato(char *);
+char * buscarTipoDeDatoEnTS(t_TS* ts,char* nombreID);
+
 
 ////////FUNCIONES PARA ASSEMBLER
-void generarCodigoUsuario(FILE * finalFile, t_polaca* polaca);
+void generarCodigoUsuario(FILE* finalFile, t_polaca* polaca,t_TS* TS);
 void generarAsm(t_TS* );
-void llenarVectorOperadores(t_operador [5]);
-void llenarVectorPalabrasReservadas(t_palabraReservada [13]);
-t_operador vectorOperadores[5];
-t_palabraReservada vectorPalabrasReservadas [13];
+void llenarVectorOperadores(t_operador [30]);
+void llenarVectorPalabrasReservadas(t_palabraReservada [30]);
+t_operador vectorOperadores[32];
+t_palabraReservada vectorPalabrasReservadas [30];
 int esOperador(char valor[32]);
 int esPalabraReservada(char valor[32]);
 
@@ -147,6 +150,8 @@ int insertarEnTS(t_TS*,t_dato_TS*);
 void crearTS(t_TS *);
 void liberarTS(t_TS*);
 t_TS TS;
+//validation tipos de dato
+void validarPermisoDeDeclaracionID(char *);
 //pila operandos
 void crearPilaOperandos(t_pilaOperandos* pilaOperandos);
 int apilarOperando(t_pilaOperandos* pilaOperandos,char nombreOperando[30]);
@@ -489,7 +494,13 @@ factor: ID                {
 
                                 strcpy(sTipoVariable, obtenerTipoDeDato(yylval.str_val));
                                 
-                                if (strcmp(sTipoVariable,tipoDatoActual)){
+                               if(!strcmp(tipoDatoActual,"Float")){
+                                        if(strcmp(sTipoVariable,"Integer") && strcmp(sTipoVariable,"Float")){
+                                                printf("Se espera dato del tipo Float o Integer y recibe tipo de dato %s\n",sTipoVariable);
+                                                return yyerror();   
+                                        }
+                                }
+                                else if(strcmp(sTipoVariable,tipoDatoActual)){
                                         printf("Se espera dato del tipo %s y recibe tipo de dato %s\n",tipoDatoActual,sTipoVariable);
                                         return yyerror();   
                                 }
@@ -605,6 +616,7 @@ tipodato: FLOAT {tipoDato = "Float"}
 
 listavariables: ID PYC                 
                 {
+                  validarPermisoDeDeclaracionID(yylval.str_val);
                   strcpy(arrayVariables[indice].nombreVariable,yylval.str_val);  
                   strcpy(arrayVariables[indice].tipoVariable,tipoDato);  
                   indice++;    
@@ -902,7 +914,21 @@ char * obtenerTipoDeDato(char* nombreID){
    
 
 }
-
+void validarPermisoDeDeclaracionID(char * nombreID){   
+        int i;
+        int iExiste = 0;
+        for(i=0;i<indice;i++)
+        {
+                if ( strcmp(arrayVariables[i].nombreVariable,nombreID) == 0)
+                {
+                        iExiste = 1;
+                }
+        }
+        if (iExiste != 0){
+                printf("La variable %s ya esta declarada\n",nombreID);
+                yyerror();
+        }
+}
 void mostrarArrayVariables(t_variables* vec){
         
          int i;
@@ -933,6 +959,7 @@ char* invertir_salto(char* comp){
 
         return comp;
 }
+
 
 ///////////////////////// TABLA DE SIMBOLOS
 int nuevoSimbolo(char* tipoDato,char valorString[],int longitud){
@@ -1014,8 +1041,21 @@ void liberarTS(t_TS* ts){
         free(nuevoNodo);
         }
 }
+
+char * buscarTipoDeDatoEnTS(t_TS* ts,char* nombreID){
+        
+        while(*ts){
+                
+          if ( strcmp((*ts)->dato.nombre,nombreID) == 0)
+          {
+                 return (*ts)->dato.tipo;
+          }
+           ts=&(*ts)->sig;    
+        }
+        return "0";
+}
 ///////////////////////////ASSEMBLER
-void llenarVectorOperadores(t_operador vecOperadores[5]){
+void llenarVectorOperadores(t_operador vecOperadores[30]){
       strcpy(vecOperadores[0].nombreOperador ,"OP_SUM");
       strcpy(vecOperadores[1].nombreOperador ,"OP_MULT");
       strcpy(vecOperadores[2].nombreOperador ,"OP_DIV");
@@ -1024,7 +1064,7 @@ void llenarVectorOperadores(t_operador vecOperadores[5]){
 
 }
 
-void llenarVectorPalabrasReservadas(t_palabraReservada vectorPalabrasReservadas[13]){
+void llenarVectorPalabrasReservadas(t_palabraReservada vectorPalabrasReservadas[30]){
       strcpy(vectorPalabrasReservadas[0].nombrePalabraReservada ,"CMP");
       strcpy(vectorPalabrasReservadas[1].nombrePalabraReservada ,"BLE");
       strcpy(vectorPalabrasReservadas[2].nombrePalabraReservada ,"BGT");
@@ -1044,7 +1084,7 @@ void llenarVectorPalabrasReservadas(t_palabraReservada vectorPalabrasReservadas[
 
 int esOperador(char valor[32]){
         int i = 0;
-        for(i = 0;i<=sizeof(vectorOperadores);i++){
+        for(i = 0;i<=5;i++){
                 if(!strcmp(vectorOperadores[i].nombreOperador,valor))
                 return 1;
         }
@@ -1053,7 +1093,7 @@ int esOperador(char valor[32]){
 
 int esPalabraReservada(char valor[32] ){
         int i = 0;
-        for(i = 0;i<=sizeof(vectorPalabrasReservadas);i++){
+        for(i = 0;i<=13;i++){
                 if(!strcmp(vectorPalabrasReservadas[i].nombrePalabraReservada,valor))
                 return 1;
         }
@@ -1061,19 +1101,22 @@ int esPalabraReservada(char valor[32] ){
 }
 
 //CODIGO USUARIO
-void generarCodigoUsuario(FILE* finalFile, t_polaca* polaca){
+void generarCodigoUsuario(FILE* finalFile, t_polaca* polaca,t_TS* TS){
         t_nodoPolaca* aux;
+
         int tieneOperador = 0;
         t_pilaOperandos pilaOperandos;
         crearPilaOperandos(&pilaOperandos);
         aux = *polaca;
+
+        char operando[30];
+        char tipoDatoOperando[30];
         //insertar codigo de usuario en assembler
         while(aux){
                 //apilamos operandos
                 //vemos si no es un operador, y por ende no esta en el vector de operadores
                 if(!esOperador(aux->info.contenido)){
                         if(!esPalabraReservada(aux->info.contenido)){
-                                printf("\n SOY OPERANDO");
                                 apilarOperando(&pilaOperandos,aux->info.contenido);
                         }
                         else{ //si no lo esta, vemos si no es una palabra reservada como cmp o los branchs
@@ -1100,7 +1143,6 @@ void generarCodigoUsuario(FILE* finalFile, t_polaca* polaca){
                                                 //si es un salto leo el siguiente valor de la polaca
                                                 char salto[30];
                                                 strcpy(salto, aux->info.contenido);
-                                                printf("\n SALTO %s", salto);
                                                 aux=aux->psig;
                                                 printf("%s", aux->info.contenido);
                                                 char palabraReservada[10];
@@ -1124,42 +1166,265 @@ void generarCodigoUsuario(FILE* finalFile, t_polaca* polaca){
                                 
                         }
                 }
-                else{ //si es un operador desapilo los dos apilados anteriormetne
+                else{ 
+                        //agregamos variable res para guardar respuesta de operaciones
+                        strcpy(res, "@RES");
+                        //si es un operador desapilo los dos apilados anteriormente
+
                         if(!strcmp(aux->info.contenido ,"OP_SUM")){
                              
-                                fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
-                                fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
-                                fprintf(finalFile,"FADD \n");
-                                tieneOperador = 1;
+                                //DESAPILO EL PRIMER OPERANDO Y ME FIJO EL TIPO DE DATO 
+                                strcpy(operando,desapilarOperando(&pilaOperandos));
+                                strcpy(tipoDatoOperando, buscarTipoDeDatoEnTS(TS,operando));
+                             
+                                //Caso de que sea una constante string 
+                                if(!strcmp(tipoDatoOperando,"--")){
+                                 // me fijo si el cte tiene un punto, 46 es el punto ascci
+                                     if(strchr(operando,46)!=NULL){
+                                         strcpy(tipoDatoOperando,"Float");          
+                                     }else{
+                                         strcpy(tipoDatoOperando,"Integer");         
+                                     }  
+                                }
+                               
 
+                                if(!strcmp(tipoDatoOperando,"Integer")){
+                                     fprintf(finalFile,"FILD %s\n",operando); // FLOAT
+                                }else{
+                                     fprintf(finalFile,"FLD %s\n",operando);
+                                }
+                              
+                                //DESAPILO EL SEGUNDO OPERANDO Y ME FIJO EL TIPO DE DATO 
+                                strcpy(operando,desapilarOperando(&pilaOperandos));
+                                strcpy(tipoDatoOperando, buscarTipoDeDatoEnTS(TS,operando));
+
+
+                                 //Caso de que sea una constante string 
+                                if(!strcmp(tipoDatoOperando,"--")){
+                                        // me fijo si el cte tiene un punto,  46 es el punto ascci
+                                     if(strchr(operando,46)!=NULL){
+                                         strcpy(tipoDatoOperando,"Float");          
+                                     }else{
+                                         strcpy(tipoDatoOperando,"Integer");           
+                                     }  
+                                }
+                         
+                                 if(!strcmp(tipoDatoOperando,"Integer")){
+                                     fprintf(finalFile,"FILD %s\n",operando); // FLOAT
+                                }else{
+                                     fprintf(finalFile,"FLD %s\n",operando);
+                                }
+                                fprintf(finalFile,"FADD \n");
+                                fprintf(finalFile,"FSTP %s\n",res);
+                                apilarOperando(&pilaOperandos,res);
+                                fprintf(finalFile,"FFREE \n");
+                                tieneOperador = 1;
                         }
                          if(!strcmp(aux->info.contenido ,"OP_MULT")){
-                                fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
-                                fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
+
+                                //DESAPILO EL PRIMER OPERANDO Y ME FIJO EL TIPO DE DATO 
+                                strcpy(operando,desapilarOperando(&pilaOperandos));
+                                strcpy(tipoDatoOperando, buscarTipoDeDatoEnTS(TS,operando));
+                               
+                                //Caso de que sea una constante string 
+                                if(!strcmp(tipoDatoOperando,"--")){
+                                        // me fijo si el cte tiene un punto, 46 es el punto ascci
+                                     if(strchr(operando,46)!=NULL){
+                                         strcpy(tipoDatoOperando,"Float");          
+                                     }else{
+                                         strcpy(tipoDatoOperando,"Integer");          
+                                     }  
+                                }
+
+                                if(!strcmp(tipoDatoOperando,"Integer")){
+                                     fprintf(finalFile,"FILD %s\n",operando); // FLOAT
+                                }else{
+                                     fprintf(finalFile,"FLD %s\n",operando);
+                                }
+                              
+                                //DESAPILO EL SEGUNDO OPERANDO Y ME FIJO EL TIPO DE DATO 
+                                strcpy(operando,desapilarOperando(&pilaOperandos));
+                                strcpy(tipoDatoOperando, buscarTipoDeDatoEnTS(TS,operando));
+
+
+                                 //Caso de que sea una constante string 
+                                if(!strcmp(tipoDatoOperando,"--")){
+                                        // me fijo si el cte tiene un punto  , 46 es el punto ascci
+                                     if(strchr(operando,46)!=NULL){
+                                         strcpy(tipoDatoOperando,"Float");          
+                                     }else{
+                                         strcpy(tipoDatoOperando,"Integer");           
+                                     }  
+                                }
+
+                                 if(!strcmp(tipoDatoOperando,"Integer")){
+                                     fprintf(finalFile,"FILD %s\n",operando); // FLOAT
+                                }else{
+                                     fprintf(finalFile,"FLD %s\n",operando);
+                                }
+                            
                                 fprintf(finalFile,"FMUL \n");
+                                fprintf(finalFile,"FSTP %s\n",res);
+                                apilarOperando(&pilaOperandos,res);
+                                fprintf(finalFile,"FFREE \n");
                                 tieneOperador = 1;
 
                         }
                          if(!strcmp(aux->info.contenido ,"OP_DIV")){
-                                fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
-                                fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
+             
+                                
+                                //DESAPILO EL PRIMER OPERANDO Y ME FIJO EL TIPO DE DATO 
+                                strcpy(operando,desapilarOperando(&pilaOperandos));
+                                strcpy(tipoDatoOperando, buscarTipoDeDatoEnTS(TS,operando));
+                               
+                                //Caso de que sea una constante string 
+                                if(!strcmp(tipoDatoOperando,"--")){
+                                 // me fijo si el cte tiene un punto, 46 es el punto ascci
+                                     if(strchr(operando,46)!=NULL){
+                                         strcpy(tipoDatoOperando,"Float");          
+                                     }else{
+                                         strcpy(tipoDatoOperando,"Integer");          
+                                     }  
+                                }
+
+                                if(!strcmp(tipoDatoOperando,"Integer")){
+                                     fprintf(finalFile,"FILD %s\n",operando); // FLOAT
+                                }else{
+                                     fprintf(finalFile,"FLD %s\n",operando);
+                                }
+                              
+                                //DESAPILO EL SEGUNDO OPERANDO Y ME FIJO EL TIPO DE DATO 
+                                strcpy(operando,desapilarOperando(&pilaOperandos));
+                                strcpy(tipoDatoOperando, buscarTipoDeDatoEnTS(TS,operando));
+
+
+                                 //Caso de que sea una constante string 
+                                if(!strcmp(tipoDatoOperando,"--")){
+                                        // me fijo si el cte tiene un punto  , 46 es el punto ascci
+                                     if(strchr(operando,46)!=NULL){
+                                         strcpy(tipoDatoOperando,"Float");          
+                                     }else{
+                                         strcpy(tipoDatoOperando,"Integer");           
+                                     }  
+                                }
+
+                                 if(!strcmp(tipoDatoOperando,"Integer")){
+                                     fprintf(finalFile,"FILD %s\n",operando); // FLOAT
+                                }else{
+                                     fprintf(finalFile,"FLD %s\n",operando);
+                                }
+                                fprintf(finalFile,"FEXC \n");
                                 fprintf(finalFile,"FDIV \n");
+                                fprintf(finalFile,"FSTP %s\n",res);
+                                apilarOperando(&pilaOperandos,res);
+                                fprintf(finalFile,"FFREE \n");
                                 tieneOperador = 1;
 
                         }
                          if(!strcmp(aux->info.contenido ,"OP_RES")){
-                                fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
-                                fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
-                                fprintf(finalFile,"FADD \n");
+                               
+                                //DESAPILO EL PRIMER OPERANDO Y ME FIJO EL TIPO DE DATO 
+                                strcpy(operando,desapilarOperando(&pilaOperandos));
+                                strcpy(tipoDatoOperando, buscarTipoDeDatoEnTS(TS,operando));
+                               
+                                //Caso de que sea una constante string 
+                                if(!strcmp(tipoDatoOperando,"--")){
+                                        // me fijo si el cte tiene un punto, 46 es el punto ascci
+                                     if(strchr(operando,46)!=NULL){
+                                         strcpy(tipoDatoOperando,"Float");          
+                                     }else{
+                                         strcpy(tipoDatoOperando,"Integer");          
+                                     }  
+                                }
+
+                                if(!strcmp(tipoDatoOperando,"Integer")){
+                                     fprintf(finalFile,"FILD %s\n",operando); // FLOAT
+                                }else{
+                                     fprintf(finalFile,"FLD %s\n",operando);
+                                }
+                              
+                                //DESAPILO EL SEGUNDO OPERANDO Y ME FIJO EL TIPO DE DATO 
+                                strcpy(operando,desapilarOperando(&pilaOperandos));
+                                strcpy(tipoDatoOperando, buscarTipoDeDatoEnTS(TS,operando));
+
+
+                                 //Caso de que sea una constante string 
+                                if(!strcmp(tipoDatoOperando,"--")){
+                                        // me fijo si el cte tiene un punto  , 46 es el punto ascci
+                                     if(strchr(operando,46)!=NULL){
+                                         strcpy(tipoDatoOperando,"Float");          
+                                     }else{
+                                         strcpy(tipoDatoOperando,"Integer");           
+                                     }  
+                                }
+
+                                 if(!strcmp(tipoDatoOperando,"Integer")){
+                                     fprintf(finalFile,"FILD %s\n",operando); // FLOAT
+                                }else{
+                                     fprintf(finalFile,"FLD %s\n",operando);
+                                }
+                            
+                                fprintf(finalFile,"FSUB \n");
+                                fprintf(finalFile,"FSTP %s\n",res);
+                                apilarOperando(&pilaOperandos,res);
+                                fprintf(finalFile,"FFREE \n");
                                 tieneOperador = 1;
 
                         }
                          if(!strcmp(aux->info.contenido , "OP_ASIG")){
-                                //desapilamos el id al que se le asigna valor
-                                if(!tieneOperador)
-                                fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
-                                fprintf(finalFile,"FSTP %s\n",desapilarOperando(&pilaOperandos));
-                                tieneOperador = 0;
+                                 printf(" \n");
+                                strcpy(idAsigna,desapilarOperando(&pilaOperandos));
+
+                                if(strcmp(idAsigna,"@RES")!=0 && tieneOperador){
+                                 //desapilamos el id al que se le asigna valor
+                                strcpy(operando,desapilarOperando(&pilaOperandos));
+                                strcpy(tipoDatoOperando, buscarTipoDeDatoEnTS(TS,operando));
+
+                                //Caso de que sea una constante string 
+                                if(!strcmp(tipoDatoOperando,"--")){
+                                        // me fijo si el cte tiene un punto , 46 es el punto ascci
+                                     if(strchr(operando,46)!=NULL){
+                                         strcpy(tipoDatoOperando,"Float");          
+                                     }else{
+                                         strcpy(tipoDatoOperando,"Integer");           
+                                     }  
+                                }
+                                
+                                if(!strcmp(tipoDatoOperando,"Integer")){
+                                     fprintf(finalFile,"FILD %s\n",operando); // FLOAT
+                                }else{
+                                     fprintf(finalFile,"FLD %s\n",operando);
+                                }
+
+                                fprintf(finalFile,"FSTP %s\n",idAsigna);
+                                tieneOperador = 0;  
+                                }
+                                else{
+
+                      
+                                strcpy(tipoDatoOperando, buscarTipoDeDatoEnTS(TS,idAsigna));
+
+                                //Caso de que sea una constante string 
+                                if(!strcmp(tipoDatoOperando,"--")){
+                                        // me fijo si el cte tiene un punto , 46 es el punto ascci
+                                     if(strchr(idAsigna,46)!=NULL){
+                                         strcpy(tipoDatoOperando,"Float");          
+                                     }else{
+                                         strcpy(tipoDatoOperando,"Integer");           
+                                     }  
+                                }
+                                
+                                if(!strcmp(tipoDatoOperando,"Integer")){
+                                     fprintf(finalFile,"FILD %s\n",idAsigna); // FLOAT
+                                }else{
+                                     fprintf(finalFile,"FLD %s\n",idAsigna);
+                                }                                        
+        
+                                fprintf(finalFile,"FSTP %s\n",desapilarOperando(&pilaOperandos));  
+                                tieneOperador = 0;  
+                                }
+                                
+                                
                         
                         }
 
@@ -1217,14 +1482,14 @@ void generarAsm(t_TS* TS){
     
                 aux=aux->sig;
         }
-		
+        fprintf(finalFile,"@RES dd ?");
 	fprintf(finalFile,"\n.CODE \n");
 	fprintf(finalFile,"mov ah, 1;\n");
 	fprintf(finalFile,"int 21h ;\n");
 	fprintf(finalFile,"MOV AX, 4C00h; \n");
 	fprintf(finalFile,"int 21h;\n");
         //PROGRAMA DE USUARIO
-        generarCodigoUsuario(finalFile, &polaca);
+        generarCodigoUsuario(finalFile, &polaca,TS);
 	fprintf(finalFile,"END\n");
 
         ////////////////////////////////PROGRAMA DEL USUARIO
