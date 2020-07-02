@@ -2,17 +2,13 @@ program
 beginp
 defvar
 float:a;f455;h7;f4;dos;tres;e;
-string:a3;f45;b;uno;
+string:a3;f45;h7;b;uno;
 int:j;k;
 enddef
 
 
 ***/IF ANIDADO/***
-<<<<<<< HEAD:Grupo01/Entrega-2/prueba.txt
-if(3.5>33 or a>f455)
-=======
 if(a>f455 or a>f455 )
->>>>>>> 38bd523ce1201aa53d168917144b7489a05eed2d:Grupo01/EntregaFinal/prueba.txt
 then
 b:="aaa"
 b:="aaa"
@@ -27,7 +23,7 @@ else
 b:="aaa"
 endif
 
-a:=32
+a:=a
 endif
 
 a:=9
@@ -36,13 +32,9 @@ b:="aaa"
 endif   
 
 ***/IF/***
-<<<<<<< HEAD:Grupo01/Entrega-2/prueba.txt
-if (a3=="rfrf")
-=======
 if (a==3.5)
->>>>>>> 38bd523ce1201aa53d168917144b7489a05eed2d:Grupo01/EntregaFinal/prueba.txt
 then 
-a:=3
+a:=3 + f455 + 2.5 + j + k
 endif
 
 ***/WHILE ANIDADO/***
@@ -64,7 +56,7 @@ a3 :="hola"
 
 if (a==3)
 then 
-a:=3
+a:=2.5 + 2.5 
 endif
 
 if (a==4 or a>5)
