@@ -127,6 +127,7 @@ void  mostrarPilaIDs(t_pilaIds* );
 int nuevoSimbolo(char* tipoDato,char* valorString,int longitud);
 char* invertir_salto(char* comp);
 void liberarPolaca(t_polaca *polaca);
+char* leerPosicionPolaca(t_polaca*, int);
 
 void mostrarArrayVariables(t_variables* );
 void validarDeclaracionID(char *);
@@ -135,10 +136,10 @@ char * obtenerTipoDeDato(char *);
 ////////FUNCIONES PARA ASSEMBLER
 void generarCodigoUsuario(FILE * finalFile, t_polaca* polaca);
 void generarAsm(t_TS* );
-void llenarVectorOperadores(t_operador [30]);
-void llenarVectorPalabrasReservadas(t_palabraReservada [30]);
-t_operador vectorOperadores[32];
-t_palabraReservada vectorPalabrasReservadas [30];
+void llenarVectorOperadores(t_operador [5]);
+void llenarVectorPalabrasReservadas(t_palabraReservada [9]);
+t_operador vectorOperadores[5];
+t_palabraReservada vectorPalabrasReservadas [9];
 int esOperador(char valor[32]);
 int esPalabraReservada(char valor[32]);
 
@@ -292,7 +293,7 @@ iteracion: WHILE {
                 posicionInicial = desapilar(&pilaVerdadero); 
                 sprintf(posInicio,"%d",posicionInicial);
                 insertarPolaca(&polaca,"BI");
-                escribirPosicionPolaca(&polaca,insertarPolaca(&polaca,""),posInicio);
+                escribirPosicionPolaca(&polaca,insertarPolaca(&polaca,""),leerPosicionPolaca(&polaca,posicionInicial));
         }
         sprintf(posFalso,"%d",insertarPolaca(&polaca,"ENDW"));
          while(!pilaVacia(&pilaFalso) &&falsosADesapilar>=0){
@@ -819,6 +820,15 @@ int insertarPolaca(t_polaca* ppolaca,char *contenido)
         return nuevoNodo->info.posicion;
 }
 
+char* leerPosicionPolaca(t_polaca* ppolaca, int posicion){
+        while(*ppolaca && (*ppolaca)->info.posicion < posicion){
+                ppolaca = &(*ppolaca)->psig;
+        }
+        if(*ppolaca &&  (*ppolaca)->info.posicion == posicion)
+                return (*ppolaca)->info.contenido;
+        return NULL;
+}
+
 int escribirPosicionPolaca(t_polaca* ppolaca,int posicion, char *contenido) //insertar en polaca y poner pos actual 
 	{
 	        t_nodoPolaca* aux;
@@ -1005,16 +1015,16 @@ void liberarTS(t_TS* ts){
         }
 }
 ///////////////////////////ASSEMBLER
-void llenarVectorOperadores(t_operador vecOperadores[30]){
+void llenarVectorOperadores(t_operador vecOperadores[5]){
       strcpy(vecOperadores[0].nombreOperador ,"OP_SUM");
       strcpy(vecOperadores[1].nombreOperador ,"OP_MULT");
       strcpy(vecOperadores[2].nombreOperador ,"OP_DIV");
       strcpy(vecOperadores[3].nombreOperador, "OP_RES");
-      strcpy(vecOperadores[3].nombreOperador, "OP_ASIG");
+      strcpy(vecOperadores[4].nombreOperador, "OP_ASIG");
 
 }
 
-void llenarVectorPalabrasReservadas(t_palabraReservada vectorPalabrasReservadas[30]){
+void llenarVectorPalabrasReservadas(t_palabraReservada vectorPalabrasReservadas[9]){
       strcpy(vectorPalabrasReservadas[0].nombrePalabraReservada ,"CMP");
       strcpy(vectorPalabrasReservadas[1].nombrePalabraReservada ,"BLE");
       strcpy(vectorPalabrasReservadas[2].nombrePalabraReservada ,"BGT");
@@ -1068,13 +1078,13 @@ void generarCodigoUsuario(FILE* finalFile, t_polaca* polaca){
                                 fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
                                 fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
                                 fprintf(finalFile,"FXCH \n");
-                                fprintf(finalFile,"FCOM \n");      
-                                ;      
+                                fprintf(finalFile,"FCOM \n");  
+                                 printf("AAAAAAAAAAAAAA %s",aux->info.contenido);   
                                 }
                                 else{
-                                        if(!strcmp(aux->info.contenido,"ENDIF") || !strcmp(aux->info.contenido,"ET"))
-                                        fprintf(finalFile,"%s: \n",aux->info.contenido);
-                                        
+                                        if(!strcmp(aux->info.contenido,"ENDIF") || !strcmp(aux->info.contenido,"ET")){
+                                                fprintf(finalFile,"%s: \n",aux->info.contenido);
+                                        }
                                         else{
                                                 //si es un salto leo el siguiente valor de la polaca
                                                 char salto[30];
@@ -1088,6 +1098,7 @@ void generarCodigoUsuario(FILE* finalFile, t_polaca* polaca){
                         }
                 }
                 else{ //si es un operador desapilo los dos apilados anteriormetne
+                         printf("AAAAAAAAAAAAAA %s",aux->info.contenido);
                         if(!strcmp(aux->info.contenido ,"OP_SUM")){
                              
                                 fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));

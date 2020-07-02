@@ -22,6 +22,8 @@ _2 dd 2
 _aaa dd aaa
 _aaa dd aaa
 _aaa dd aaa
+_32 dd 32
+_5 dd 5
 
 .CODE 
 mov ah, 1;
@@ -37,6 +39,7 @@ FLD _2
 FLD a
 FXCH 
 FCOM 
+BLE 18
 FLD _aaa
 FSTP b
 FLD _aaa
@@ -45,4 +48,10 @@ BI 21
 FLD _aaa
 FSTP b
 ENDIF: 
+FLD _32
+FLD a
+FXCH 
+FCOM 
+FLD _5
+FSTP a
 END
