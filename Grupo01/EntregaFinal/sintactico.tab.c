@@ -2308,7 +2308,7 @@ yyreduce:
 
                          if(!strcmp(tipoDatoActual ,"")){
 
-                              strcpy(tipoDatoActual,obtenerTipoDeDato(yylval.str_val));  
+                        //       strcpy(tipoDatoActual,obtenerTipoDeDato(yylval.str_val));  
                         }else{
                 
                         if(strcmp(tipoDatoActual,"Integer") && strcmp(tipoDatoActual,"Float")){
@@ -2329,7 +2329,7 @@ yyreduce:
 
                           if(!strcmp(tipoDatoActual ,"")){
 
-                              strcpy(tipoDatoActual,obtenerTipoDeDato(yylval.str_val));  
+                        //       strcpy(tipoDatoActual,obtenerTipoDeDato(yylval.str_val));  
                         }else{
                 
                          if(strcmp(tipoDatoActual,"String")){
@@ -2349,7 +2349,7 @@ yyreduce:
     { 
                            if(!strcmp(tipoDatoActual ,"")){
 
-                              strcpy(tipoDatoActual,obtenerTipoDeDato(yylval.str_val));  
+                        //       strcpy(tipoDatoActual,obtenerTipoDeDato(yylval.str_val));  
                         }else{
 
                         if(strcmp(tipoDatoActual,"Float")){

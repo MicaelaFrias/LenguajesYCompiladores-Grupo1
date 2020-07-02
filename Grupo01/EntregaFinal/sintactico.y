@@ -518,7 +518,7 @@ factor: ID                {
 
                          if(!strcmp(tipoDatoActual ,"")){
 
-                              strcpy(tipoDatoActual,obtenerTipoDeDato(yylval.str_val));  
+                        //       strcpy(tipoDatoActual,obtenerTipoDeDato(yylval.str_val));  
                         }else{
                 
                         if(strcmp(tipoDatoActual,"Integer") && strcmp(tipoDatoActual,"Float")){
@@ -534,7 +534,7 @@ factor: ID                {
 
                           if(!strcmp(tipoDatoActual ,"")){
 
-                              strcpy(tipoDatoActual,obtenerTipoDeDato(yylval.str_val));  
+                        //       strcpy(tipoDatoActual,obtenerTipoDeDato(yylval.str_val));  
                         }else{
                 
                          if(strcmp(tipoDatoActual,"String")){
@@ -549,7 +549,7 @@ factor: ID                {
         | CONST_REAL    { 
                            if(!strcmp(tipoDatoActual ,"")){
 
-                              strcpy(tipoDatoActual,obtenerTipoDeDato(yylval.str_val));  
+                        //       strcpy(tipoDatoActual,obtenerTipoDeDato(yylval.str_val));  
                         }else{
 
                         if(strcmp(tipoDatoActual,"Float")){
