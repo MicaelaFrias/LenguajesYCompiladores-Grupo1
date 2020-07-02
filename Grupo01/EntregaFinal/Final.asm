@@ -17,27 +17,21 @@ b dw ?
 uno dw ?
 j dd ?
 k dd ?
-_8 dd 8
-_1 dd 1
-_hola dd hola
+_4 dd 4
+_6 dd 6
+_4.5 dd 4.5
+_6 dd 6
 
 .CODE 
 mov ah, 1;
 int 21h ;
 MOV AX, 4C00h; 
 int 21h;
-ET: 
-FLD _8
-FLD a
-FXCH 
-FCOM 
-BLE 14
-FLD _1
-FLD f4
-FXCH 
-FCOM 
-BNE 14
-FLD _hola
-FSTP a3
-ENDW: 
+FILD _4
+FSTP a
+FILD _6
+FSTP dos
+FILD _6
+FLD _4.5
+FADD 
 END

@@ -67,8 +67,6 @@
 
 /* Copy the first part of user declarations.  */
 
-/* Line 189 of yacc.c  */
-#line 1 "sintactico.y"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -202,9 +200,10 @@ void liberarPolaca(t_polaca *polaca);
 void mostrarArrayVariables(t_variables* );
 void validarDeclaracionID(char *);
 char * obtenerTipoDeDato(char *);
+char * buscarTipoDeDatoEnTS(t_TS* ts,char* nombreID);
 
 ////////FUNCIONES PARA ASSEMBLER
-void generarCodigoUsuario(FILE * finalFile, t_polaca* polaca);
+void generarCodigoUsuario(FILE * finalFile, t_polaca* polaca ,t_TS* TS);
 void generarAsm(t_TS* );
 void llenarVectorOperadores(t_operador [30]);
 void llenarVectorPalabrasReservadas(t_palabraReservada [30]);
@@ -223,6 +222,7 @@ void crearPilaOperandos(t_pilaOperandos* pilaOperandos);
 int apilarOperando(t_pilaOperandos* pilaOperandos,char nombreOperando[30]);
 char* desapilarOperando(t_pilaOperandos *pilaOperandos);
 int pilaOperandoVacia(t_pilaOperandos* ppilaOperando);
+void validarPermisoDeDeclaracionID(char *);
 //declaracion de variables
 t_pila pila;
 char comp[3];
@@ -239,8 +239,6 @@ t_variables arrayVariables[500];
 
 
 
-/* Line 189 of yacc.c  */
-#line 244 "sintactico.tab.c"
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
@@ -331,8 +329,6 @@ t_variables arrayVariables[500];
 typedef union YYSTYPE
 {
 
-/* Line 214 of yacc.c  */
-#line 171 "sintactico.y"
 
 int int_val;
 double float_val;
@@ -340,8 +336,6 @@ char *str_val;
 
 
 
-/* Line 214 of yacc.c  */
-#line 345 "sintactico.tab.c"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -352,8 +346,6 @@ char *str_val;
 /* Copy the second part of user declarations.  */
 
 
-/* Line 264 of yacc.c  */
-#line 357 "sintactico.tab.c"
 
 #ifdef short
 # undef short
@@ -672,15 +664,15 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,   225,   225,   225,   231,   232,   232,   234,   234,   238,
-     239,   244,   245,   246,   247,   248,   249,   250,   251,   252,
-     253,   254,   255,   256,   257,   258,   259,   264,   264,   267,
-     276,   278,   267,   311,   314,   325,   331,   342,   311,   357,
-     359,   367,   370,   359,   386,   386,   417,   436,   437,   437,
-     455,   455,   458,   459,   461,   462,   465,   466,   467,   468,
-     469,   470,   473,   474,   475,   478,   479,   480,   484,   506,
-     522,   538,   554,   557,   562,   569,   581,   595,   598,   599,
-     602,   605,   606,   607,   610,   617,   625,   632
+       0,   227,   227,   227,   233,   234,   234,   236,   236,   240,
+     241,   246,   247,   248,   249,   250,   251,   252,   253,   254,
+     255,   256,   257,   258,   259,   260,   261,   266,   266,   269,
+     278,   280,   269,   313,   316,   327,   333,   344,   313,   359,
+     361,   369,   372,   361,   388,   388,   419,   438,   439,   439,
+     457,   457,   460,   461,   463,   464,   467,   468,   469,   470,
+     471,   472,   475,   476,   477,   480,   481,   482,   486,   517,
+     533,   549,   565,   568,   573,   580,   592,   606,   609,   610,
+     613,   616,   617,   618,   621,   629,   638,   645
 };
 #endif
 
@@ -1722,162 +1714,116 @@ yyreduce:
     {
         case 2:
 
-/* Line 1455 of yacc.c  */
-#line 225 "sintactico.y"
     {printf("COMPILACION INICIADA\n");;}
     break;
 
   case 3:
 
-/* Line 1455 of yacc.c  */
-#line 227 "sintactico.y"
     {printf("COMPILACION EXITOSA\n");;}
     break;
 
   case 5:
 
-/* Line 1455 of yacc.c  */
-#line 232 "sintactico.y"
     {printf("--------------------------BLOQUE_DECLARACION\n\n\n");;}
     break;
 
   case 7:
 
-/* Line 1455 of yacc.c  */
-#line 234 "sintactico.y"
     {printf("--------------------------BLOQUE_DECLARACION\n\n\n");;}
     break;
 
   case 11:
 
-/* Line 1455 of yacc.c  */
-#line 244 "sintactico.y"
     {printf("--------------------------ITERACION\n\n\n");;}
     break;
 
   case 12:
 
-/* Line 1455 of yacc.c  */
-#line 245 "sintactico.y"
     {printf("--------------------------DECISION\n\n\n");;}
     break;
 
   case 13:
 
-/* Line 1455 of yacc.c  */
-#line 246 "sintactico.y"
     {printf("--------------------------LISTA_VARIABLES\n\n\n");;}
     break;
 
   case 14:
 
-/* Line 1455 of yacc.c  */
-#line 247 "sintactico.y"
     {printf("--------------------------ASIGNACION\n\n\n");;}
     break;
 
   case 15:
 
-/* Line 1455 of yacc.c  */
-#line 248 "sintactico.y"
     {printf("--------------------------ENTRADA\n\n\n");;}
     break;
 
   case 16:
 
-/* Line 1455 of yacc.c  */
-#line 249 "sintactico.y"
     {printf("--------------------------SALIDA\n\n\n");;}
     break;
 
   case 17:
 
-/* Line 1455 of yacc.c  */
-#line 250 "sintactico.y"
     {printf("--------------------------CONDICION\n\n\n");;}
     break;
 
   case 18:
 
-/* Line 1455 of yacc.c  */
-#line 251 "sintactico.y"
     {printf("--------------------------EXPRESION\n\n\n");;}
     break;
 
   case 19:
 
-/* Line 1455 of yacc.c  */
-#line 252 "sintactico.y"
     {printf("--------------------------TERMINO\n\n\n");;}
     break;
 
   case 20:
 
-/* Line 1455 of yacc.c  */
-#line 253 "sintactico.y"
     {printf("--------------------------FACTOR\n\n\n");;}
     break;
 
   case 21:
 
-/* Line 1455 of yacc.c  */
-#line 254 "sintactico.y"
     {printf("--------------------------LISTA_VARIABLES_LET_DERECHA\n\n\n");;}
     break;
 
   case 22:
 
-/* Line 1455 of yacc.c  */
-#line 255 "sintactico.y"
     {printf("--------------------------LISTA_VARIABLES_LET_IZQUIERDA\n\n\n");;}
     break;
 
   case 23:
 
-/* Line 1455 of yacc.c  */
-#line 256 "sintactico.y"
     {printf("--------------------------TIPO_DE_DATO\n\n\n");;}
     break;
 
   case 24:
 
-/* Line 1455 of yacc.c  */
-#line 257 "sintactico.y"
     {printf("--------------------------IF_UNARIO\n\n\n");;}
     break;
 
   case 25:
 
-/* Line 1455 of yacc.c  */
-#line 258 "sintactico.y"
     {printf("--------------------------LET\n\n\n");;}
     break;
 
   case 26:
 
-/* Line 1455 of yacc.c  */
-#line 259 "sintactico.y"
     {printf("--------------------------COMENTARIO\n\n\n");;}
     break;
 
   case 27:
 
-/* Line 1455 of yacc.c  */
-#line 264 "sintactico.y"
     { validarDeclaracionID(yylval.str_val); strcpy(tipoDatoActual,obtenerTipoDeDato(yylval.str_val));  insertarPolaca(&polaca,yylval.str_val); ;}
     break;
 
   case 28:
 
-/* Line 1455 of yacc.c  */
-#line 264 "sintactico.y"
     {insertarPolaca(&polaca,"OP_ASIG"); strcpy(tipoDatoActual,"");;}
     break;
 
   case 29:
 
-/* Line 1455 of yacc.c  */
-#line 267 "sintactico.y"
     {
                 apilar(&pilaVerdadero,insertarPolaca(&polaca,"ET"));
                 cantCliclosAnidados++; 
@@ -1891,8 +1837,6 @@ yyreduce:
 
   case 30:
 
-/* Line 1455 of yacc.c  */
-#line 276 "sintactico.y"
     {
                  cantComparaciones = 0;
         ;}
@@ -1900,8 +1844,6 @@ yyreduce:
 
   case 31:
 
-/* Line 1455 of yacc.c  */
-#line 278 "sintactico.y"
     {
                 int posicionBranch=0;
                 char sPosicionPolaca [25];
@@ -1915,8 +1857,6 @@ yyreduce:
 
   case 32:
 
-/* Line 1455 of yacc.c  */
-#line 287 "sintactico.y"
     {
         int posicionInicial, posicionBranch, falsosADesapilar = (cantFalsos ==2)?1:0;
         char posFalso[25];
@@ -1943,8 +1883,6 @@ yyreduce:
 
   case 33:
 
-/* Line 1455 of yacc.c  */
-#line 311 "sintactico.y"
     {   validarDeclaracionID(yylval.str_val); strcpy(tipoDatoActual,obtenerTipoDeDato(yylval.str_val)); 
                 strcpy(idValor,yylval.str_val);//guardamos en char* el yyval del id
         ;}
@@ -1952,8 +1890,6 @@ yyreduce:
 
   case 34:
 
-/* Line 1455 of yacc.c  */
-#line 314 "sintactico.y"
     {
                 //desapilar pilaVerdadero
                 int posicionBranch;
@@ -1969,8 +1905,6 @@ yyreduce:
 
   case 35:
 
-/* Line 1455 of yacc.c  */
-#line 325 "sintactico.y"
     {
                 insertarPolaca(&polaca,idValor);
                 insertarPolaca(&polaca,"OP_ASIG");
@@ -1981,8 +1915,6 @@ yyreduce:
 
   case 36:
 
-/* Line 1455 of yacc.c  */
-#line 331 "sintactico.y"
     {
                 //desapilar pilaFalso.
                 int posicionBranch;
@@ -1997,8 +1929,6 @@ yyreduce:
 
   case 37:
 
-/* Line 1455 of yacc.c  */
-#line 342 "sintactico.y"
     {
                 insertarPolaca(&polaca,idValor);
                 insertarPolaca(&polaca,"OP_ASIG");
@@ -2007,8 +1937,6 @@ yyreduce:
 
   case 38:
 
-/* Line 1455 of yacc.c  */
-#line 346 "sintactico.y"
     {
                 int posicionBranch;
                 char posActual[25];
@@ -2023,8 +1951,6 @@ yyreduce:
 
   case 40:
 
-/* Line 1455 of yacc.c  */
-#line 359 "sintactico.y"
     {
                 cantCliclosAnidados++; 
                 //guardamos la cantidad de saltos por falso que tiene el if anidado anterior
@@ -2037,8 +1963,6 @@ yyreduce:
 
   case 41:
 
-/* Line 1455 of yacc.c  */
-#line 367 "sintactico.y"
     {
                  cantComparaciones = 0;
         ;}
@@ -2046,8 +1970,6 @@ yyreduce:
 
   case 42:
 
-/* Line 1455 of yacc.c  */
-#line 370 "sintactico.y"
     {
                 int iPosicion;
                 char posThen[25];
@@ -2062,8 +1984,6 @@ yyreduce:
 
   case 43:
 
-/* Line 1455 of yacc.c  */
-#line 380 "sintactico.y"
     {
                 insertarPolaca(&polaca,"BI");
                 apilar(&pilaFalso,insertarPolaca(&polaca,""));
@@ -2072,8 +1992,6 @@ yyreduce:
 
   case 44:
 
-/* Line 1455 of yacc.c  */
-#line 386 "sintactico.y"
     {
                 int posicionBranch, falsosADesapilar = (cantFalsos ==2)?1:0, posAux;
                 char sPosicionPolaca[25];
@@ -2094,8 +2012,6 @@ yyreduce:
 
   case 45:
 
-/* Line 1455 of yacc.c  */
-#line 402 "sintactico.y"
     {
                 int posicionBranch;
                 char posEndIf[25];
@@ -2114,8 +2030,6 @@ yyreduce:
 
   case 46:
 
-/* Line 1455 of yacc.c  */
-#line 417 "sintactico.y"
     {
                 
                 int posicionBranch, falsosADesapilar = (cantFalsos ==2)?2:1;
@@ -2136,15 +2050,11 @@ yyreduce:
 
   case 47:
 
-/* Line 1455 of yacc.c  */
-#line 436 "sintactico.y"
     { insertarPolaca(&polaca,"CMP"); insertarPolaca(&polaca,comp) ;cantFalsos++; apilar(&pilaFalso,insertarPolaca(&polaca,"")); cantComparaciones++;}
     break;
 
   case 48:
 
-/* Line 1455 of yacc.c  */
-#line 437 "sintactico.y"
     {
                    char* pos;
                    int iPosicion;
@@ -2162,8 +2072,6 @@ yyreduce:
 
   case 49:
 
-/* Line 1455 of yacc.c  */
-#line 450 "sintactico.y"
     {
                      insertarPolaca(&polaca,"CMP"); insertarPolaca(&polaca,comp);
                      apilar(&pilaFalso,insertarPolaca(&polaca,""));
@@ -2173,99 +2081,71 @@ yyreduce:
 
   case 50:
 
-/* Line 1455 of yacc.c  */
-#line 455 "sintactico.y"
     { invertir_salto(comp);;}
     break;
 
   case 52:
 
-/* Line 1455 of yacc.c  */
-#line 458 "sintactico.y"
     {strcpy(operador, "OR");   strcpy(tipoDatoActual,"");  ;}
     break;
 
   case 53:
 
-/* Line 1455 of yacc.c  */
-#line 459 "sintactico.y"
     {strcpy(operador,"AND");  strcpy(tipoDatoActual,"");  ;}
     break;
 
   case 56:
 
-/* Line 1455 of yacc.c  */
-#line 465 "sintactico.y"
     {strcpy(comp, "BLE");;}
     break;
 
   case 57:
 
-/* Line 1455 of yacc.c  */
-#line 466 "sintactico.y"
     {strcpy(comp, "BGE");;}
     break;
 
   case 58:
 
-/* Line 1455 of yacc.c  */
-#line 467 "sintactico.y"
     {strcpy(comp,"BLT");;}
     break;
 
   case 59:
 
-/* Line 1455 of yacc.c  */
-#line 468 "sintactico.y"
     {strcpy(comp, "BGT");;}
     break;
 
   case 60:
 
-/* Line 1455 of yacc.c  */
-#line 469 "sintactico.y"
     {strcpy(comp, "BEQ");;}
     break;
 
   case 61:
 
-/* Line 1455 of yacc.c  */
-#line 470 "sintactico.y"
     {strcpy(comp, "BNE");;}
     break;
 
   case 62:
 
-/* Line 1455 of yacc.c  */
-#line 473 "sintactico.y"
     {insertarPolaca(&polaca,"OP_SUM"); ;}
     break;
 
   case 63:
 
-/* Line 1455 of yacc.c  */
-#line 474 "sintactico.y"
     {insertarPolaca(&polaca,"OP_RES"); ;}
     break;
 
   case 65:
 
-/* Line 1455 of yacc.c  */
-#line 478 "sintactico.y"
     { insertarPolaca(&polaca,"OP_DIV");  ;}
     break;
 
   case 66:
 
-/* Line 1455 of yacc.c  */
-#line 479 "sintactico.y"
     { insertarPolaca(&polaca,"OP_MULT"); ;}
     break;
 
   case 68:
 
-/* Line 1455 of yacc.c  */
-#line 484 "sintactico.y"
     { 
 
                         if(!strcmp(tipoDatoActual ,"")){
@@ -2278,10 +2158,19 @@ yyreduce:
 
                                 strcpy(sTipoVariable, obtenerTipoDeDato(yylval.str_val));
                                 
-                                if (strcmp(sTipoVariable,tipoDatoActual)){
+                              if(!strcmp(tipoDatoActual,"Float")){
+                                        if(strcmp(sTipoVariable,"Integer") && strcmp(sTipoVariable,"Float")){
+                                                printf("Se espera dato del tipo Float o Integer y recibe tipo de dato %s\n",sTipoVariable);
+                                                return yyerror();   
+                                        }
+                                }
+                                else if(strcmp(sTipoVariable,tipoDatoActual)){
                                         printf("Se espera dato del tipo %s y recibe tipo de dato %s\n",tipoDatoActual,sTipoVariable);
                                         return yyerror();   
                                 }
+                               
+
+
                                
                                 
                         }
@@ -2291,8 +2180,6 @@ yyreduce:
 
   case 69:
 
-/* Line 1455 of yacc.c  */
-#line 506 "sintactico.y"
     { 
 
                          if(!strcmp(tipoDatoActual ,"")){
@@ -2312,8 +2199,6 @@ yyreduce:
 
   case 70:
 
-/* Line 1455 of yacc.c  */
-#line 522 "sintactico.y"
     {
 
                           if(!strcmp(tipoDatoActual ,"")){
@@ -2333,8 +2218,6 @@ yyreduce:
 
   case 71:
 
-/* Line 1455 of yacc.c  */
-#line 538 "sintactico.y"
     { 
                            if(!strcmp(tipoDatoActual ,"")){
 
@@ -2353,8 +2236,6 @@ yyreduce:
 
   case 73:
 
-/* Line 1455 of yacc.c  */
-#line 557 "sintactico.y"
     {
                         t_infoIds infoIds;
                         strcpy(infoIds.nombre, yyval.str_val);   
@@ -2364,8 +2245,6 @@ yyreduce:
 
   case 74:
 
-/* Line 1455 of yacc.c  */
-#line 562 "sintactico.y"
     {
                          t_infoIds infoIds;
                         strcpy(infoIds.nombre, yyval.str_val);   
@@ -2375,8 +2254,6 @@ yyreduce:
 
   case 75:
 
-/* Line 1455 of yacc.c  */
-#line 570 "sintactico.y"
     {
                 char* id = desapilarId(&pilaIds); 
                 if(id==""){
@@ -2391,8 +2268,6 @@ yyreduce:
 
   case 76:
 
-/* Line 1455 of yacc.c  */
-#line 583 "sintactico.y"
     {
                 char* id = desapilarId(&pilaIds); 
                  if(id==""){
@@ -2407,30 +2282,23 @@ yyreduce:
 
   case 81:
 
-/* Line 1455 of yacc.c  */
-#line 605 "sintactico.y"
     {tipoDato = "Float";}
     break;
 
   case 82:
 
-/* Line 1455 of yacc.c  */
-#line 606 "sintactico.y"
     {tipoDato = "String";}
     break;
 
   case 83:
 
-/* Line 1455 of yacc.c  */
-#line 607 "sintactico.y"
     {tipoDato = "Integer";}
     break;
 
   case 84:
 
-/* Line 1455 of yacc.c  */
-#line 611 "sintactico.y"
     {
+                  validarPermisoDeDeclaracionID(yylval.str_val);
                   strcpy(arrayVariables[indice].nombreVariable,yylval.str_val);  
                   strcpy(arrayVariables[indice].tipoVariable,tipoDato);  
                   indice++;    
@@ -2440,9 +2308,8 @@ yyreduce:
 
   case 85:
 
-/* Line 1455 of yacc.c  */
-#line 617 "sintactico.y"
     {
+                  validarPermisoDeDeclaracionID(yylval.str_val);
                   nuevoSimbolo(tipoDato,"--",(tipoDato=="String")?strlen(yylval.str_val):0);
                   strcpy(arrayVariables[indice].nombreVariable,yylval.str_val);  
                   strcpy(arrayVariables[indice].tipoVariable,tipoDato);  
@@ -2452,8 +2319,6 @@ yyreduce:
 
   case 86:
 
-/* Line 1455 of yacc.c  */
-#line 626 "sintactico.y"
     {
                 insertarPolaca(&polaca,yylval.str_val);
                 insertarPolaca(&polaca,"GET");
@@ -2462,8 +2327,6 @@ yyreduce:
 
   case 87:
 
-/* Line 1455 of yacc.c  */
-#line 633 "sintactico.y"
     {
                 insertarPolaca(&polaca,"DISPLAY");
         ;}
@@ -2471,8 +2334,6 @@ yyreduce:
 
 
 
-/* Line 1455 of yacc.c  */
-#line 2476 "sintactico.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2683,8 +2544,6 @@ yyreturn:
 
 
 
-/* Line 1675 of yacc.c  */
-#line 638 "sintactico.y"
 
 
 int main(int argc,char *argv[])
@@ -3017,6 +2876,19 @@ int buscarEnTS(){
   fclose(tablaSimbolos);
 }
 
+char * buscarTipoDeDatoEnTS(t_TS* ts,char* nombreID){
+        
+        while(*ts){
+                
+          if ( strcmp((*ts)->dato.nombre,nombreID) == 0)
+          {
+                 return (*ts)->dato.tipo;
+          }
+           ts=&(*ts)->sig;    
+        }
+        return "0";
+}
+
 int insertarEnTS(t_TS* ts,t_dato_TS* dato){
 t_nodo_TS* nuevoNodo = (t_nodo_TS*)malloc(sizeof(t_nodo_TS));
         if(!nuevoNodo){
@@ -3030,7 +2902,7 @@ t_nodo_TS* nuevoNodo = (t_nodo_TS*)malloc(sizeof(t_nodo_TS));
         nuevoNodo->sig=NULL;
 
 
-        while( *ts)
+        while(*ts)
         {            
                 ts=&(*ts)->sig;     
         }       
@@ -3052,6 +2924,25 @@ void liberarTS(t_TS* ts){
         free(nuevoNodo);
         }
 }
+
+
+void validarPermisoDeDeclaracionID(char * nombreID){   
+        int i;
+        int iExiste = 0;
+        for(i=0;i<indice;i++)
+        {
+                if ( strcmp(arrayVariables[i].nombreVariable,nombreID) == 0)
+                {
+                        iExiste = 1;
+                }
+        }
+        if (iExiste != 0){
+                printf("La variable %s ya esta declarada\n",nombreID);
+                yyerror();
+        }
+}
+
+
 ///////////////////////////ASSEMBLER
 void llenarVectorOperadores(t_operador vecOperadores[30]){
       strcpy(vecOperadores[0].nombreOperador ,"OP_SUM");
@@ -3095,10 +2986,16 @@ int esPalabraReservada(char valor[32] ){
 }
 
 //CODIGO USUARIO
-void generarCodigoUsuario(FILE* finalFile, t_polaca* polaca){
+void generarCodigoUsuario(FILE* finalFile, t_polaca* polaca,t_TS* TS){
+
         t_nodoPolaca* aux;
         int tieneOperador = 0;
         t_pilaOperandos pilaOperandos;
+        char cadenaPunto[30];
+        strcpy(cadenaPunto,".");
+
+        char operando[30];
+        char tipoDatoOperando[30];
         crearPilaOperandos(&pilaOperandos);
         aux = *polaca;
         //insertar codigo de usuario en assembler
@@ -3136,39 +3033,227 @@ void generarCodigoUsuario(FILE* finalFile, t_polaca* polaca){
                 else{ //si es un operador desapilo los dos apilados anteriormente
 
                         if(!strcmp(aux->info.contenido ,"OP_SUM")){
+                                
                              
-                                fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
-                                fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
-                                fprintf(finalFile,"FADD \n");
+                                 //DESAPILO EL PRIMER OPERANDO Y ME FIJO EL TIPO DE DATO 
+                                strcpy(operando,desapilarOperando(&pilaOperandos));
+                                strcpy(tipoDatoOperando, buscarTipoDeDatoEnTS(TS,operando));
+                             
+                                //Caso de que sea una constante string 
+                                if(!strcmp(tipoDatoOperando,"--")){
+                                        // me fijo si el cte tiene un punto, 46 es el punto ascci
+                                     if(strchr(operando,46)!=NULL){
+                                         strcpy(tipoDatoOperando,"Float");          
+                                     }else{
+                                         strcpy(tipoDatoOperando,"Integer");         
+                                     }  
+                                }
+                               
+
+                                if(!strcmp(tipoDatoOperando,"Integer")){
+                                     fprintf(finalFile,"FILD %s\n",operando); // FLOAT
+                                }else{
+                                     fprintf(finalFile,"FLD %s\n",operando);
+                                }
+                              
+                                //DESAPILO EL SEGUNDO OPERANDO Y ME FIJO EL TIPO DE DATO 
+                                strcpy(operando,desapilarOperando(&pilaOperandos));
+                                strcpy(tipoDatoOperando, buscarTipoDeDatoEnTS(TS,operando));
+
+
+                                 //Caso de que sea una constante string 
+                                if(!strcmp(tipoDatoOperando,"--")){
+                                        // me fijo si el cte tiene un punto,  46 es el punto ascci
+                                     if(strchr(operando,46)!=NULL){
+                                         strcpy(tipoDatoOperando,"Float");          
+                                     }else{
+                                         strcpy(tipoDatoOperando,"Integer");           
+                                     }  
+                                }
+                         
+                                 if(!strcmp(tipoDatoOperando,"Integer")){
+                                     fprintf(finalFile,"FILD %s\n",operando); // FLOAT
+                                }else{
+                                     fprintf(finalFile,"FLD %s\n",operando);
+                                }
+                            
+                                fprintf(finalFile,"FADD \n");  //FLOAT
+
                                 tieneOperador = 1;
 
                         }
-                         if(!strcmp(aux->info.contenido ,"OP_MULT")){
-                                fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
-                                fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
-                                fprintf(finalFile,"FMUL \n");
-                                tieneOperador = 1;
+                         if(!strcmp(aux->info.contenido ,"OP_MULT")){                        
+                       
+                                 //DESAPILO EL PRIMER OPERANDO Y ME FIJO EL TIPO DE DATO 
+                                strcpy(operando,desapilarOperando(&pilaOperandos));
+                                strcpy(tipoDatoOperando, buscarTipoDeDatoEnTS(TS,operando));
+                               
+                                //Caso de que sea una constante string 
+                                if(!strcmp(tipoDatoOperando,"--")){
+                                        // me fijo si el cte tiene un punto, 46 es el punto ascci
+                                     if(strchr(operando,46)!=NULL){
+                                         strcpy(tipoDatoOperando,"Float");          
+                                     }else{
+                                         strcpy(tipoDatoOperando,"Integer");          
+                                     }  
+                                }
 
+                                if(!strcmp(tipoDatoOperando,"Integer")){
+                                     fprintf(finalFile,"FILD %s\n",operando); // FLOAT
+                                }else{
+                                     fprintf(finalFile,"FLD %s\n",operando);
+                                }
+                              
+                                //DESAPILO EL SEGUNDO OPERANDO Y ME FIJO EL TIPO DE DATO 
+                                strcpy(operando,desapilarOperando(&pilaOperandos));
+                                strcpy(tipoDatoOperando, buscarTipoDeDatoEnTS(TS,operando));
+
+
+                                 //Caso de que sea una constante string 
+                                if(!strcmp(tipoDatoOperando,"--")){
+                                        // me fijo si el cte tiene un punto  , 46 es el punto ascci
+                                     if(strchr(operando,46)!=NULL){
+                                         strcpy(tipoDatoOperando,"Float");          
+                                     }else{
+                                         strcpy(tipoDatoOperando,"Integer");           
+                                     }  
+                                }
+
+                                 if(!strcmp(tipoDatoOperando,"Integer")){
+                                     fprintf(finalFile,"FILD %s\n",operando); // FLOAT
+                                }else{
+                                     fprintf(finalFile,"FLD %s\n",operando);
+                                }
+                            
+                               
+                                fprintf(finalFile,"FMUL \n");  //FLOAT
+
+                                tieneOperador = 1;
                         }
                          if(!strcmp(aux->info.contenido ,"OP_DIV")){
-                                fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
-                                fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
-                                fprintf(finalFile,"FDIV \n");
+                                
+                                //DESAPILO EL PRIMER OPERANDO Y ME FIJO EL TIPO DE DATO 
+                                strcpy(operando,desapilarOperando(&pilaOperandos));
+                                strcpy(tipoDatoOperando, buscarTipoDeDatoEnTS(TS,operando));
+                               
+                                //Caso de que sea una constante string 
+                                if(!strcmp(tipoDatoOperando,"--")){
+                                        // me fijo si el cte tiene un punto,  46 es el punto ascci
+                                     if(strchr(operando,46)!=NULL){
+                                         strcpy(tipoDatoOperando,"Float");          
+                                     }else{
+                                         strcpy(tipoDatoOperando,"Integer");          
+                                     }  
+                                }
+
+                                if(!strcmp(tipoDatoOperando,"Integer")){
+                                     fprintf(finalFile,"FILD %s\n",operando); // FLOAT
+                                }else{
+                                     fprintf(finalFile,"FLD %s\n",operando);
+                                }
+                              
+                                //DESAPILO EL SEGUNDO OPERANDO Y ME FIJO EL TIPO DE DATO 
+                                strcpy(operando,desapilarOperando(&pilaOperandos));
+                                strcpy(tipoDatoOperando, buscarTipoDeDatoEnTS(TS,operando));
+
+
+                                 //Caso de que sea una constante string 
+                                if(!strcmp(tipoDatoOperando,"--")){
+                                        // me fijo si el cte tiene un punto , 46 es el punto ascci
+                                     if(strchr(operando,46)!=NULL){
+                                         strcpy(tipoDatoOperando,"Float");          
+                                     }else{
+                                         strcpy(tipoDatoOperando,"Integer");           
+                                     }  
+                                }
+
+                                 if(!strcmp(tipoDatoOperando,"Integer")){
+                                     fprintf(finalFile,"FILD %s\n",operando); // FLOAT
+                                }else{
+                                     fprintf(finalFile,"FLD %s\n",operando);
+                                }
+                            
+                            
+                                fprintf(finalFile,"FDIV \n");  //FLOAT
+
                                 tieneOperador = 1;
 
                         }
                          if(!strcmp(aux->info.contenido ,"OP_RES")){
-                                fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
-                                fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
-                                fprintf(finalFile,"FADD \n");
+                            
+                                   
+                                //DESAPILO EL PRIMER OPERANDO Y ME FIJO EL TIPO DE DATO 
+                                strcpy(operando,desapilarOperando(&pilaOperandos));
+                                strcpy(tipoDatoOperando, buscarTipoDeDatoEnTS(TS,operando));
+                               
+                                //Caso de que sea una constante string 
+                                if(!strcmp(tipoDatoOperando,"--")){
+                                        // me fijo si el cte tiene un punto,  46 es el punto ascci
+                                     if(strchr(operando,46)!=NULL){
+                                         strcpy(tipoDatoOperando,"Float");          
+                                     }else{
+                                         strcpy(tipoDatoOperando,"Integer");          
+                                     }  
+                                }
+
+                                if(!strcmp(tipoDatoOperando,"Integer")){
+                                     fprintf(finalFile,"FILD %s\n",operando); // FLOAT
+                                }else{
+                                     fprintf(finalFile,"FLD %s\n",operando);
+                                }
+                              
+                                //DESAPILO EL SEGUNDO OPERANDO Y ME FIJO EL TIPO DE DATO 
+                                strcpy(operando,desapilarOperando(&pilaOperandos));
+                                strcpy(tipoDatoOperando, buscarTipoDeDatoEnTS(TS,operando));
+
+
+                                 //Caso de que sea una constante string 
+                                if(!strcmp(tipoDatoOperando,"--")){
+                                        // me fijo si el cte tiene un punto , 46 es el punto ascci
+                                     if(strchr(operando,46)!=NULL){
+                                         strcpy(tipoDatoOperando,"Float");          
+                                     }else{
+                                         strcpy(tipoDatoOperando,"Integer");           
+                                     }  
+                                }
+
+                                 if(!strcmp(tipoDatoOperando,"Integer")){
+                                     fprintf(finalFile,"FILD %s\n",operando); // FLOAT
+                                }else{
+                                     fprintf(finalFile,"FLD %s\n",operando);
+                                }
+                            
+                            
+                                fprintf(finalFile,"FSUB \n");  //FLOAT
+
                                 tieneOperador = 1;
 
                         }
-                         if(!strcmp(aux->info.contenido , "OP_ASIG")){
+                         if(!strcmp(aux->info.contenido,"OP_ASIG")){
+                                
+                                if(!tieneOperador){
                                 //desapilamos el id al que se le asigna valor
-                                if(!tieneOperador)
-                                fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
-                                fprintf(finalFile,"FSTP %s\n",desapilarOperando(&pilaOperandos));
+                                strcpy(operando,desapilarOperando(&pilaOperandos));
+                                strcpy(tipoDatoOperando, buscarTipoDeDatoEnTS(TS,operando));
+
+                                //Caso de que sea una constante string 
+                                if(!strcmp(tipoDatoOperando,"--")){
+                                        // me fijo si el cte tiene un punto , 46 es el punto ascci
+                                     if(strchr(operando,46)!=NULL){
+                                         strcpy(tipoDatoOperando,"Float");          
+                                     }else{
+                                         strcpy(tipoDatoOperando,"Integer");           
+                                     }  
+                                }
+                                
+                                if(!strcmp(tipoDatoOperando,"Integer")){
+                                     fprintf(finalFile,"FILD %s\n",operando); // FLOAT
+                                }else{
+                                     fprintf(finalFile,"FLD %s\n",operando);
+                                }
+                                 fprintf(finalFile,"FSTP %s\n",desapilarOperando(&pilaOperandos));
+                                }
+
                                 tieneOperador = 0;
                         
                         }
@@ -3234,7 +3319,7 @@ void generarAsm(t_TS* TS){
 	fprintf(finalFile,"MOV AX, 4C00h; \n");
 	fprintf(finalFile,"int 21h;\n");
         //PROGRAMA DE USUARIO
-        generarCodigoUsuario(finalFile, &polaca);
+        generarCodigoUsuario(finalFile, &polaca,TS);
 	fprintf(finalFile,"END\n");
 
         ////////////////////////////////PROGRAMA DEL USUARIO
