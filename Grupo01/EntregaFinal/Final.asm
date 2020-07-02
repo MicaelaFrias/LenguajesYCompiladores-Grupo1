@@ -20,7 +20,7 @@ k dd ?
 _8 dd 8
 _1 dd 1
 _hola dd hola
-
+@RES dd ?
 .CODE 
 mov ah, 1;
 int 21h ;
