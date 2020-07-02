@@ -150,6 +150,8 @@ int insertarEnTS(t_TS*,t_dato_TS*);
 void crearTS(t_TS *);
 void liberarTS(t_TS*);
 t_TS TS;
+//validation tipos de dato
+void validarPermisoDeDeclaracionID(char *);
 //pila operandos
 void crearPilaOperandos(t_pilaOperandos* pilaOperandos);
 int apilarOperando(t_pilaOperandos* pilaOperandos,char nombreOperando[30]);
@@ -496,7 +498,13 @@ factor: ID                {
 
                                 strcpy(sTipoVariable, obtenerTipoDeDato(yylval.str_val));
                                 
-                                if (strcmp(sTipoVariable,tipoDatoActual)){
+                               if(!strcmp(tipoDatoActual,"Float")){
+                                        if(strcmp(sTipoVariable,"Integer") && strcmp(sTipoVariable,"Float")){
+                                                printf("Se espera dato del tipo Float o Integer y recibe tipo de dato %s\n",sTipoVariable);
+                                                return yyerror();   
+                                        }
+                                }
+                                else if(strcmp(sTipoVariable,tipoDatoActual)){
                                         printf("Se espera dato del tipo %s y recibe tipo de dato %s\n",tipoDatoActual,sTipoVariable);
                                         return yyerror();   
                                 }
@@ -612,12 +620,14 @@ tipodato: FLOAT {tipoDato = "Float"}
 
 listavariables: ID PYC                 
                 {
+                  validarPermisoDeDeclaracionID(yylval.str_val);
                   strcpy(arrayVariables[indice].nombreVariable,yylval.str_val);  
                   strcpy(arrayVariables[indice].tipoVariable,tipoDato);  
                   indice++;    
                   nuevoSimbolo(tipoDato,"--",(tipoDato=="String")?strlen(yylval.str_val):0);
                 }
               | listavariables ID PYC {
+                  validarPermisoDeDeclaracionID(yylval.str_val);
                   nuevoSimbolo(tipoDato,"--",(tipoDato=="String")?strlen(yylval.str_val):0);
                   strcpy(arrayVariables[indice].nombreVariable,yylval.str_val);  
                   strcpy(arrayVariables[indice].tipoVariable,tipoDato);  
@@ -893,7 +903,21 @@ char * obtenerTipoDeDato(char* nombreID){
    
 
 }
-
+void validarPermisoDeDeclaracionID(char * nombreID){   
+        int i;
+        int iExiste = 0;
+        for(i=0;i<indice;i++)
+        {
+                if ( strcmp(arrayVariables[i].nombreVariable,nombreID) == 0)
+                {
+                        iExiste = 1;
+                }
+        }
+        if (iExiste != 0){
+                printf("La variable %s ya esta declarada\n",nombreID);
+                yyerror();
+        }
+}
 void mostrarArrayVariables(t_variables* vec){
         
          int i;
@@ -924,6 +948,7 @@ char* invertir_salto(char* comp){
 
         return comp;
 }
+
 
 ///////////////////////// TABLA DE SIMBOLOS
 int nuevoSimbolo(char* tipoDato,char valorString[],int longitud){

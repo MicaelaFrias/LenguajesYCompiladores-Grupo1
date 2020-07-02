@@ -83,4 +83,6 @@ display a
 e = if(a<a,a+5,a)
 e = if(a>a,a+6,a+8)
 
+let uno,dos,tres := ("3";4;a+5)
+
 endp
