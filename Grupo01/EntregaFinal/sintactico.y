@@ -18,6 +18,7 @@ char* tipoDato;
 char idAsigna [30];
 char tipoDatoActual[50] = "";
 char res[30];
+int posWhileInicial;
 //////////////////////PILA
 	typedef struct
 	{
@@ -163,7 +164,7 @@ char comp[3];
 char op[3];
 char idValor[25];
 int cantComparaciones=0;
-int contWhile=0,contElse=0,contEndW=0,contThen=0,contEndif=0;
+int contWhile=0,contElse=0,contEndW=0,contThen=0,contEndif=0, contThenW=0;
 
 t_pila pilaFalso;
 t_pila pilaVerdadero;
@@ -270,8 +271,12 @@ asignacion: ID { validarDeclaracionID(yylval.str_val); strcpy(tipoDatoActual,obt
                 ;
 
 iteracion: WHILE {
-                int pos = insertarPolaca(&polaca,"WHILE");
-                apilar(&pilaVerdadero, pos);
+                if(!cantCliclosAnidados)
+                        posWhileInicial = insertarPolaca(&polaca,"WHILE");
+                else{
+                        int pos = insertarPolaca(&polaca,"WHILE");
+                        apilar(&pilaVerdadero, pos);
+                }
                 printf("%s",polaca->info.contenido);
                 cantCliclosAnidados++; 
                 //guardamos la cantidad de saltos por falso que tiene el if anidado anterior
@@ -282,16 +287,26 @@ iteracion: WHILE {
                 }  
         P_A condicion{
                  cantComparaciones = 0;
-        } P_C bloqueTemasComunesYEspeciales ENDW {
+        } P_C
+        {
+                char spos[25]; 
+                int pos = insertarPolaca(&polaca,"THENW");
+                sprintf(spos,"%d",pos);
+                escribirPosicionPolaca(&polaca,desapilar(&pilaVerdadero),spos);
+        }
+         bloqueTemasComunesYEspeciales ENDW {
         int posicionInicial, posicionBranch, falsosADesapilar = (cantFalsos ==2)?1:0;
         char posFalso[25];
         char posInicio[25];
-        if(!pilaVacia(&pilaVerdadero)){
+      
+        if(cantCliclosAnidados == 1)
+                posicionInicial = posWhileInicial;
+        else
                 posicionInicial = desapilar(&pilaVerdadero); 
-                sprintf(posInicio,"%d",posicionInicial);
-                insertarPolaca(&polaca,"BI");
-                escribirPosicionPolaca(&polaca,insertarPolaca(&polaca,""),posInicio);
-        }
+        sprintf(posInicio,"%d",posicionInicial);
+        insertarPolaca(&polaca,"BI");
+        escribirPosicionPolaca(&polaca,insertarPolaca(&polaca,""),posInicio);
+
         sprintf(posFalso,"%d",insertarPolaca(&polaca,"ENDW"));
          while(!pilaVacia(&pilaFalso) &&falsosADesapilar>=0){
                 posicionBranch = desapilar(&pilaFalso); 
@@ -327,10 +342,11 @@ ifUnario: ID{   validarDeclaracionID(yylval.str_val); strcpy(tipoDatoActual,obte
                 apilar(&pilaVerdadero,insertarPolaca(&polaca,""));
         } 
         COMA{
+                insertarPolaca(&polaca,"ELSE");
                 //desapilar pilaFalso.
                 int posicionBranch;
                 char posActual[25];
-                sprintf(posActual,"%d",posicionPolaca);
+                sprintf(posActual,"%d",posicionPolaca-1);
                 while(!pilaVacia(&pilaFalso)){
                         posicionBranch = desapilar(&pilaFalso); 
                         escribirPosicionPolaca(&polaca,posicionBranch,posActual);
@@ -350,6 +366,7 @@ ifUnario: ID{   validarDeclaracionID(yylval.str_val); strcpy(tipoDatoActual,obte
                         escribirPosicionPolaca(&polaca,posicionBranch,posActual);
                 }
                 strcpy(tipoDatoActual,"");
+                insertarPolaca(&polaca,"ENDIF");
         }; 
 
 seleccion: seleccionSinElse finSeleccion;
@@ -514,7 +531,7 @@ factor: ID                {
 
                          if(!strcmp(tipoDatoActual ,"")){
 
-                              strcpy(tipoDatoActual,obtenerTipoDeDato(yylval.str_val));  
+                             
                         }else{
                 
                         if(strcmp(tipoDatoActual,"Integer") && strcmp(tipoDatoActual,"Float")){
@@ -530,7 +547,6 @@ factor: ID                {
 
                           if(!strcmp(tipoDatoActual ,"")){
 
-                              strcpy(tipoDatoActual,obtenerTipoDeDato(yylval.str_val));  
                         }else{
                 
                          if(strcmp(tipoDatoActual,"String")){
@@ -544,8 +560,6 @@ factor: ID                {
 
         | CONST_REAL    { 
                            if(!strcmp(tipoDatoActual ,"")){
-
-                              strcpy(tipoDatoActual,obtenerTipoDeDato(yylval.str_val));  
                         }else{
 
                         if(strcmp(tipoDatoActual,"Float")){
@@ -772,8 +786,8 @@ int apilarOperando(t_pilaOperandos* pilaOperandos,char nombreOperando[30])
         return(0); //Sin_memoria
 
     strcpy(nuevoNodo->infoOperandos.nombre,nombreOperando);
-          nuevoNodo->psig=*pilaOperandos;
     *pilaOperandos=nuevoNodo;
+    nuevoNodo->psig=*pilaOperandos;
 printf("\n apile %s\n", nuevoNodo->infoOperandos.nombre);
     return(1);
 }
@@ -1078,6 +1092,8 @@ void llenarVectorPalabrasReservadas(t_palabraReservada vectorPalabrasReservadas[
       strcpy(vectorPalabrasReservadas[10].nombrePalabraReservada, "THEN");
       strcpy(vectorPalabrasReservadas[11].nombrePalabraReservada, "ELSE");
       strcpy(vectorPalabrasReservadas[12].nombrePalabraReservada, "ENDW");
+      strcpy(vectorPalabrasReservadas[13].nombrePalabraReservada, "THENW");
+
 
 
 }
@@ -1093,7 +1109,7 @@ int esOperador(char valor[32]){
 
 int esPalabraReservada(char valor[32] ){
         int i = 0;
-        for(i = 0;i<=13;i++){
+        for(i = 0;i<=14;i++){
                 if(!strcmp(vectorPalabrasReservadas[i].nombrePalabraReservada,valor))
                 return 1;
         }
@@ -1122,22 +1138,24 @@ void generarCodigoUsuario(FILE* finalFile, t_polaca* polaca,t_TS* TS){
                         else{ //si no lo esta, vemos si no es una palabra reservada como cmp o los branchs
                                 if(!strcmp(aux->info.contenido,"CMP")){
                                         //si es comparador desapilo 2
-                                fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
-                                fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
-                                fprintf(finalFile,"FXCH \n");
-                                fprintf(finalFile,"FCOM \n");   
+                                        fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
+                                        fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
+                                        fprintf(finalFile,"FXCH \n");
+                                        fprintf(finalFile,"FCOM \n");   
                                 }
                                 else{
                                         if(!strcmp(aux->info.contenido,"ENDIF")){
                                                 fprintf(finalFile,"%s%d: \n",aux->info.contenido, contEndif++);
                                         }else if(!strcmp(aux->info.contenido,"WHILE")){
-                                                fprintf(finalFile,"%s%d: \n",aux->info.contenido, contWhile);  
+                                                fprintf(finalFile,"%s%d: \n",aux->info.contenido, contWhile++);  
                                         }else if(!strcmp(aux->info.contenido,"ELSE")){
                                                 fprintf(finalFile,"%s%d: \n",aux->info.contenido, contElse++);  
                                         }else if(!strcmp(aux->info.contenido,"THEN")){
                                                 fprintf(finalFile,"%s%d: \n",aux->info.contenido, contThen++);  
                                         }else if(!strcmp(aux->info.contenido,"ENDW")){
                                                 fprintf(finalFile,"%s%d: \n",aux->info.contenido, contEndW++);  
+                                        }else if (!strcmp(aux->info.contenido,"THENW")){
+                                                fprintf(finalFile,"%s%d: \n",aux->info.contenido, contThenW++);  
                                         }
                                         else{
                                                 //si es un salto leo el siguiente valor de la polaca
@@ -1149,8 +1167,8 @@ void generarCodigoUsuario(FILE* finalFile, t_polaca* polaca,t_TS* TS){
                                                 strcpy(palabraReservada, leerPosicionPolaca(polaca,atoi(aux->info.contenido)));
                                                 fprintf(finalFile,"%s %s",salto,leerPosicionPolaca(polaca,atoi(aux->info.contenido)));
                                                 if(!strcmp("WHILE",palabraReservada)){
+                                                        contWhile--;
                                                         fprintf(finalFile, "%d\n", contWhile);
-                                                        contWhile++;
                                                 }else if(!strcmp(palabraReservada,"ENDIF")){
                                                         fprintf(finalFile, "%d\n", contEndif);
                                                 }else if(!strcmp(palabraReservada,"ELSE")){
@@ -1159,6 +1177,8 @@ void generarCodigoUsuario(FILE* finalFile, t_polaca* polaca,t_TS* TS){
                                                         fprintf(finalFile, "%d\n", contThen);
                                                 }else if(!strcmp(palabraReservada,"ENDW")){
                                                         fprintf(finalFile, "%d\n", contEndW);
+                                                }else if(!strcmp(palabraReservada,"THENW")){
+                                                        fprintf(finalFile, "%d\n", contThenW);
                                                 }
 
                                         }
