@@ -1093,6 +1093,9 @@ void llenarVectorPalabrasReservadas(t_palabraReservada vectorPalabrasReservadas[
       strcpy(vectorPalabrasReservadas[11].nombrePalabraReservada, "ELSE");
       strcpy(vectorPalabrasReservadas[12].nombrePalabraReservada, "ENDW");
       strcpy(vectorPalabrasReservadas[13].nombrePalabraReservada, "THENW");
+      strcpy(vectorPalabrasReservadas[14].nombrePalabraReservada, "GET");
+      strcpy(vectorPalabrasReservadas[15].nombrePalabraReservada, "DISPLAY");
+
 
 
 
@@ -1109,7 +1112,7 @@ int esOperador(char valor[32]){
 
 int esPalabraReservada(char valor[32] ){
         int i = 0;
-        for(i = 0;i<=14;i++){
+        for(i = 0;i<=16;i++){
                 if(!strcmp(vectorPalabrasReservadas[i].nombrePalabraReservada,valor))
                 return 1;
         }
@@ -1156,6 +1159,10 @@ void generarCodigoUsuario(FILE* finalFile, t_polaca* polaca,t_TS* TS){
                                                 fprintf(finalFile,"%s%d: \n",aux->info.contenido, contEndW++);  
                                         }else if (!strcmp(aux->info.contenido,"THENW")){
                                                 fprintf(finalFile,"%s%d: \n",aux->info.contenido, contThenW++);  
+                                        }else if(!strcmp(aux->info.contenido,"GET")){
+                                                fprintf(finalFile,"getString %s\n",desapilarOperando(&pilaOperandos));  
+                                        }else if(!strcmp(aux->info.contenido,"DISPLAY")){
+                                                fprintf(finalFile,"displayString %s\n",desapilarOperando(&pilaOperandos));  
                                         }
                                         else{
                                                 //si es un salto leo el siguiente valor de la polaca
@@ -1399,7 +1406,7 @@ void generarCodigoUsuario(FILE* finalFile, t_polaca* polaca,t_TS* TS){
                                  //desapilamos el id al que se le asigna valor
                                 strcpy(operando,desapilarOperando(&pilaOperandos));
                                 strcpy(tipoDatoOperando, buscarTipoDeDatoEnTS(TS,operando));
-
+ 
                                 //Caso de que sea una constante string 
                                 if(!strcmp(tipoDatoOperando,"--")){
                                         // me fijo si el cte tiene un punto , 46 es el punto ascci

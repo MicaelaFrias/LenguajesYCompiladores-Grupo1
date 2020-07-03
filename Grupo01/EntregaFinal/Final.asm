@@ -19,6 +19,9 @@ j dd ?
 k dd ?
 _3 dd 3
 _5 dd 5
+_3 dd 3
+_4 dd 4
+_5 dd 5
 @RES dd ?
 .CODE 
 mov ah, 1;
@@ -44,4 +47,15 @@ ELSE0:
 FLD e
 FSTP e
 ENDIF0: 
+FLD uno
+FSTP uno
+FLD dos
+FSTP dos
+FILD _5
+FILD _5
+FADD 
+FSTP @RES
+FFREE 
+FLD tres
+FSTP tres
 END
