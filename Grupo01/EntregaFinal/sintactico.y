@@ -786,9 +786,9 @@ int apilarOperando(t_pilaOperandos* pilaOperandos,char nombreOperando[30])
         return(0); //Sin_memoria
 
     strcpy(nuevoNodo->infoOperandos.nombre,nombreOperando);
-    *pilaOperandos=nuevoNodo;
     nuevoNodo->psig=*pilaOperandos;
-printf("\n apile %s\n", nuevoNodo->infoOperandos.nombre);
+    *pilaOperandos=nuevoNodo;
+  
     return(1);
 }
 
@@ -807,7 +807,7 @@ char* desapilarOperando(t_pilaOperandos *pilaOperandos)
     *pilaOperandos=(*pilaOperandos)->psig; 
     free(aux); 
         
-printf("\ndesapile %s\n", nombreOperando);
+
     return nombreOperando; 
 }
 
