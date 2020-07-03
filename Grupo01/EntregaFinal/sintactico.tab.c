@@ -681,12 +681,12 @@ static const yytype_uint16 yyrline[] =
        0,   231,   231,   231,   237,   238,   238,   240,   240,   244,
      245,   250,   251,   252,   253,   254,   255,   256,   257,   258,
      259,   260,   261,   262,   263,   264,   265,   270,   270,   273,
-     288,   291,   273,   324,   327,   338,   344,   356,   324,   372,
-     374,   382,   385,   374,   403,   403,   435,   454,   455,   455,
-     473,   473,   476,   477,   479,   480,   483,   484,   485,   486,
-     487,   488,   491,   492,   493,   496,   497,   498,   502,   530,
-     546,   561,   575,   578,   583,   590,   602,   616,   619,   620,
-     623,   626,   627,   628,   631,   639,   647,   654
+     287,   290,   273,   323,   326,   337,   343,   355,   323,   371,
+     373,   381,   384,   373,   402,   402,   434,   453,   454,   454,
+     472,   472,   475,   476,   478,   479,   482,   483,   484,   485,
+     486,   487,   490,   491,   492,   495,   496,   497,   501,   529,
+     545,   560,   574,   577,   582,   589,   601,   615,   618,   619,
+     622,   625,   626,   627,   630,   638,   646,   653
 };
 #endif
 
@@ -1891,7 +1891,6 @@ yyreduce:
                         int pos = insertarPolaca(&polaca,"WHILE");
                         apilar(&pilaVerdadero, pos);
                 }
-                printf("%s",polaca->info.contenido);
                 cantCliclosAnidados++; 
                 //guardamos la cantidad de saltos por falso que tiene el if anidado anterior
                 if(cantCliclosAnidados>1){ 
@@ -1904,7 +1903,7 @@ yyreduce:
   case 30:
 
 /* Line 1455 of yacc.c  */
-#line 288 "sintactico.y"
+#line 287 "sintactico.y"
     {
                  cantComparaciones = 0;
         ;}
@@ -1913,7 +1912,7 @@ yyreduce:
   case 31:
 
 /* Line 1455 of yacc.c  */
-#line 291 "sintactico.y"
+#line 290 "sintactico.y"
     {
                 char spos[25]; 
                 int pos = insertarPolaca(&polaca,"THENW");
@@ -1925,7 +1924,7 @@ yyreduce:
   case 32:
 
 /* Line 1455 of yacc.c  */
-#line 297 "sintactico.y"
+#line 296 "sintactico.y"
     {
         int posicionInicial, posicionBranch, falsosADesapilar = (cantFalsos ==2)?1:0;
         char posFalso[25];
@@ -1956,7 +1955,7 @@ yyreduce:
   case 33:
 
 /* Line 1455 of yacc.c  */
-#line 324 "sintactico.y"
+#line 323 "sintactico.y"
     {   validarDeclaracionID(yylval.str_val); strcpy(tipoDatoActual,obtenerTipoDeDato(yylval.str_val)); 
                 strcpy(idValor,yylval.str_val);//guardamos en char* el yyval del id
         ;}
@@ -1965,7 +1964,7 @@ yyreduce:
   case 34:
 
 /* Line 1455 of yacc.c  */
-#line 327 "sintactico.y"
+#line 326 "sintactico.y"
     {
                 //desapilar pilaVerdadero
                 int posicionBranch;
@@ -1982,7 +1981,7 @@ yyreduce:
   case 35:
 
 /* Line 1455 of yacc.c  */
-#line 338 "sintactico.y"
+#line 337 "sintactico.y"
     {
                 insertarPolaca(&polaca,idValor);
                 insertarPolaca(&polaca,"OP_ASIG");
@@ -1994,7 +1993,7 @@ yyreduce:
   case 36:
 
 /* Line 1455 of yacc.c  */
-#line 344 "sintactico.y"
+#line 343 "sintactico.y"
     {
                 insertarPolaca(&polaca,"ELSE");
                 //desapilar pilaFalso.
@@ -2011,7 +2010,7 @@ yyreduce:
   case 37:
 
 /* Line 1455 of yacc.c  */
-#line 356 "sintactico.y"
+#line 355 "sintactico.y"
     {
                 insertarPolaca(&polaca,idValor);
                 insertarPolaca(&polaca,"OP_ASIG");
@@ -2021,7 +2020,7 @@ yyreduce:
   case 38:
 
 /* Line 1455 of yacc.c  */
-#line 360 "sintactico.y"
+#line 359 "sintactico.y"
     {
                 int posicionBranch;
                 char posActual[25];
@@ -2038,7 +2037,7 @@ yyreduce:
   case 40:
 
 /* Line 1455 of yacc.c  */
-#line 374 "sintactico.y"
+#line 373 "sintactico.y"
     {
                 cantCliclosAnidados++; 
                 //guardamos la cantidad de saltos por falso que tiene el if anidado anterior
@@ -2052,7 +2051,7 @@ yyreduce:
   case 41:
 
 /* Line 1455 of yacc.c  */
-#line 382 "sintactico.y"
+#line 381 "sintactico.y"
     {
                  cantComparaciones = 0;
         ;}
@@ -2061,7 +2060,7 @@ yyreduce:
   case 42:
 
 /* Line 1455 of yacc.c  */
-#line 385 "sintactico.y"
+#line 384 "sintactico.y"
     {
                 insertarPolaca(&polaca,"THEN");
                 int iPosicion;
@@ -2078,7 +2077,7 @@ yyreduce:
   case 43:
 
 /* Line 1455 of yacc.c  */
-#line 396 "sintactico.y"
+#line 395 "sintactico.y"
     {
                 insertarPolaca(&polaca,"BI");
                 apilar(&pilaFalso,insertarPolaca(&polaca,""));
@@ -2089,7 +2088,7 @@ yyreduce:
   case 44:
 
 /* Line 1455 of yacc.c  */
-#line 403 "sintactico.y"
+#line 402 "sintactico.y"
     {
                 insertarPolaca(&polaca,"ELSE");
                 int posicionBranch, falsosADesapilar = (cantFalsos ==2)?1:0, posAux;
@@ -2112,7 +2111,7 @@ yyreduce:
   case 45:
 
 /* Line 1455 of yacc.c  */
-#line 420 "sintactico.y"
+#line 419 "sintactico.y"
     {
                 int posicionBranch;
                 char posEndIf[25];
@@ -2132,7 +2131,7 @@ yyreduce:
   case 46:
 
 /* Line 1455 of yacc.c  */
-#line 435 "sintactico.y"
+#line 434 "sintactico.y"
     {
                 
                 int posicionBranch, falsosADesapilar = (cantFalsos ==2)?2:1;
@@ -2154,14 +2153,14 @@ yyreduce:
   case 47:
 
 /* Line 1455 of yacc.c  */
-#line 454 "sintactico.y"
+#line 453 "sintactico.y"
     { insertarPolaca(&polaca,"CMP"); insertarPolaca(&polaca,comp) ;cantFalsos++; apilar(&pilaFalso,insertarPolaca(&polaca,"")); cantComparaciones++;}
     break;
 
   case 48:
 
 /* Line 1455 of yacc.c  */
-#line 455 "sintactico.y"
+#line 454 "sintactico.y"
     {
                    char* pos;
                    int iPosicion;
@@ -2180,7 +2179,7 @@ yyreduce:
   case 49:
 
 /* Line 1455 of yacc.c  */
-#line 468 "sintactico.y"
+#line 467 "sintactico.y"
     {
                      insertarPolaca(&polaca,"CMP"); insertarPolaca(&polaca,comp);
                      apilar(&pilaFalso,insertarPolaca(&polaca,""));
@@ -2191,98 +2190,98 @@ yyreduce:
   case 50:
 
 /* Line 1455 of yacc.c  */
-#line 473 "sintactico.y"
+#line 472 "sintactico.y"
     { invertir_salto(comp);;}
     break;
 
   case 52:
 
 /* Line 1455 of yacc.c  */
-#line 476 "sintactico.y"
+#line 475 "sintactico.y"
     {strcpy(operador, "OR");   strcpy(tipoDatoActual,"");  ;}
     break;
 
   case 53:
 
 /* Line 1455 of yacc.c  */
-#line 477 "sintactico.y"
+#line 476 "sintactico.y"
     {strcpy(operador,"AND");  strcpy(tipoDatoActual,"");  ;}
     break;
 
   case 56:
 
 /* Line 1455 of yacc.c  */
-#line 483 "sintactico.y"
+#line 482 "sintactico.y"
     {strcpy(comp, "BLE");;}
     break;
 
   case 57:
 
 /* Line 1455 of yacc.c  */
-#line 484 "sintactico.y"
+#line 483 "sintactico.y"
     {strcpy(comp, "BGE");;}
     break;
 
   case 58:
 
 /* Line 1455 of yacc.c  */
-#line 485 "sintactico.y"
+#line 484 "sintactico.y"
     {strcpy(comp,"BLT");;}
     break;
 
   case 59:
 
 /* Line 1455 of yacc.c  */
-#line 486 "sintactico.y"
+#line 485 "sintactico.y"
     {strcpy(comp, "BGT");;}
     break;
 
   case 60:
 
 /* Line 1455 of yacc.c  */
-#line 487 "sintactico.y"
+#line 486 "sintactico.y"
     {strcpy(comp, "BEQ");;}
     break;
 
   case 61:
 
 /* Line 1455 of yacc.c  */
-#line 488 "sintactico.y"
+#line 487 "sintactico.y"
     {strcpy(comp, "BNE");;}
     break;
 
   case 62:
 
 /* Line 1455 of yacc.c  */
-#line 491 "sintactico.y"
+#line 490 "sintactico.y"
     {insertarPolaca(&polaca,"OP_SUM"); ;}
     break;
 
   case 63:
 
 /* Line 1455 of yacc.c  */
-#line 492 "sintactico.y"
+#line 491 "sintactico.y"
     {insertarPolaca(&polaca,"OP_RES"); ;}
     break;
 
   case 65:
 
 /* Line 1455 of yacc.c  */
-#line 496 "sintactico.y"
+#line 495 "sintactico.y"
     { insertarPolaca(&polaca,"OP_DIV");  ;}
     break;
 
   case 66:
 
 /* Line 1455 of yacc.c  */
-#line 497 "sintactico.y"
+#line 496 "sintactico.y"
     { insertarPolaca(&polaca,"OP_MULT"); ;}
     break;
 
   case 68:
 
 /* Line 1455 of yacc.c  */
-#line 502 "sintactico.y"
+#line 501 "sintactico.y"
     { 
 
                         if(!strcmp(tipoDatoActual ,"")){
@@ -2315,7 +2314,7 @@ yyreduce:
   case 69:
 
 /* Line 1455 of yacc.c  */
-#line 530 "sintactico.y"
+#line 529 "sintactico.y"
     { 
 
                          if(!strcmp(tipoDatoActual ,"")){
@@ -2336,7 +2335,7 @@ yyreduce:
   case 70:
 
 /* Line 1455 of yacc.c  */
-#line 546 "sintactico.y"
+#line 545 "sintactico.y"
     {
 
                           if(!strcmp(tipoDatoActual ,"")){
@@ -2356,7 +2355,7 @@ yyreduce:
   case 71:
 
 /* Line 1455 of yacc.c  */
-#line 561 "sintactico.y"
+#line 560 "sintactico.y"
     { 
                            if(!strcmp(tipoDatoActual ,"")){
                         }else{
@@ -2374,7 +2373,7 @@ yyreduce:
   case 73:
 
 /* Line 1455 of yacc.c  */
-#line 578 "sintactico.y"
+#line 577 "sintactico.y"
     {
                         t_infoIds infoIds;
                         strcpy(infoIds.nombre, yyval.str_val);   
@@ -2385,7 +2384,7 @@ yyreduce:
   case 74:
 
 /* Line 1455 of yacc.c  */
-#line 583 "sintactico.y"
+#line 582 "sintactico.y"
     {
                          t_infoIds infoIds;
                         strcpy(infoIds.nombre, yyval.str_val);   
@@ -2396,7 +2395,7 @@ yyreduce:
   case 75:
 
 /* Line 1455 of yacc.c  */
-#line 591 "sintactico.y"
+#line 590 "sintactico.y"
     {
                 char* id = desapilarId(&pilaIds); 
                 if(id==""){
@@ -2412,7 +2411,7 @@ yyreduce:
   case 76:
 
 /* Line 1455 of yacc.c  */
-#line 604 "sintactico.y"
+#line 603 "sintactico.y"
     {
                 char* id = desapilarId(&pilaIds); 
                  if(id==""){
@@ -2428,28 +2427,28 @@ yyreduce:
   case 81:
 
 /* Line 1455 of yacc.c  */
-#line 626 "sintactico.y"
+#line 625 "sintactico.y"
     {tipoDato = "Float";}
     break;
 
   case 82:
 
 /* Line 1455 of yacc.c  */
-#line 627 "sintactico.y"
+#line 626 "sintactico.y"
     {tipoDato = "String";}
     break;
 
   case 83:
 
 /* Line 1455 of yacc.c  */
-#line 628 "sintactico.y"
+#line 627 "sintactico.y"
     {tipoDato = "Integer";}
     break;
 
   case 84:
 
 /* Line 1455 of yacc.c  */
-#line 632 "sintactico.y"
+#line 631 "sintactico.y"
     {
                   validarPermisoDeDeclaracionID(yylval.str_val);
                   strcpy(arrayVariables[indice].nombreVariable,yylval.str_val);  
@@ -2462,7 +2461,7 @@ yyreduce:
   case 85:
 
 /* Line 1455 of yacc.c  */
-#line 639 "sintactico.y"
+#line 638 "sintactico.y"
     {
                   nuevoSimbolo(tipoDato,"--",(tipoDato=="String")?strlen(yylval.str_val):0);
                   strcpy(arrayVariables[indice].nombreVariable,yylval.str_val);  
@@ -2474,7 +2473,7 @@ yyreduce:
   case 86:
 
 /* Line 1455 of yacc.c  */
-#line 648 "sintactico.y"
+#line 647 "sintactico.y"
     {
                 insertarPolaca(&polaca,yylval.str_val);
                 insertarPolaca(&polaca,"GET");
@@ -2484,7 +2483,7 @@ yyreduce:
   case 87:
 
 /* Line 1455 of yacc.c  */
-#line 655 "sintactico.y"
+#line 654 "sintactico.y"
     {
                 insertarPolaca(&polaca,"DISPLAY");
         ;}
@@ -2493,7 +2492,7 @@ yyreduce:
 
 
 /* Line 1455 of yacc.c  */
-#line 2497 "sintactico.tab.c"
+#line 2496 "sintactico.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2705,7 +2704,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 660 "sintactico.y"
+#line 659 "sintactico.y"
 
 
 int main(int argc,char *argv[])
@@ -3190,6 +3189,7 @@ void generarCodigoUsuario(FILE* finalFile, t_polaca* polaca,t_TS* TS){
                         else{ //si no lo esta, vemos si no es una palabra reservada como cmp o los branchs
                                 if(!strcmp(aux->info.contenido,"CMP")){
                                         //si es comparador desapilo 2
+                                        printf("\n\n");
                                         fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
                                         fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
                                         fprintf(finalFile,"FXCH \n");
@@ -3540,8 +3540,8 @@ void generarAsm(t_TS* TS){
                 switch(tipoDatoId){
                         case 0:
                         //Si es 0 no tiene tipo por lo tanto es una cte y guardamos valor
-                                if(!strcmp(aux->dato.tipo,"String"))
-                                        fprintf(finalFile,"%s dw %s\n",aux->dato.nombre, aux->dato.valor);  
+                                if(!atoi(aux->dato.valor))
+                                        fprintf(finalFile,"%s dd \"%s\"\n",aux->dato.nombre, aux->dato.valor);  
                                 else
                                         fprintf(finalFile,"%s dd %s\n",aux->dato.nombre, aux->dato.valor);         
                                 break;
@@ -3553,7 +3553,7 @@ void generarAsm(t_TS* TS){
                                 break;
                         case 3:  
                                 fprintf(finalFile,"%s dw %s\n",aux->dato.nombre,"?"); 
-                                break;		
+                                break;	
                         }
     
                 aux=aux->sig;

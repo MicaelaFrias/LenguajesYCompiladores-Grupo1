@@ -277,7 +277,6 @@ iteracion: WHILE {
                         int pos = insertarPolaca(&polaca,"WHILE");
                         apilar(&pilaVerdadero, pos);
                 }
-                printf("%s",polaca->info.contenido);
                 cantCliclosAnidados++; 
                 //guardamos la cantidad de saltos por falso que tiene el if anidado anterior
                 if(cantCliclosAnidados>1){ 
@@ -1141,6 +1140,7 @@ void generarCodigoUsuario(FILE* finalFile, t_polaca* polaca,t_TS* TS){
                         else{ //si no lo esta, vemos si no es una palabra reservada como cmp o los branchs
                                 if(!strcmp(aux->info.contenido,"CMP")){
                                         //si es comparador desapilo 2
+                                        printf("\n\n");
                                         fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
                                         fprintf(finalFile,"FLD %s\n",desapilarOperando(&pilaOperandos));
                                         fprintf(finalFile,"FXCH \n");
@@ -1491,8 +1491,8 @@ void generarAsm(t_TS* TS){
                 switch(tipoDatoId){
                         case 0:
                         //Si es 0 no tiene tipo por lo tanto es una cte y guardamos valor
-                                if(!strcmp(aux->dato.tipo,"String"))
-                                        fprintf(finalFile,"%s dw %s\n",aux->dato.nombre, aux->dato.valor);  
+                                if(!atoi(aux->dato.valor))
+                                        fprintf(finalFile,"%s dd \"%s\"\n",aux->dato.nombre, aux->dato.valor);  
                                 else
                                         fprintf(finalFile,"%s dd %s\n",aux->dato.nombre, aux->dato.valor);         
                                 break;
@@ -1504,7 +1504,7 @@ void generarAsm(t_TS* TS){
                                 break;
                         case 3:  
                                 fprintf(finalFile,"%s dw %s\n",aux->dato.nombre,"?"); 
-                                break;		
+                                break;	
                         }
     
                 aux=aux->sig;

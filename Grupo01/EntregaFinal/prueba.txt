@@ -6,83 +6,50 @@ string:a3;f45;b;uno;
 int:j;k;
 enddef
 
-
-***/IF ANIDADO/***
-if(a>f455 or a>f455 )
-then
-b:="aaa"
-b:="aaa"
-
-if(a>32 and a<7)
-then 
-
-if(h7>44 or a>9)
-then 
-h7:=44
-else
-b:="aaa"
-endif
-
-a:=32
-endif
-
-a:=9
-else
-b:="aaa"
-endif   
-
-***/IF/***
-if (a==3.5)
-then 
-a:=3
-endif
-
-***/WHILE ANIDADO/***
-while (a>8 and f4==1)
-a3 :="hola" 
-while (h7>8 or h7==1)
-a3 :="chau" 
-endw 
-endw 
-
-***/WHILE/***
-while (a>8 and f4==1)
-a3 :="hola" 
-endw
-
-***/WHILE E IF ANIDADOS/***
-while (a>8 and f4==1)
-a3 :="hola" 
-
-if (a==3)
-then 
-a:=3
-endif
+a:=23
 
 if (a==4 or a>5)
 then 
 a:=3
 endif
 
-endw 
-
-***//***
-***/COMENTARIO/***
-
-if(a>32 or a>2)
+***/IF ANIDADO/***
+if(a>f455 or a>f455 )
 then
 b:="aaa"
-b:="aaa"
+b:="ggg"
+
+if(a>32 and a<7)
+then 
+
+if(h7>37 or a>9)
+then 
+h7:=44
 else
-b:="aaa"
-endif 
+b:="eee"
+endif
+
+a:=65
+endif
+
+a:=85
+else
+b:="rrr"
+endif   
+
+***/WHILE ANIDADO/***
+while (a>21 and f4==36)
+a3 :="hola" 
+while (h7>8 or h7==78)
+a3 :="chau" 
+endw 
+endw 
 
 get a3
 display a
 
-e = if(a<a,a+5,a)
-e = if(a>a,a+6,a+8)
+e = if(a>a,a+67,a+89)
 
-let uno,dos,tres := ("3";4;a+5)
+let uno,dos,tres := ("34";45;a+75)
 
 endp

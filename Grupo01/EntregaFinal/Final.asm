@@ -21,28 +21,28 @@ _23 dd 23
 _4 dd 4
 _5 dd 5
 _3 dd 3
-_aaa dd aaa
-_aaa dd aaa
+_aaa dd "aaa"
+_ggg dd "ggg"
 _32 dd 32
 _7 dd 7
-_44 dd 44
+_37 dd 37
 _9 dd 9
 _44 dd 44
-_aaa dd aaa
-_32 dd 32
-_9 dd 9
-_aaa dd aaa
+_eee dd "eee"
+_65 dd 65
+_85 dd 85
+_rrr dd "rrr"
+_21 dd 21
+_36 dd 36
+_hola dd "hola"
 _8 dd 8
-_1 dd 1
-_hola dd hola
-_8 dd 8
-_1 dd 1
-_chau dd chau
-_6 dd 6
-_8 dd 8
-_3 dd 3
-_4 dd 4
-_5 dd 5
+_78 dd 78
+_chau dd "chau"
+_67 dd 67
+_89 dd 89
+_34 dd 34
+_45 dd 45
+_75 dd 75
 @RES dd ?
 .CODE 
 mov ah, 1;
@@ -79,7 +79,7 @@ BLE ELSE0
 THEN1: 
 FILD _aaa
 FSTP b
-FILD _aaa
+FILD _ggg
 FSTP b
 FLD _32
 FLD a
@@ -92,7 +92,7 @@ FXCH
 FCOM 
 BGE ENDIF1
 THEN2: 
-FLD _44
+FLD _37
 FLD h7
 FXCH 
 FCOM 
@@ -107,27 +107,27 @@ FILD _44
 FSTP h7
 BI ENDIF1
 ELSE0: 
-FILD _aaa
+FILD _eee
 FSTP b
 ENDIF1: 
-FILD _32
+FILD _65
 FSTP a
 BI ENDIF2
 ENDIF2: 
-FILD _9
+FILD _85
 FSTP a
 BI ENDIF3
 ELSE1: 
-FILD _aaa
+FILD _rrr
 FSTP b
 ENDIF3: 
 WHILE0: 
-FLD _8
+FLD _21
 FLD a
 FXCH 
 FCOM 
 BLE ENDW0
-FLD _1
+FLD _36
 FLD f4
 FXCH 
 FCOM 
@@ -141,7 +141,7 @@ FLD h7
 FXCH 
 FCOM 
 BGT THENW1
-FLD _1
+FLD _78
 FLD h7
 FXCH 
 FCOM 
@@ -160,7 +160,7 @@ FLD a
 FXCH 
 FCOM 
 BLE ELSE2
-FILD _6
+FILD _67
 FLD a
 FADD 
 FSTP @RES
@@ -169,7 +169,7 @@ FLD @RES
 FSTP e
 BI ENDIF4
 ELSE2: 
-FILD _8
+FILD _89
 FLD a
 FADD 
 FSTP @RES
@@ -178,10 +178,10 @@ FLD @RES
 FSTP e
 ENDIF4: 
 FLD uno
-FSTP _3
+FSTP _34
 FLD dos
-FSTP _4
-FILD _5
+FSTP _45
+FILD _75
 FLD a
 FADD 
 FSTP @RES
