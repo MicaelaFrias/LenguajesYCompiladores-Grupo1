@@ -15,8 +15,8 @@ endif
 ***/IF ANIDADO/***
 if(a>f455 or a>f455 )
 then
-b:="aaa"
-b:="ggg"
+b:="z"
+b:="y"
 
 if(a>32 and a<7)
 then 
@@ -25,7 +25,7 @@ if(h7>37 or a>9)
 then 
 h7:=44
 else
-b:="eee"
+b:="a"
 endif
 
 a:=65
@@ -33,14 +33,14 @@ endif
 
 a:=85
 else
-b:="rrr"
+b:="r"
 endif   
 
 ***/WHILE ANIDADO/***
 while (a>21 and f4==36)
-a3 :="hola" 
+a3 :="h" 
 while (h7>8 or h7==78)
-a3 :="chau" 
+a3 :="c" 
 endw 
 endw 
 

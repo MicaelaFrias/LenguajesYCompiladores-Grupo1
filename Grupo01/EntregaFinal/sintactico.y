@@ -291,6 +291,7 @@ iteracion: WHILE {
                 char spos[25]; 
                 int pos = insertarPolaca(&polaca,"THENW");
                 sprintf(spos,"%d",pos);
+                if(cantCliclosAnidados>1)
                 escribirPosicionPolaca(&polaca,desapilar(&pilaVerdadero),spos);
         }
          bloqueTemasComunesYEspeciales ENDW {
@@ -1079,15 +1080,15 @@ void llenarVectorOperadores(t_operador vecOperadores[30]){
 
 void llenarVectorPalabrasReservadas(t_palabraReservada vectorPalabrasReservadas[30]){
       strcpy(vectorPalabrasReservadas[0].nombrePalabraReservada ,"CMP");
-      strcpy(vectorPalabrasReservadas[1].nombrePalabraReservada ,"BLE");
-      strcpy(vectorPalabrasReservadas[2].nombrePalabraReservada ,"BGT");
-      strcpy(vectorPalabrasReservadas[3].nombrePalabraReservada, "BLT");
-      strcpy(vectorPalabrasReservadas[4].nombrePalabraReservada, "BEQ");
-      strcpy(vectorPalabrasReservadas[5].nombrePalabraReservada, "BNE");
-      strcpy(vectorPalabrasReservadas[6].nombrePalabraReservada, "BI");
+      strcpy(vectorPalabrasReservadas[1].nombrePalabraReservada ,"JNA");
+      strcpy(vectorPalabrasReservadas[2].nombrePalabraReservada ,"JA");
+      strcpy(vectorPalabrasReservadas[3].nombrePalabraReservada, "JB");
+      strcpy(vectorPalabrasReservadas[4].nombrePalabraReservada, "JE");
+      strcpy(vectorPalabrasReservadas[5].nombrePalabraReservada, "JNE");
+      strcpy(vectorPalabrasReservadas[6].nombrePalabraReservada, "JMP");
       strcpy(vectorPalabrasReservadas[7].nombrePalabraReservada ,"ENDIF");
       strcpy(vectorPalabrasReservadas[8].nombrePalabraReservada ,"WHILE");
-      strcpy(vectorPalabrasReservadas[9].nombrePalabraReservada, "BGE");
+      strcpy(vectorPalabrasReservadas[9].nombrePalabraReservada, "JAE");
       strcpy(vectorPalabrasReservadas[10].nombrePalabraReservada, "THEN");
       strcpy(vectorPalabrasReservadas[11].nombrePalabraReservada, "ELSE");
       strcpy(vectorPalabrasReservadas[12].nombrePalabraReservada, "ENDW");
@@ -1169,7 +1170,6 @@ void generarCodigoUsuario(FILE* finalFile, t_polaca* polaca,t_TS* TS){
                                                 char salto[30];
                                                 strcpy(salto, aux->info.contenido);
                                                 aux=aux->psig;
-                                                printf("%s", aux->info.contenido);
                                                 char palabraReservada[10];
                                                 strcpy(palabraReservada, leerPosicionPolaca(polaca,atoi(aux->info.contenido)));
                                                 fprintf(finalFile,"%s %s",salto,leerPosicionPolaca(polaca,atoi(aux->info.contenido)));
@@ -1503,7 +1503,7 @@ void generarAsm(t_TS* TS){
                                 fprintf(finalFile,"%s dd %s\n",aux->dato.nombre,"?");        
                                 break;
                         case 3:  
-                                fprintf(finalFile,"%s dw %s\n",aux->dato.nombre,"?"); 
+                                fprintf(finalFile,"%s dd %s\n",aux->dato.nombre,"?"); 
                                 break;	
                         }
     

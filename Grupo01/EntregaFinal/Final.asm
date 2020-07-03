@@ -11,32 +11,32 @@ f4 dd ?
 dos dd ?
 tres dd ?
 e dd ?
-a3 dw ?
-f45 dw ?
-b dw ?
-uno dw ?
+a3 dd ?
+f45 dd ?
+b dd ?
+uno dd ?
 j dd ?
 k dd ?
 _4 dd 4
 _5 dd 5
 _3 dd 3
-_aaa dd "aaa"
-_ggg dd "ggg"
+_z dd "z"
+_y dd "y"
 _32 dd 32
 _7 dd 7
 _37 dd 37
 _9 dd 9
 _44 dd 44
-_eee dd "eee"
+_a dd "a"
 _65 dd 65
 _85 dd 85
-_rrr dd "rrr"
+_r dd "r"
 _21 dd 21
 _36 dd 36
-_hola dd "hola"
+_h dd "h"
 _8 dd 8
 _78 dd 78
-_chau dd "chau"
+_c dd "c"
 _67 dd 67
 _89 dd 89
 _34 dd 34
@@ -49,73 +49,61 @@ int 21h ;
 MOV AX, 4C00h; 
 int 21h;
 FLD _4
-FLD 93
+FLD a
 FXCH 
 FCOM 
-BEQ THEN0
 FLD _5
 FLD a
 FXCH 
 FCOM 
-BLE ENDIF0
 THEN0: 
 FILD _3
 FSTP a
-BI ENDIF0
 ENDIF0: 
 FLD f455
 FLD a
 FXCH 
 FCOM 
-BGT THEN1
 FLD f455
 FLD a
 FXCH 
 FCOM 
-BLE ELSE0
 THEN1: 
-FILD _aaa
+FILD _z
 FSTP b
-FILD _ggg
+FILD _y
 FSTP b
 FLD _32
 FLD a
 FXCH 
 FCOM 
-BLE ENDIF1
 FLD _7
 FLD a
 FXCH 
 FCOM 
-BGE ENDIF1
 THEN2: 
 FLD _37
 FLD h7
 FXCH 
 FCOM 
-BGT THEN3
 FLD _9
 FLD a
 FXCH 
 FCOM 
-BLE ELSE0
 THEN3: 
 FILD _44
 FSTP h7
-BI ENDIF1
 ELSE0: 
-FILD _eee
+FILD _a
 FSTP b
 ENDIF1: 
 FILD _65
 FSTP a
-BI ENDIF2
 ENDIF2: 
 FILD _85
 FSTP a
-BI ENDIF3
 ELSE1: 
-FILD _rrr
+FILD _r
 FSTP b
 ENDIF3: 
 WHILE0: 
@@ -123,32 +111,26 @@ FLD _21
 FLD a
 FXCH 
 FCOM 
-BLE ENDW0
 FLD _36
 FLD f4
 FXCH 
 FCOM 
-BNE ENDW0
 THENW0: 
-FILD _hola
+FILD _h
 FSTP a3
 WHILE1: 
 FLD _8
 FLD h7
 FXCH 
 FCOM 
-BGT THENW1
 FLD _78
 FLD h7
 FXCH 
 FCOM 
-BNE ENDW0
 THENW1: 
-FILD _chau
+FILD _c
 FSTP a3
-BI WHILE1
 ENDW0: 
-BI WHILE0
 ENDW1: 
 getString a3
 displayString a
@@ -156,7 +138,6 @@ FLD a
 FLD a
 FXCH 
 FCOM 
-BLE ELSE2
 FILD _67
 FLD a
 FADD 
@@ -164,7 +145,6 @@ FSTP @RES
 FFREE 
 FLD @RES
 FSTP e
-BI ENDIF4
 ELSE2: 
 FILD _89
 FLD a
