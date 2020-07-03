@@ -17,7 +17,6 @@ b dw ?
 uno dw ?
 j dd ?
 k dd ?
-_23 dd 23
 _4 dd 4
 _5 dd 5
 _3 dd 3
@@ -49,10 +48,8 @@ mov ah, 1;
 int 21h ;
 MOV AX, 4C00h; 
 int 21h;
-FILD _23
-FSTP 96
 FLD _4
-FLD a
+FLD 93
 FXCH 
 FCOM 
 BEQ THEN0

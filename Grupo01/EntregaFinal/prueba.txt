@@ -6,7 +6,6 @@ string:a3;f45;b;uno;
 int:j;k;
 enddef
 
-a:=23
 
 if (a==4 or a>5)
 then 
