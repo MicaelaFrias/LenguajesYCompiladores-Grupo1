@@ -304,7 +304,7 @@ iteracion: WHILE {
         else
                 posicionInicial = desapilar(&pilaVerdadero); 
         sprintf(posInicio,"%d",posicionInicial);
-        insertarPolaca(&polaca,"BI");
+        insertarPolaca(&polaca,"JMP");
         escribirPosicionPolaca(&polaca,insertarPolaca(&polaca,""),posInicio);
 
         sprintf(posFalso,"%d",insertarPolaca(&polaca,"ENDW"));
@@ -338,7 +338,7 @@ ifUnario: ID{   validarDeclaracionID(yylval.str_val); strcpy(tipoDatoActual,obte
         expresion{
                 insertarPolaca(&polaca,idValor);
                 insertarPolaca(&polaca,"OP_ASIG");
-                insertarPolaca(&polaca,"BI");
+                insertarPolaca(&polaca,"JMP");
                 apilar(&pilaVerdadero,insertarPolaca(&polaca,""));
         } 
         COMA{
@@ -394,7 +394,7 @@ seleccionSinElse: IF {
                 }
         }
         bloqueTemasComunesYEspeciales{
-                insertarPolaca(&polaca,"BI");
+                insertarPolaca(&polaca,"JMP");
                 apilar(&pilaFalso,insertarPolaca(&polaca,""));
                 
         }
@@ -480,12 +480,12 @@ comparacion: expresion comparador expresion
             | P_A expresion comparador expresion P_C   
             ;
 
-comparador: OP_MAYOR {strcpy(comp, "BLE");}
-        | OP_MENOR {strcpy(comp, "BGE");}
-        | OP_MAYORIGUAL {strcpy(comp,"BLT");}
-        | OP_MENORIGUAL {strcpy(comp, "BGT");}
-        | OP_DISTINTO {strcpy(comp, "BEQ");}
-        | OP_IGUAL {strcpy(comp, "BNE");}
+comparador: OP_MAYOR {strcpy(comp, "JNA");}
+        | OP_MENOR {strcpy(comp, "JAE");}
+        | OP_MAYORIGUAL {strcpy(comp,"JB");}
+        | OP_MENORIGUAL {strcpy(comp, "JA");}
+        | OP_DISTINTO {strcpy(comp, "JE");}
+        | OP_IGUAL {strcpy(comp, "JNE");}
         ;
 
 expresion: termino OP_SUM expresion {insertarPolaca(&polaca,"OP_SUM"); }
@@ -958,18 +958,18 @@ void mostrarArrayVariables(t_variables* vec){
 }
 
 char* invertir_salto(char* comp){
-                if(!strcmp("BLE",comp))
-                strcpy(comp,"BGT");
-                else if(!strcmp("BGE",comp))
-                strcpy(comp,"BLT");
-                else if(!strcmp("BLT",comp))
-                strcpy(comp,"BGE");
-                else if(!strcmp("BGT",comp))
-                strcpy(comp,"BLE");
-                else if(!strcmp("BEQ",comp))
-                strcpy(comp,"BNE");
-                else if(!strcmp("BNE",comp))
-                strcpy(comp,"BEQ");
+                if(!strcmp("JNA",comp))
+                strcpy(comp,"JA");
+                else if(!strcmp("JAE",comp))
+                strcpy(comp,"JB");
+                else if(!strcmp("JB",comp))
+                strcpy(comp,"JAE");
+                else if(!strcmp("JA",comp))
+                strcpy(comp,"JNA");
+                else if(!strcmp("JE",comp))
+                strcpy(comp,"JNE");
+                else if(!strcmp("JNE",comp))
+                strcpy(comp,"JE");
 
         return comp;
 }
